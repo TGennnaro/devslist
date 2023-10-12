@@ -39,9 +39,11 @@ export default function Home() {
             The all-in-one jobs platform for developers.
           </h2>
         </div>
+        <NextLink href="/">
         <Button color="primary" size="lg">
           Get started
         </Button>
+        </NextLink>
       </section>
 
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -205,11 +207,11 @@ export default function Home() {
                 <p className="text-center text-xl text-gray-600 dark:text-gray-300">
                   Let us help you discover over{" "}
                   <b>
-                    <CountUp end={10000} />
+                    <CountUp end={10000} scrollSpyOnce />
                   </b>{" "}
                   jobs from{" "}
                   <b>
-                    <CountUp end={100} />
+                    <CountUp end={100} scrollSpyOnce />
                   </b>{" "}
                   different companies{" "}
                 </p>
