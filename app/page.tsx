@@ -53,7 +53,7 @@ export default function Home() {
         </NextLink>
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section className="flex flex-col items-center justify-center gap-4 py-20 md:py-20">
         <div className="inline-block lg:w-2/3 text-center justify-center">
           <h1 className={title()}>Why&nbsp;</h1>
           <h1 className={title({ color: "blue" })}>DevsList</h1>
@@ -105,7 +105,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section className="flex flex-col items-center justify-center gap-4 py-20 md:py-20">
         <h1 className={`${title()}`}>Hear from our users</h1>
 
         <div className="grid lg:grid-cols-3 gap-4 mt-8">
@@ -187,7 +187,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section className="flex flex-col items-center justify-center gap-4 py-20 md:py-20">
         <div className="w-full mx-auto px-6 md:px-12 xl:px-6 py-8">
           <div className="relative py-16">
             <div
