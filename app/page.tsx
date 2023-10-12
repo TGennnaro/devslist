@@ -36,13 +36,20 @@ export default function Home() {
             />
           </h1>
           <h2 className={subtitle({ class: "mt-4" })}>
-            The all-in-one jobs platform for developers.
+            The all-in-one jobs platform for developers and employers.
           </h2>
         </div>
         <NextLink href="/">
-        <Button color="primary" size="lg">
-          Get started
-        </Button>
+          <Button
+            className={buttonStyles({
+              color: "primary",
+              radius: "sm",
+              size: "lg",
+              variant: "shadow",
+            })}
+          >
+            Get started
+          </Button>
         </NextLink>
       </section>
 
@@ -54,48 +61,46 @@ export default function Home() {
         </div>
         <div className="grid lg:grid-cols-3 gap-4 mt-8">
           <div>
-            <Card className="max-w-[400px] aspect-auto bg-gradient-to-r from-slate-600 to-slate-800 text-white">
+            <Card className="max-w-[400px] h-[100%] aspect-auto bg-gradient-to-r from-slate-600 to-slate-800 text-white">
               <CardHeader className="flex gap-3 font-semibold">
                 <FaReact size={40} /> Developer-Oriented
               </CardHeader>
               <CardBody className="pt-2">
                 <p>
-                  For developers, by developers. We'll only show you tech jobs
-                  so you can better narrow down your job search. Uniquely
+                  For developers, by developers. We&apos;ll only show you tech
+                  jobs so you can better narrow down your job search. Uniquely
                   showcase your projects and skills on your own profile.
                 </p>
               </CardBody>
             </Card>
           </div>
           <div>
-            <Card className="max-w-[400px] aspect-auto bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+            <Card className="max-w-[400px] h-[100%] aspect-auto bg-gradient-to-r from-blue-600 to-blue-800 text-white">
               <CardHeader className="flex gap-3 font-semibold">
                 <FaMagnifyingGlass size={40} /> Interactive Job Searching
               </CardHeader>
               <CardBody className="pt-2">
                 <p>
-                  Filter jobs by skills, salary, location, and company ratings.
-                  Find jobs anywhere around the world or close to you with our
-                  unique interactive map.
+                  Filter jobs that fit you, whether it&apos;s by skills, salary,
+                  location, or company ratings. Find jobs anywhere around the
+                  world or close to you with our unique interactive map.
                 </p>
               </CardBody>
             </Card>
           </div>
           <div>
-            <div>
-              <Card className="max-w-[400px] aspect-auto bg-gradient-to-r from-violet-600 to-violet-800 text-white">
-                <CardHeader className="flex gap-3 font-semibold">
-                  <BsSendFill size={40} /> Easy Application Process
-                </CardHeader>
-                <CardBody className="pt-2">
-                  <p>
-                    Apply to jobs easier than ever before. Customize your
-                    profile, upload your resume, and apply! Keep tabs on all of
-                    your applications with ease.
-                  </p>
-                </CardBody>
-              </Card>
-            </div>
+            <Card className="max-w-[400px] h-[100%] aspect-auto bg-gradient-to-r from-violet-600 to-violet-800 text-white">
+              <CardHeader className="flex gap-3 font-semibold">
+                <BsSendFill size={40} /> Easy Application Process
+              </CardHeader>
+              <CardBody className="pt-2">
+                <p>
+                  Apply to jobs easier than ever before. Customize your profile,
+                  upload your resume, and apply! Keep tabs on all of your
+                  applications with ease.
+                </p>
+              </CardBody>
+            </Card>
           </div>
         </div>
       </section>
@@ -146,8 +151,8 @@ export default function Home() {
                     recommendations were spot on, and the application process
                     was seamless. The responsive support team felt like a true
                     partner. Thanks to DevList, I found a fantastic entry-level
-                    role within weeks. It's a must-visit for CS students and
-                    developers seeking meaningful opportunities.
+                    role within weeks. It&apos;s a must-visit for CS students
+                    and developers seeking meaningful opportunities.
                   </p>
                 </CardBody>
               </Card>
@@ -187,22 +192,42 @@ export default function Home() {
           <div className="relative py-16">
             <div
               aria-hidden="true"
-              className="absolute inset-0 h-max w-full m-auto grid grid-cols-2 -space-x-52 opacity-40 dark:opacity-20"
+              className="absolute inset-0 h-max w-full m-auto grid grid-cols-2 opacity-50"
             >
               <div className="blur-[106px] h-56 bg-gradient-to-br from-primary to-purple-400 dark:from-blue-700"></div>
               <div className="blur-[106px] h-56 bg-gradient-to-r from-cyan-400 to-sky-300 dark:to-indigo-600"></div>
             </div>
             <div className="relative">
               <div className="flex items-center justify-center -space-x-2">
-                <Avatar src="https://i.pravatar.cc/150?u=1" size="sm" />
-                <Avatar src="https://i.pravatar.cc/150?u=2" size="md" />
-                <Avatar src="https://i.pravatar.cc/150?u=3" size="lg" />
-                <Avatar src="https://i.pravatar.cc/150?u=4" size="md" />
-                <Avatar src="https://i.pravatar.cc/150?u=5" size="sm" />
+                <Avatar
+                  className="shadow-md"
+                  src="https://i.pravatar.cc/150?u=1"
+                  size="sm"
+                />
+                <Avatar
+                  className="shadow-md"
+                  src="https://i.pravatar.cc/150?u=2"
+                  size="md"
+                />
+                <Avatar
+                  className="shadow-md"
+                  src="https://i.pravatar.cc/150?u=3"
+                  size="lg"
+                />
+                <Avatar
+                  className="shadow-md"
+                  src="https://i.pravatar.cc/150?u=4"
+                  size="md"
+                />
+                <Avatar
+                  className="shadow-md"
+                  src="https://i.pravatar.cc/150?u=5"
+                  size="sm"
+                />
               </div>
               <div className="mt-6 m-auto space-y-6 md:w-8/12 lg:w-7/12">
                 <h1 className="text-center text-4xl font-bold text-gray-800 dark:text-white md:text-5xl">
-                  Let's find your career
+                  Let&apos;s find your career
                 </h1>
                 <p className="text-center text-xl text-gray-600 dark:text-gray-300">
                   Let us help you discover over{" "}
@@ -216,7 +241,14 @@ export default function Home() {
                   different companies{" "}
                 </p>
                 <div className="flex flex-wrap justify-center gap-6">
-                  <Button color="primary" size="lg">
+                  <Button
+                    className={buttonStyles({
+                      color: "primary",
+                      radius: "sm",
+                      size: "lg",
+                      variant: "shadow",
+                    })}
+                  >
                     Get started
                   </Button>
                 </div>
