@@ -15,22 +15,24 @@ const schema = z.object({
 
 export async function POST(req: Request, res: Response) {
 	const json = await req.json();
-	try {
-		const { email, password } = schema.parse(json);
-		const hashedPassword = await bcrypt.hash(password, 10);
-		console.log(hashedPassword);
-	} catch (error) {
-		if (error instanceof z.ZodError) {
-			return NextResponse.json(
-				{ error: error.issues[0].message },
-				{ status: 400 }
-			);
-		} else if (error instanceof Error) {
-			return NextResponse.json({ error: error.message }, { status: 500 });
-		}
-		return NextResponse.json(
-			{ error: 'An internal error occurred.' },
-			{ status: 500 }
-		);
-	}
+	console.log('Received post');
+	return NextResponse.json({ message: 'Received post' }, { status: 500 });
+	// try {
+	// 	const { email, password } = schema.parse(json);
+	// 	const hashedPassword = await bcrypt.hash(password, 10);
+	// 	console.log(hashedPassword);
+	// } catch (error) {
+	// 	if (error instanceof z.ZodError) {
+	// 		return NextResponse.json(
+	// 			{ error: error.issues[0].message },
+	// 			{ status: 400 }
+	// 		);
+	// 	} else if (error instanceof Error) {
+	// 		return NextResponse.json({ error: error.message }, { status: 500 });
+	// 	}
+	// 	return NextResponse.json(
+	// 		{ error: 'An internal error occurred.' },
+	// 		{ status: 500 }
+	// 	);
+	// }
 }
