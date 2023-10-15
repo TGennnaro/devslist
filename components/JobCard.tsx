@@ -77,17 +77,17 @@ export const JobCard = () => {
           <FcCheckmark /> Requirements
         </div>
         <p>
-          Bachelor's or Master's Degree: A degree in Computer Science, Software
-          Engineering, or a related field is typically required. iOS Development
-          Expertise: Strong proficiency in iOS app development using Swift and
-          Objective-C, along with a deep understanding of iOS.
+          Bachelor&apos;s or Master&apos;s Degree: A degree in Computer Science,
+          Software Engineering, or a related field is typically required. iOS
+          Development Expertise: Strong proficiency in iOS app development using
+          Swift and Objective-C, along with a deep understanding of iOS.
         </p>
         <div className="flex items-center gap-1 font-semibold pt-3">
           <FcList /> Responsibilities
         </div>
         <p>
           Design, develop, and maintain innovative and high-quality iOS
-          applications for Apple's ecosystem.
+          applications for Apple&apos;s ecosystem.
         </p>
       </CardBody>
       <CardFooter className="gap-3">
