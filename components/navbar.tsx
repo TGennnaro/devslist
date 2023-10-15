@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -6,11 +8,19 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
-
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  Avatar,
+  Badge,
+  Divider,
+} from "@nextui-org/react";
 
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
+
+import { FaEnvelope } from "react-icons/fa";
 
 import { link as linkStyles } from "@nextui-org/theme";
 
@@ -39,7 +49,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">DevsList</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden sm:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
@@ -54,6 +64,18 @@ export const Navbar = () => {
               </NextLink>
             </NavbarItem>
           ))}
+          <NavbarItem>
+            <NextLink
+              className={clsx(
+                linkStyles({ color: "foreground" }),
+                "data-[active=true]:text-primary data-[active=true]:font-medium"
+              )}
+              color="foreground"
+              href="/jobs"
+            >
+              Jobs
+            </NextLink>
+          </NavbarItem>
         </ul>
       </NavbarContent>
 
@@ -64,6 +86,44 @@ export const Navbar = () => {
         <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
+
+        <NavbarItem>
+          <Button as={Link} color="primary" href="#" variant="flat">
+            Sign In
+          </Button>
+        </NavbarItem>
+
+        <Badge color="danger" content={50} shape="circle" size="sm">
+          <NextLink href="#">
+            <FaEnvelope size={25} />
+          </NextLink>
+        </Badge>
+
+        <Dropdown placement="bottom-end">
+          <DropdownTrigger>
+            <Avatar
+              isBordered
+              as="button"
+              className="transition-transform"
+              color="primary"
+              name="Jason Hughes"
+              size="sm"
+              src="https://i.pravatar.cc/150?u=a"
+            />
+          </DropdownTrigger>
+          <DropdownMenu aria-label="User Actions" variant="flat">
+            <DropdownItem className="h-16 gap-2">
+              <p className="font-semibold">Signed in as</p>
+              <p className="font-semibold">johndoe@example.com</p>
+              <p className="font-thin text-xs uppercase">Developer</p>
+            </DropdownItem>
+            <DropdownItem>My Profile</DropdownItem>
+            <DropdownItem>My Applications</DropdownItem>
+            <DropdownItem>My Reviews</DropdownItem>
+            <DropdownItem showDivider>My Settings</DropdownItem>
+            <DropdownItem color="danger">Log Out</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -75,21 +135,40 @@ export const Navbar = () => {
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
+              <Link color="foreground" href={item.href} size="lg">
                 {item.label}
               </Link>
             </NavbarMenuItem>
           ))}
+          <Divider />
+          <NavbarMenuItem>
+            <Link color="primary" href="#" size="lg">
+              Sign In
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link color="primary" href="#" size="lg">
+              Register
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <span className="font-semibold">johndoe@example.com</span>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link color="foreground" href="#" size="lg">
+              My Profile
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link color="foreground" href="#" size="lg">
+              My Settings
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link color="danger" href="#" size="lg">
+              Log Out
+            </Link>
+          </NavbarMenuItem>
         </div>
       </NavbarMenu>
     </NextUINavbar>

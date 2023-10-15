@@ -39,7 +39,7 @@ export default function Home() {
             The all-in-one jobs platform for developers and employers.
           </h2>
         </div>
-        <NextLink href="/">
+        <NextLink href="/register">
           <Button
             className={buttonStyles({
               color: "primary",
@@ -59,7 +59,7 @@ export default function Home() {
           <h1 className={title({ color: "blue" })}>DevsList</h1>
           <h1 className={title()}>?</h1>
         </div>
-        <div className="grid lg:grid-cols-3 gap-4 mt-8">
+        <div className="flex flex-col md:flex-row gap-4 mt-8">
           <div>
             <Card className="max-w-[400px] h-[100%] aspect-auto bg-gradient-to-r from-slate-600 to-slate-800 text-white">
               <CardHeader className="flex gap-3 font-semibold">
@@ -108,7 +108,7 @@ export default function Home() {
       <section className="flex flex-col items-center justify-center gap-4 py-20 md:py-20">
         <h1 className={`${title()}`}>Hear from our users</h1>
 
-        <div className="grid lg:grid-cols-3 gap-4 mt-8">
+        <div className="flex flex-col md:flex-row gap-4 mt-8">
           <div>
             <Card className="max-w-[400px] aspect-auto">
               <CardHeader className="flex gap-3">
@@ -126,8 +126,8 @@ export default function Home() {
                   was overwhelmed, but this platform simplified everything. The
                   user-friendly interface and accurate job matching made finding
                   internships and job listings a breeze. The interview and
-                  resume resources were invaluable. Thanks to DevList, I secured
-                  my dream internship and launched my tech career.
+                  resume resources were invaluable. Thanks to DevsList, I
+                  secured my dream internship and launched my tech career.
                 </p>
               </CardBody>
             </Card>
@@ -150,7 +150,7 @@ export default function Home() {
                     for a summer internship. The personalized job
                     recommendations were spot on, and the application process
                     was seamless. The responsive support team felt like a true
-                    partner. Thanks to DevList, I found a fantastic entry-level
+                    partner. Thanks to DevsList, I found a fantastic entry-level
                     role within weeks. It&apos;s a must-visit for CS students
                     and developers seeking meaningful opportunities.
                   </p>
@@ -241,16 +241,18 @@ export default function Home() {
                   different companies{" "}
                 </p>
                 <div className="flex flex-wrap justify-center gap-6">
-                  <Button
-                    className={buttonStyles({
-                      color: "primary",
-                      radius: "sm",
-                      size: "lg",
-                      variant: "shadow",
-                    })}
-                  >
-                    Get started
-                  </Button>
+                  <NextLink href="/register">
+                    <Button
+                      className={buttonStyles({
+                        color: "primary",
+                        radius: "sm",
+                        size: "lg",
+                        variant: "shadow",
+                      })}
+                    >
+                      Get started
+                    </Button>
+                  </NextLink>
                 </div>
               </div>
             </div>
