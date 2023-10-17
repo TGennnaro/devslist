@@ -6,6 +6,7 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ThemeProviderProps } from 'next-themes/dist/types';
 import { SessionProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-wrap-balancer';
 
 export interface ProvidersProps {
 	children: React.ReactNode;
@@ -19,7 +20,9 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 		<QueryClientProvider client={queryClient}>
 			<SessionProvider>
 				<NextUIProvider>
-					<NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+					<NextThemesProvider {...themeProps}>
+						<Provider>{children}</Provider>
+					</NextThemesProvider>
 				</NextUIProvider>
 			</SessionProvider>
 		</QueryClientProvider>
