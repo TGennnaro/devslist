@@ -1,16 +1,19 @@
 import { cva, VariantProps } from 'class-variance-authority';
 
-const circleVariants = cva('rounded-full w-48 h-48 absolute blur-[109px]', {
-	variants: {
-		color: {
-			primary: 'bg-primary-500',
-			secondary: 'bg-secondary',
+const circleVariants = cva(
+	'rounded-full w-48 h-48 absolute blur-[109px] pointer-events-none',
+	{
+		variants: {
+			color: {
+				primary: 'bg-primary-300 dark:bg-primary-500',
+				secondary: 'bg-secondary-300 dark:bg-secondary',
+			},
 		},
-	},
-	defaultVariants: {
-		color: 'primary',
-	},
-});
+		defaultVariants: {
+			color: 'primary',
+		},
+	}
+);
 
 export default function GlowCircle({
 	top,
