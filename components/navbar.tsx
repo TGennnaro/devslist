@@ -1,176 +1,174 @@
-"use client";
+'use client';
 
 import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-  DropdownItem,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  Avatar,
-  Badge,
-  Divider,
-} from "@nextui-org/react";
-
-import { Button } from "@nextui-org/button";
-import { Link } from "@nextui-org/link";
-
-import { FaEnvelope } from "react-icons/fa";
-
-import { link as linkStyles } from "@nextui-org/theme";
-
-import { siteConfig } from "@/config/site";
-import NextLink from "next/link";
-import clsx from "clsx";
-
-import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
-} from "@/components/icons";
-
-import { Logo } from "@/components/icons";
+	Avatar,
+	Badge,
+	Divider,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
+	NavbarBrand,
+	NavbarContent,
+	NavbarItem,
+	NavbarMenu,
+	NavbarMenuItem,
+	NavbarMenuToggle,
+	Navbar as NextUINavbar,
+} from '@nextui-org/react';
+import { Button } from '@nextui-org/button';
+import { Link } from '@nextui-org/link';
+import { FaEnvelope } from 'react-icons/fa';
+import { link as linkStyles } from '@nextui-org/theme';
+import { siteConfig } from '@/config/site';
+import clsx from 'clsx';
+import NextLink from 'next/link';
+import { ThemeSwitch } from '@/components/theme-switch';
+import { Logo } from '@/components/icons';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 
 export const Navbar = () => {
-  return (
-    <NextUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">DevsList</p>
-          </NextLink>
-        </NavbarBrand>
-        <ul className="hidden sm:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-          <NavbarItem>
-            <NextLink
-              className={clsx(
-                linkStyles({ color: "foreground" }),
-                "data-[active=true]:text-primary data-[active=true]:font-medium"
-              )}
-              color="foreground"
-              href="/jobs"
-            >
-              Jobs
-            </NextLink>
-          </NavbarItem>
-        </ul>
-      </NavbarContent>
+	const session = useSession();
+	const [isScrolled, setIsScrolled] = useState(false);
+	useEffect(() => {
+		window.addEventListener('scroll', () => {
+			setIsScrolled(window.scrollY > 1);
+		});
+	});
+	return (
+		<NextUINavbar
+			maxWidth='xl'
+			position='sticky'
+			shouldHideOnScroll={false}
+			className={`border-b transition-all ${
+				isScrolled
+					? 'border-gray-300 dark:border-gray-800 shadow-lg'
+					: 'border-background'
+			}`}
+		>
+			<NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
+				<NavbarBrand as='li' className='gap-3 max-w-fit'>
+					<NextLink className='flex items-center justify-start gap-1' href='/'>
+						<Logo />
+						<p className='font-bold text-inherit'>DevsList</p>
+					</NextLink>
+				</NavbarBrand>
+				<ul className='justify-start hidden gap-4 ml-2 sm:flex'>
+					{siteConfig.navItems.map((item) => (
+						<NavbarItem key={item.href}>
+							<NextLink
+								className={clsx(
+									linkStyles({ color: 'foreground' }),
+									'data-[active=true]:text-primary data-[active=true]:font-medium'
+								)}
+								color='foreground'
+								href={item.href}
+							>
+								{item.label}
+							</NextLink>
+						</NavbarItem>
+					))}
+				</ul>
+			</NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
-        </NavbarItem>
+			<NavbarContent
+				className='hidden sm:flex basis-1/5 sm:basis-full'
+				justify='end'
+			>
+				<NavbarItem className='hidden gap-2 sm:flex'>
+					<ThemeSwitch />
+				</NavbarItem>
 
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign In
-          </Button>
-        </NavbarItem>
+				{session.status === 'authenticated' ? (
+					<>
+						<Badge color='danger' content={50} shape='circle' size='sm'>
+							<NextLink href='#'>
+								<FaEnvelope size={25} />
+							</NextLink>
+						</Badge>
 
-        <Badge color="danger" content={50} shape="circle" size="sm">
-          <NextLink href="#">
-            <FaEnvelope size={25} />
-          </NextLink>
-        </Badge>
+						<Dropdown placement='bottom-end'>
+							<DropdownTrigger>
+								<Avatar
+									isBordered
+									as='button'
+									className='transition-transform'
+									color='primary'
+									name='Jason Hughes'
+									size='sm'
+									src='https://i.pravatar.cc/150?u=a'
+								/>
+							</DropdownTrigger>
+							<DropdownMenu aria-label='User Actions' variant='flat'>
+								<DropdownItem>
+									<p className='font-semibold'>Signed in as</p>
+									<p className='font-semibold'>{session.data.user?.email}</p>
+								</DropdownItem>
+								<DropdownItem>Profile</DropdownItem>
+								<DropdownItem>Applications</DropdownItem>
+								<DropdownItem>Reviews</DropdownItem>
+								<DropdownItem showDivider>Settings</DropdownItem>
+								<DropdownItem color='danger' onClick={() => signOut()}>
+									Log Out
+								</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
+					</>
+				) : (
+					<NavbarItem>
+						<Button color='primary' variant='flat' onClick={() => signIn()}>
+							Sign In
+						</Button>
+					</NavbarItem>
+				)}
+			</NavbarContent>
 
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="primary"
-              name="Jason Hughes"
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a"
-            />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="User Actions" variant="flat">
-            <DropdownItem className="h-16 gap-2">
-              <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">johndoe@example.com</p>
-              <p className="font-thin text-xs uppercase">Developer</p>
-            </DropdownItem>
-            <DropdownItem>My Profile</DropdownItem>
-            <DropdownItem>My Applications</DropdownItem>
-            <DropdownItem>My Reviews</DropdownItem>
-            <DropdownItem showDivider>My Settings</DropdownItem>
-            <DropdownItem color="danger">Log Out</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </NavbarContent>
+			<NavbarContent className='pl-4 sm:hidden basis-1' justify='end'>
+				<ThemeSwitch />
+				<NavbarMenuToggle />
+			</NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link color="foreground" href={item.href} size="lg">
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-          <Divider />
-          <NavbarMenuItem>
-            <Link color="primary" href="#" size="lg">
-              Sign In
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link color="primary" href="#" size="lg">
-              Register
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <span className="font-semibold">johndoe@example.com</span>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link color="foreground" href="#" size="lg">
-              My Profile
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link color="foreground" href="#" size="lg">
-              My Settings
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link color="danger" href="#" size="lg">
-              Log Out
-            </Link>
-          </NavbarMenuItem>
-        </div>
-      </NavbarMenu>
-    </NextUINavbar>
-  );
+			<NavbarMenu>
+				<div className='flex flex-col gap-2 mx-4 mt-2'>
+					{siteConfig.navMenuItems.map((item, index) => (
+						<NavbarMenuItem key={`${item}-${index}`}>
+							<Link color='foreground' href={item.href} size='lg'>
+								{item.label}
+							</Link>
+						</NavbarMenuItem>
+					))}
+					<Divider />
+					<NavbarMenuItem>
+						<Link color='primary' href='#' size='lg'>
+							Sign In
+						</Link>
+					</NavbarMenuItem>
+					<NavbarMenuItem>
+						<Link color='primary' href='#' size='lg'>
+							Register
+						</Link>
+					</NavbarMenuItem>
+					<NavbarMenuItem>
+						<span className='font-semibold'>johndoe@example.com</span>
+					</NavbarMenuItem>
+					<NavbarMenuItem>
+						<Link color='foreground' href='#' size='lg'>
+							My Profile
+						</Link>
+					</NavbarMenuItem>
+					<NavbarMenuItem>
+						<Link color='foreground' href='#' size='lg'>
+							My Settings
+						</Link>
+					</NavbarMenuItem>
+					<NavbarMenuItem>
+						<Link color='danger' href='#' size='lg'>
+							Log Out
+						</Link>
+					</NavbarMenuItem>
+				</div>
+			</NavbarMenu>
+		</NextUINavbar>
+	);
 };
