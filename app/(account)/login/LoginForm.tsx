@@ -9,7 +9,9 @@ import { toast } from 'sonner';
 
 export default function RegisterForm() {
 	const router = useRouter();
-	const searchParams = new URLSearchParams(window?.location.search);
+	let searchParams: URLSearchParams;
+	if (window !== undefined)
+		searchParams = new URLSearchParams(window?.location.search);
 	const [isLoading, setIsLoading] = useState(false);
 	async function submit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -22,8 +24,10 @@ export default function RegisterForm() {
 		}).then((res) => {
 			if (res?.status === 401) toast.error('Invalid username or password');
 			else if (res?.status !== 200) toast.error('An internal error occurred');
-			else if (res?.status === 200)
-				router.push(searchParams.get('callbackUrl') ?? '/');
+			else if (res?.status === 200) {
+				if (searchParams !== undefined)
+					router.push(searchParams.get('callbackUrl') ?? '/');
+			}
 			setIsLoading(false);
 		});
 	}
