@@ -18,7 +18,8 @@ export const authOptions: AuthOptions = {
 					};
 					const user = { id: '1', email: 'jdoe@example.com', password: '123' };
 					if (user !== null) {
-						const res = await bcrypt.compare(password, user.password);
+						// const res = await bcrypt.compare(password, user.password);
+						const res = username === user.email && password === user.password;
 						if (res === true) {
 							return user;
 						}
@@ -31,4 +32,7 @@ export const authOptions: AuthOptions = {
 			},
 		}),
 	],
+	pages: {
+		signIn: '/login',
+	},
 };
