@@ -4,14 +4,15 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export default function RegisterForm() {
+export default function LoginForm() {
 	const router = useRouter();
 	let searchParams: URLSearchParams;
-	if (window !== undefined)
+	useEffect(() => {
 		searchParams = new URLSearchParams(window?.location.search);
+	});
 	const [isLoading, setIsLoading] = useState(false);
 	async function submit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
