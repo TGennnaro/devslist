@@ -27,11 +27,13 @@ function Feature({
 	description: string;
 }) {
 	return (
-		<div className='p-4 border border-gray-800 rounded-lg bg-white/5'>
+		<div className='max-w-screen-md p-4 border border-gray-200 rounded-lg dark:border-gray-800 bg-gray-400/5 dark:bg-white/5'>
 			<div className='flex items-center justify-center p-2 rounded-lg bg-primary w-fit'>
-				<Icon className='w-6 h-6' />
+				<Icon className='w-6 h-6 text-white' />
 			</div>
-			<Text className='mt-4 font-bold text-white'>{title}</Text>
+			<Text className='mt-4 font-bold text-gray-900 dark:text-gray-50'>
+				{title}
+			</Text>
 			<Text className='mt-2'>{description}</Text>
 		</div>
 	);
@@ -58,7 +60,7 @@ function Testimonial({
 				<img src='/star.svg' alt='Star' />
 			</div>
 			<div className='mt-4'>
-				<Text className='text-foreground'>"{quote}"</Text>
+				<Text className='text-foreground'>&quot;{quote}&quot;</Text>
 			</div>
 			<div className='flex gap-2 mt-4'>
 				<Image
@@ -80,9 +82,9 @@ function Testimonial({
 export default function Home() {
 	return (
 		<div className='mb-32'>
-			<section className='grid grid-cols-2 mt-36 gap-x-4'>
+			<section className='grid grid-cols-1 mt-12 lg:grid-cols-2 lg:mt-36 gap-x-4'>
 				<GlowCircle left={90} top={70} percent opacity={0.4} />
-				<div className='relative'>
+				<div className='relative max-w-screen-sm lg:max-w-full'>
 					<GlowCircle left={0} top={30} percent />
 					<Text variant='heading'>Discover new jobs for developers</Text>
 					<Text variant='body' className='mt-4'>
@@ -98,7 +100,7 @@ export default function Home() {
 						</Button>
 					</div>
 				</div>
-				<div>
+				<div className=''>
 					<Image
 						as={NextImage}
 						src='interview.svg'
@@ -106,7 +108,7 @@ export default function Home() {
 						width={300}
 						height={300}
 						classNames={{
-							wrapper: 'ml-auto',
+							wrapper: 'w-56 aspect-square mt-16 lg:mt-0 lg:ml-auto lg:w-auto',
 						}}
 					/>
 				</div>
@@ -126,7 +128,7 @@ export default function Home() {
 						ahead of the game with our modern approach to finding employment.
 					</Text>
 				</div>
-				<div className='grid grid-cols-3 mt-8 gap-x-4'>
+				<div className='grid grid-cols-1 gap-4 mt-8 lg:grid-cols-3'>
 					<Feature
 						Icon={Code2}
 						title='Developer-oriented'
@@ -152,7 +154,7 @@ export default function Home() {
 						platform.
 					</Text>
 				</div>
-				<div className='grid grid-cols-2 mt-16 gap-x-4'>
+				<div className='grid grid-cols-1 mt-16 gap-x-4 gap-y-24 md:grid-cols-2'>
 					<Testimonial
 						quote='DevsList transformed my job search. As a software engineer, I was overwhelmed, but this platform simplified everything. The user-friendly interface and accurate job matching made finding internships and job listings a breeze. The interview and resume resources were invaluable. Thanks to DevsList, I secured my dream internship and launched my tech career.'
 						name='John Doe'
