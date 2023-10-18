@@ -6,7 +6,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"generate": "drizzle-kit generate:pg"
 	},
 	"dependencies": {
 		"@nextui-org/button": "2.0.18",
@@ -41,6 +42,7 @@
 		"next-auth": "^4.23.2",
 		"next-themes": "^0.2.1",
 		"postcss": "^8.4.31",
+		"postgres": "^3.4.0",
 		"react": "18.2.0",
 		"react-countup": "^6.4.2",
 		"react-dom": "18.2.0",
