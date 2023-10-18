@@ -5,8 +5,11 @@ import { Button } from '@nextui-org/button';
 import { useMutation } from 'react-query';
 import { FormEvent } from 'react';
 import { toast } from 'sonner';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
+	const router = useRouter();
 	const mutation = useMutation({
 		mutationFn: (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
@@ -24,9 +27,25 @@ export default function RegisterForm() {
 				},
 			});
 		},
-		onSuccess: (res) => {
-			if (res.status === 200) toast.success('Account created successfully');
-			else toast.error('Something went wrong, try again');
+		onSuccess: async (res) => {
+			const response = await res.json();
+			if (res.status === 200) {
+				signIn('credentials', {
+					username: response.username,
+					password: response.password,
+					redirect: false,
+				}).then((res) => {
+					if (res?.status === 401) toast.error('Invalid username or password');
+					else if (res?.status !== 200)
+						toast.error('An internal error occurred');
+					else if (res?.status === 200) {
+						router.push('/');
+					}
+				});
+			} else {
+				toast.error('Something went wrong, try again');
+				console.log(response);
+			}
 		},
 	});
 	return (
