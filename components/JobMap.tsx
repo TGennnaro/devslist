@@ -17,7 +17,7 @@ export default function JobMap() {
      */
     if (mapDiv.current) {
       const map = new Map({
-        basemap: "dark-gray",
+        basemap: "streets-navigation-vector",
       });
 
       const view = new MapView({
