@@ -18,7 +18,55 @@ import {
   FcWorkflow,
 } from "react-icons/fc";
 
-export const JobCard = () => {
+const generateRatingStars = (companyRating: number) => {
+  const stars = [];
+  let starsLeft = companyRating;
+
+  for (let i = 0; i < 5; i++) {
+    if (starsLeft >= 1.0) {
+      // First generate filled stars
+      stars.push(<BsStarFill key={i} color="gold" />);
+      starsLeft -= 1.0;
+    } else if (starsLeft >= 0.5) {
+      // Then half stars
+      stars.push(<BsStarHalf key={i} color="gold" />);
+      starsLeft -= 0.5;
+    } else {
+      // Then empty stars
+      stars.push(<BsStar key={i} color="gold" />);
+    }
+  }
+
+  return stars;
+};
+
+export default function JobCard({
+  position,
+  company,
+  companyLogo,
+  companyRating,
+  postedDate,
+  expirationDate,
+  location,
+  pay,
+  jobType,
+  companyOverview,
+  requirements,
+  responsibilities,
+}: {
+  position: string;
+  company: string;
+  companyLogo: string;
+  companyRating: number;
+  postedDate: string;
+  expirationDate: string;
+  location: string;
+  pay?: string;
+  jobType: string;
+  companyOverview: string;
+  requirements: string;
+  responsibilities: string;
+}) {
   return (
     <Card className="hover:bg-slate-100 dark:hover:bg-slate-800">
       <CardHeader className="flex gap-3">
@@ -27,68 +75,52 @@ export const JobCard = () => {
           alt="Company logo"
           height={40}
           radius="sm"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png"
+          src={companyLogo}
           width={40}
           className="dark:bg-gray-500 p-1"
         />
         <div className="flex flex-col">
-          <p className="text-md">Software Engineer, iOS</p>
+          <p className="text-md">{position}</p>
           <p className="text-small text-default-500 flex items-center gap-1">
             <NextLink href="#" className="underline">
-              Apple, Inc.
+              {company}
             </NextLink>{" "}
-            | 3.5 <BsStarFill color="gold" />
-            <BsStarFill color="gold" />
-            <BsStarFill color="gold" />
-            <BsStarHalf color="gold" />
-            <BsStar color="gold" />
+            | {companyRating.toFixed(1)} {generateRatingStars(companyRating)}
           </p>
           <p className="text-small text-default-500 flex items-center gap-1">
-            <FcClock /> Available until October 31, 2023
+            <FcClock /> Available until {expirationDate}
           </p>
         </div>
       </CardHeader>
       <CardBody>
         <div className="flex gap-1">
           <span className="font-semibold">Posted:</span>
-          October 31, 2023
+          {postedDate}
         </div>
         <div className="flex items-center gap-1">
           <span className="font-semibold">Location:</span>
-          <FaMapPin className="text-red-500" /> Cupertino, CA
+          <FaMapPin className="text-red-500" /> {location}
         </div>
         <div className="flex items-center gap-1">
           <span className="font-semibold">Pay:</span>
-          <FcMoneyTransfer /> $150,000/yr
+          <FcMoneyTransfer /> {pay}
         </div>
         <div className="flex items-center gap-1">
           <span className="font-semibold">Type:</span>
-          <FcWorkflow /> Full Time
+          <FcWorkflow /> {jobType}
         </div>
         <div className="flex items-center gap-1 font-semibold pt-3">
           <FcOrganization /> Company Overview
         </div>
-        <p>
-          Apple, Inc. is a world-renowned technology company known for
-          pioneering innovation and iconic, user-centric products that have
-          changed the way we live and connect.
-        </p>
+        <p>{companyOverview}</p>
         <div className="flex items-center gap-1 font-semibold pt-3">
           <FcCheckmark /> Requirements
         </div>
-        <p>
-          Bachelor&apos;s or Master&apos;s Degree: A degree in Computer Science,
-          Software Engineering, or a related field is typically required. iOS
-          Development Expertise: Strong proficiency in iOS app development using
-          Swift and Objective-C, along with a deep understanding of iOS.
-        </p>
+        <p>{requirements}</p>
         <div className="flex items-center gap-1 font-semibold pt-3">
           <FcList /> Responsibilities
         </div>
-        <p>
-          Design, develop, and maintain innovative and high-quality iOS
-          applications for Apple&apos;s ecosystem.
-        </p>
+        <p>{responsibilities}</p>
       </CardBody>
       <CardFooter className="gap-3">
         <Button variant="flat" size="md">
@@ -97,4 +129,4 @@ export const JobCard = () => {
       </CardFooter>
     </Card>
   );
-};
+}
