@@ -1,23 +1,28 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Point from "@arcgis/core/geometry/Point";
+import Basemap from "@arcgis/core/Basemap.js";
 import styles from "../styles/JobMap.module.css";
+import { useTheme } from "next-themes";
 
 export default function JobMap() {
   const mapDiv = useRef(null);
+  const { theme, setTheme } = useTheme();
+  const [map, setMap] = useState<Map | null>(null);
+
+  const lightModeBasemap = Basemap.fromId("streets-navigation-vector");
+  const darkModeBasemap = Basemap.fromId("streets-night-vector");
 
   useEffect(() => {
-    /**
-     * Initialize application
-     */
+    // Initialize application
     if (mapDiv.current) {
       const map = new Map({
-        basemap: "streets-navigation-vector",
+        basemap: theme === "light" ? lightModeBasemap : darkModeBasemap, // When loading initial map, user's current theme selection determines basemap
       });
 
       const view = new MapView({
@@ -37,7 +42,7 @@ export default function JobMap() {
 
       const simpleMarkerSymbol = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-        color: [226, 119, 40], // Orange
+        color: [255, 0, 0], // Red
         outline: {
           color: [255, 255, 255], // White
           width: 1,
@@ -50,8 +55,37 @@ export default function JobMap() {
       });
 
       graphicsLayer.add(pointGraphic);
+
+      setMap(map);
     }
   }, []);
 
-  return <div className={styles.mapDiv} ref={mapDiv}></div>;
+  // Separate useEffect to prevent complete map reload due to theme state dependency
+  // Programmatically update map theme based on user's NextUI theme selection
+  useEffect(() => {
+    if (mapDiv.current) {
+      const sheet = document.getElementById("mapMode") as HTMLLinkElement;
+
+      // Change CSS
+      sheet.href = `https://js.arcgis.com/4.25/@arcgis/core/assets/esri/themes/${theme}/main.css`;
+
+      // Change basemap based on theme
+      if (map != null && theme === "dark") {
+        map.basemap = darkModeBasemap;
+      } else if (map != null && theme === "light") {
+        map.basemap = lightModeBasemap;
+      }
+    }
+  }, [theme]);
+
+  return (
+    <>
+      <link
+        id="mapMode"
+        rel="stylesheet"
+        href="https://js.arcgis.com/4.25/@arcgis/core/assets/esri/themes/dark/main.css"
+      />
+      <div className={styles.mapDiv} ref={mapDiv}></div>
+    </>
+  );
 }
