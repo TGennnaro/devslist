@@ -15,8 +15,8 @@ export default function JobMap() {
   const { theme, setTheme } = useTheme();
   const [map, setMap] = useState<Map | null>(null);
 
-  const lightModeBasemap = Basemap.fromId("streets-navigation-vector");
-  const darkModeBasemap = Basemap.fromId("streets-night-vector");
+  const lightModeBasemap = Basemap.fromId("gray-vector");
+  const darkModeBasemap = Basemap.fromId("dark-gray-vector");
 
   useEffect(() => {
     // Initialize application
@@ -67,7 +67,7 @@ export default function JobMap() {
       const sheet = document.getElementById("mapMode") as HTMLLinkElement;
 
       // Change CSS
-      sheet.href = `https://js.arcgis.com/4.25/@arcgis/core/assets/esri/themes/${theme}/main.css`;
+      sheet.href = `https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/${theme}/main.css`;
 
       // Change basemap based on theme
       if (map != null && theme === "dark") {
@@ -83,7 +83,7 @@ export default function JobMap() {
       <link
         id="mapMode"
         rel="stylesheet"
-        href="https://js.arcgis.com/4.25/@arcgis/core/assets/esri/themes/dark/main.css"
+        href="https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/dark/main.css"
       />
       <div className={styles.mapDiv} ref={mapDiv}></div>
     </>
