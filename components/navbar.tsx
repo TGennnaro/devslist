@@ -1,13 +1,15 @@
 "use client";
 
+import { Avatar } from "@nextui-org/avatar";
+import { Badge } from "@nextui-org/badge";
+import { Divider } from "@nextui-org/divider";
 import {
-  Avatar,
-  Badge,
-  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+} from "@nextui-org/dropdown";
+import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
@@ -15,7 +17,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Navbar as NextUINavbar,
-} from "@nextui-org/react";
+} from "@nextui-org/navbar";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { FaEnvelope } from "react-icons/fa";
