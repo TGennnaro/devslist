@@ -7,6 +7,7 @@ import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Point from "@arcgis/core/geometry/Point";
 import Basemap from "@arcgis/core/Basemap.js";
+import Locate from "@arcgis/core/widgets/Locate";
 import styles from "../styles/JobMap.module.css";
 import { useTheme } from "next-themes";
 
@@ -21,6 +22,7 @@ export default function JobMap() {
   useEffect(() => {
     // Initialize application
     if (mapDiv.current) {
+      // Map settings
       const map = new Map({
         basemap: theme === "light" ? lightModeBasemap : darkModeBasemap, // When loading initial map, user's current theme selection determines basemap
       });
@@ -31,6 +33,18 @@ export default function JobMap() {
         center: [-74.00504, 40.27984],
         zoom: 12,
       });
+
+      // Map widgets
+      const locate = new Locate({
+        view: view,
+        useHeadingEnabled: false,
+        popupEnabled: false,
+        goToOverride: function (view, options) {
+          options.target.scale = 24000;
+          return view.goTo(options.target);
+        },
+      });
+      view.ui.add(locate, "top-left");
 
       const graphicsLayer = new GraphicsLayer();
       map.add(graphicsLayer);
