@@ -83,7 +83,7 @@ export default function Home() {
 	return (
 		<div className='mb-32'>
 			<section className='grid grid-cols-1 mt-12 lg:grid-cols-2 lg:mt-36 gap-x-4'>
-				<GlowCircle left={90} top={70} percent opacity={0.4} />
+				<GlowCircle right={0} top={70} percent opacity={0.4} />
 				<div className='relative max-w-screen-sm lg:max-w-full'>
 					<GlowCircle left={0} top={30} percent />
 					<Text variant='heading'>Discover new jobs for developers</Text>
