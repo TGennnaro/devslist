@@ -28,7 +28,7 @@ export const authOptions: AuthOptions = {
 						const res = await bcrypt.compare(password, users[0].password);
 						if (res === true) {
 							return {
-								id: users[0].userid.toString(),
+								id: users[0].id.toString(),
 								email: users[0].email,
 								firstName: users[0].firstName,
 								lastName: users[0].lastName,
