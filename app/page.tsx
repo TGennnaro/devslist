@@ -1,21 +1,12 @@
-import NextLink from 'next/link';
-import { Link } from '@nextui-org/link';
-import { button as buttonStyles } from '@nextui-org/theme';
-import { siteConfig } from '@/config/site';
-import { title, subtitle } from '@/components/primitives';
-import { GithubIcon } from '@/components/icons';
+import CountUp from '@/components/CountUp';
+import GlowCircle from '@/components/GlowCircle';
+import Text from '@/components/Text';
 import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Image } from '@nextui-org/image';
-import CountUp from '@/components/CountUp';
-import { TypeAnimation } from 'react-type-animation';
-import { FaGithub, FaReact } from 'react-icons/fa';
-import { FaMagnifyingGlass } from 'react-icons/fa6';
-import { BsSendFill } from 'react-icons/bs';
-import Text from '@/components/Text';
-import NextImage from 'next/image';
-import GlowCircle from '@/components/GlowCircle';
 import { Code2, LucideIcon, Search, Send } from 'lucide-react';
+import NextImage from 'next/image';
+import NextLink from 'next/link';
 
 function Feature({
 	Icon,
@@ -193,7 +184,7 @@ export default function Home() {
 								/>
 								<Avatar
 									className='shadow-md'
-									src='https://i.pravatar.cc/150?u=3'
+									src='https://i.pravatar.cc/150?u=6'
 									size='lg'
 								/>
 								<Avatar
