@@ -1,16 +1,21 @@
-'use client';
 import { title } from '@/components/primitives';
 import { FaSearch } from 'react-icons/fa';
+import { Input } from '@nextui-org/input';
 import {
-	Input,
 	Dropdown,
 	DropdownTrigger,
 	DropdownMenu,
 	DropdownItem,
-	Button,
-	Pagination,
-} from '@nextui-org/react';
+} from '@nextui-org/dropdown';
+import { Button } from '@nextui-org/button';
+import { Pagination } from '@nextui-org/pagination';
 import { JobCard } from '@/components/JobCard';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Jobs',
+	description: 'Find your next job',
+};
 
 export default function Jobs() {
 	return (
