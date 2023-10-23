@@ -1,15 +1,178 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "8a02d436-5b1c-45e0-b2b2-b7216ab73f78",
+  "id": "e4c31189-b2f7-45cd-b00f-4aeda3838273",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "company": {
+      "name": "company",
+      "schema": "",
+      "columns": {
+        "companyid": {
+          "name": "companyid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "testid": {
+          "name": "testid",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo": {
+          "name": "logo",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "company_testid_users_id_fk": {
+          "name": "company_testid_users_id_fk",
+          "tableFrom": "company",
+          "tableTo": "users",
+          "columnsFrom": [
+            "testid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "jobs": {
+      "name": "jobs",
+      "schema": "",
+      "columns": {
+        "jobid": {
+          "name": "jobid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jobTitle": {
+          "name": "jobTitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salary": {
+          "name": "salary",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "skills": {
+          "name": "skills",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jobDescription": {
+          "name": "jobDescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jobType": {
+          "name": "jobType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "jobs_userid_users_id_fk": {
+          "name": "jobs_userid_users_id_fk",
+          "tableFrom": "jobs",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "jobs_company_id_company_companyid_fk": {
+          "name": "jobs_company_id_company_companyid_fk",
+          "tableFrom": "jobs",
+          "tableTo": "company",
+          "columnsFrom": [
+            "company_id"
+          ],
+          "columnsTo": [
+            "companyid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "users": {
       "name": "users",
       "schema": "",
       "columns": {
-        "userid": {
-          "name": "userid",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -44,6 +207,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "profile_photo": {
+          "name": "profile_photo",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
         "city": {
           "name": "city",
           "type": "text",
@@ -68,6 +237,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'[]'::json"
+        },
+        "resume": {
+          "name": "resume",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
         },
         "about": {
           "name": "about",

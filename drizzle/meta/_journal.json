@@ -1,13 +1,13 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1697636664152,
-      "tag": "0000_lazy_darkstar",
-      "breakpoints": true
-    }
-  ]
+	"version": "0",
+	"dialect": "pg",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "5",
+			"when": 1698101474353,
+			"tag": "0000_loud_rocket_raccoon",
+			"breakpoints": true
+		}
+	]
 }
