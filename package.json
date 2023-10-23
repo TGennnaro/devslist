@@ -10,6 +10,7 @@
 		"generate": "drizzle-kit generate:pg"
 	},
 	"dependencies": {
+		"@arcgis/core": "^4.27.6",
 		"@nextui-org/button": "2.0.18",
 		"@nextui-org/code": "2.0.16",
 		"@nextui-org/input": "2.1.6",
@@ -32,6 +33,7 @@
 		"bcrypt": "^5.1.1",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",
+		"dotenv": "^16.3.1",
 		"drizzle-orm": "^0.28.6",
 		"eslint": "8.48.0",
 		"eslint-config-next": "13.4.19",
@@ -41,6 +43,7 @@
 		"next": "^13.5.4",
 		"next-auth": "^4.23.2",
 		"next-themes": "^0.2.1",
+		"pg": "^8.11.3",
 		"postcss": "^8.4.31",
 		"postgres": "^3.4.0",
 		"react": "18.2.0",
