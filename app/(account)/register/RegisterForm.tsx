@@ -66,7 +66,7 @@ export default function RegisterForm() {
 			</div>
 			<div className='mt-6'>
 				<label className='font-medium'>Password</label>
-				<Input className='mt-2' name='password' />
+				<Input className='mt-2' name='password' type='password' />
 			</div>
 			<Button
 				color='primary'
