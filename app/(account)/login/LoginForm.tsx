@@ -3,16 +3,14 @@
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function LoginForm() {
 	const router = useRouter();
-	let searchParams: URLSearchParams;
-	useEffect(() => {
-		searchParams = new URLSearchParams(window?.location.search);
-	});
+	const pathname = usePathname();
+	let searchParams = new URLSearchParams(pathname.split('?')[1]);
 	const [isLoading, setIsLoading] = useState(false);
 	async function submit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
