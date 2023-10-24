@@ -77,11 +77,13 @@ export default function Home() {
 				<GlowCircle right={0} top={70} percent opacity={0.4} />
 				<div className='relative max-w-screen-sm lg:max-w-full'>
 					<GlowCircle left={0} top={30} percent />
-					<Text variant='heading'>Discover new jobs for developers</Text>
-					<Text variant='body' className='mt-4' balance>
-						The all-in-one job platform for developers and employers. Applying
-						for jobs has never been easier.
-					</Text>
+					<div className='relative z-10'>
+						<Text variant='heading'>Discover new jobs for developers</Text>
+						<Text variant='body' className='mt-4' balance>
+							The all-in-one job platform for developers and employers. Applying
+							for jobs has never been easier.
+						</Text>
+					</div>
 					<div className='flex gap-2 mt-8'>
 						<Button color='primary' size='lg'>
 							Find Jobs
