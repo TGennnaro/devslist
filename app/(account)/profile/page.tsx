@@ -15,7 +15,7 @@ export default function Page() {
 			<hr className='border-divider' />
 			<section className='grid grid-cols-12 gap-x-16'>
 				<div className='col-span-4'>
-					<span className='mb-2 text-xl font-semibold leading-normal'>
+					<span className='block mb-1 text-xl font-semibold leading-normal'>
 						Profile
 					</span>
 					<Text variant='body' className='text-md'>
@@ -23,8 +23,9 @@ export default function Page() {
 					</Text>
 				</div>
 				<div className='flex flex-col col-span-8 gap-8'>
-					<Checkbox>I am an employer</Checkbox>
+					<Checkbox name='employer'>I am an employer</Checkbox>
 					<Textarea
+						name='about'
 						label='About'
 						labelPlacement='outside'
 						placeholder='Write a few sentences about yourself'
@@ -34,6 +35,7 @@ export default function Page() {
 					/>
 					<div className=''>
 						<Input
+							name='website-1'
 							label='Website'
 							labelPlacement='outside'
 							startContent={
@@ -88,7 +90,7 @@ export default function Page() {
 			<hr className='border-divider' />
 			<section className='grid grid-cols-12 gap-x-16'>
 				<div className='col-span-4'>
-					<span className='mb-2 text-xl font-semibold leading-normal'>
+					<span className='block mb-1 text-xl font-semibold leading-normal'>
 						Personal information
 					</span>
 					<Text variant='body' className='text-md'>
@@ -99,6 +101,7 @@ export default function Page() {
 				<div className='flex flex-col col-span-8 gap-8'>
 					<div className='grid grid-cols-2 gap-x-4'>
 						<Input
+							name='first-name'
 							label='First name'
 							labelPlacement='outside'
 							placeholder='First name'
@@ -106,6 +109,7 @@ export default function Page() {
 							radius='sm'
 						/>
 						<Input
+							name='last-name'
 							label='Last name'
 							labelPlacement='outside'
 							placeholder='Last name'
@@ -114,6 +118,7 @@ export default function Page() {
 						/>
 					</div>
 					<Input
+						name='email'
 						label='Email'
 						labelPlacement='outside'
 						placeholder='Email address'
@@ -122,6 +127,7 @@ export default function Page() {
 					/>
 					<div className='grid grid-cols-2 gap-x-4'>
 						<Input
+							name='city'
 							label='City'
 							labelPlacement='outside'
 							placeholder='City'
@@ -129,6 +135,7 @@ export default function Page() {
 							radius='sm'
 						/>
 						<Select
+							name='state'
 							label='State'
 							labelPlacement='outside'
 							placeholder='State'
@@ -145,6 +152,7 @@ export default function Page() {
 					</div>
 					<div className='grid grid-cols-2 gap-x-4'>
 						<Select
+							name='country'
 							label='Country'
 							labelPlacement='outside'
 							placeholder='Country'
@@ -161,7 +169,7 @@ export default function Page() {
 			<hr className='border-divider' />
 			<section className='grid grid-cols-12 gap-x-16'>
 				<div className='col-span-4'>
-					<span className='mb-2 text-xl font-semibold leading-normal'>
+					<span className='block mb-1 text-xl font-semibold leading-normal'>
 						Private information
 					</span>
 					<Text variant='body' className='text-md'>
@@ -172,6 +180,7 @@ export default function Page() {
 				<div className='flex flex-col col-span-8 gap-8'>
 					<div className='grid grid-cols-2 gap-x-4'>
 						<Input
+							name='phone-number'
 							label='Phone number'
 							labelPlacement='outside'
 							placeholder='Phone number'
@@ -179,6 +188,7 @@ export default function Page() {
 							radius='sm'
 						/>
 						<Input
+							name='birthday'
 							label='Birthday'
 							labelPlacement='outside'
 							placeholder='Birthday'
@@ -188,6 +198,7 @@ export default function Page() {
 					</div>
 					<div className='grid grid-cols-6 gap-x-4'>
 						<Select
+							name='gender'
 							label='Gender'
 							labelPlacement='outside'
 							placeholder='Gender'
@@ -202,6 +213,7 @@ export default function Page() {
 							</SelectItem>
 						</Select>
 						<Select
+							name='veteran-status'
 							label='Veteran status'
 							labelPlacement='outside'
 							placeholder='Veteran status'
@@ -217,6 +229,7 @@ export default function Page() {
 							</SelectItem>
 						</Select>
 						<Select
+							name='ethnicity'
 							label='Ethnicity'
 							labelPlacement='outside'
 							placeholder='Ethnicity'
@@ -234,6 +247,7 @@ export default function Page() {
 					</div>
 					<div className='grid grid-cols-3 gap-x-4'>
 						<Select
+							name='disability-status'
 							label='Disability status'
 							labelPlacement='outside'
 							placeholder='Disability status'
@@ -248,6 +262,7 @@ export default function Page() {
 							</SelectItem>
 						</Select>
 						<Input
+							name='disability-description'
 							label='Disability'
 							labelPlacement='outside'
 							placeholder='Please give a brief description'
@@ -259,9 +274,8 @@ export default function Page() {
 					</div>
 				</div>
 			</section>
-			<hr className='border-divider' />
 			<section className='flex justify-end'>
-				<Button color='primary' radius='sm'>
+				<Button color='primary' radius='sm' type='submit'>
 					Save changes
 				</Button>
 			</section>
