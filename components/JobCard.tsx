@@ -1,17 +1,10 @@
-import { Card, CardHeader, CardBody, CardFooter } from '@nextui-org/card';
-import { Image } from '@nextui-org/image';
 import { Button } from '@nextui-org/button';
+import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
+import { Image } from '@nextui-org/image';
 import NextLink from 'next/link';
+import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { FaMapPin } from 'react-icons/fa';
-import { BsStarFill, BsStarHalf, BsStar } from 'react-icons/bs';
-import {
-	FcClock,
-	FcList,
-	FcOrganization,
-	FcCheckmark,
-	FcMoneyTransfer,
-	FcWorkflow,
-} from 'react-icons/fc';
+import { FcClock, FcMoneyTransfer, FcWorkflow } from 'react-icons/fc';
 
 const generateRatingStars = (companyRating: number) => {
 	const stars = [];
@@ -72,7 +65,7 @@ export default function JobCard({
 					radius='sm'
 					src={companyLogo}
 					width={40}
-					className='p-1 dark:bg-gray-500'
+					className='object-contain p-1 dark:bg-gray-500 aspect-square'
 				/>
 				<div className='flex flex-col'>
 					<p className='text-md'>{position}</p>
@@ -104,7 +97,7 @@ export default function JobCard({
 					<span className='font-semibold'>Type:</span>
 					<FcWorkflow /> {jobType}
 				</div>
-				<div className='flex items-center gap-1 pt-3 font-semibold'>
+				{/* <div className='flex items-center gap-1 pt-3 font-semibold'>
 					<FcOrganization /> Company Overview
 				</div>
 				<p>{companyOverview}</p>
@@ -115,7 +108,7 @@ export default function JobCard({
 				<div className='flex items-center gap-1 pt-3 font-semibold'>
 					<FcList /> Responsibilities
 				</div>
-				<p>{responsibilities}</p>
+				<p>{responsibilities}</p> */}
 			</CardBody>
 			<CardFooter className='gap-3'>
 				<Button variant='flat' size='md'>
