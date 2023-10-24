@@ -20,16 +20,26 @@ export default function Text({
 	className = '',
 	children,
 	variant,
+	balance = false,
 }: {
 	className?: string;
 	children: ReactNode;
 	variant?: VariantProps<typeof textVariants>['variant'];
+	balance?: boolean;
 }) {
-	return (
-		<Balancer>
+	if (balance) {
+		return (
+			<Balancer>
+				<span className={cn(textVariants({ variant }), className)}>
+					{children}
+				</span>
+			</Balancer>
+		);
+	} else {
+		return (
 			<span className={cn(textVariants({ variant }), className)}>
 				{children}
 			</span>
-		</Balancer>
-	);
+		);
+	}
 }

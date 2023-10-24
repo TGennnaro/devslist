@@ -78,7 +78,7 @@ export default function Home() {
 				<div className='relative max-w-screen-sm lg:max-w-full'>
 					<GlowCircle left={0} top={30} percent />
 					<Text variant='heading'>Discover new jobs for developers</Text>
-					<Text variant='body' className='mt-4'>
+					<Text variant='body' className='mt-4' balance>
 						The all-in-one job platform for developers and employers. Applying
 						for jobs has never been easier.
 					</Text>
@@ -114,7 +114,7 @@ export default function Home() {
 				/>
 				<div className='max-w-screen-sm'>
 					<Text variant='heading'>Stay a step ahead</Text>
-					<Text variant='body' className='mt-4'>
+					<Text variant='body' className='mt-4' balance>
 						Find out what sets us apart from standard job search platforms. Stay
 						ahead of the game with our modern approach to finding employment.
 					</Text>
@@ -140,7 +140,7 @@ export default function Home() {
 			<section className='relative mt-56'>
 				<div className='max-w-screen-sm'>
 					<Text variant='heading'>Don&apos;t just take it from us</Text>
-					<Text variant='body' className='mt-4'>
+					<Text variant='body' className='mt-4' balance>
 						Hear what our users have to say about their experience with the
 						platform.
 					</Text>
