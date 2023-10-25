@@ -18,15 +18,16 @@ import {
   Twitter,
   UserPlus,
   Youtube,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@nextui-org/button';
 
 export default function Page({ params }: { params: { id: number } }) {
   return (
     <>
-      <div className='flex flex-col md:flex-row items-start justify-start gap-3'>
-        <div className='basis-1/4'>
-          <div className='flex flex-row md:flex-col gap-3'>
+      <div className='flex flex-col md:flex-row items-start justify-start gap-3 mb-20'>
+        <div className='basis-1/4 w-full'>
+          <div className='flex flex-col gap-3'>
             <div>
               <Card>
                 <CardBody>
@@ -35,7 +36,7 @@ export default function Page({ params }: { params: { id: number } }) {
                       isBordered
                       color='default'
                       src={`https://i.pravatar.cc/150?u=${params.id}`}
-                      className='h-full w-full'
+                      className='h-[125px] w-[125px] md:h-[200px] md:w-[200px]'
                     />
                     <div className='md:text-3xl sm:text-2xl font-semibold'>
                       User {params.id}
@@ -170,15 +171,26 @@ export default function Page({ params }: { params: { id: number } }) {
                       </CardBody>
                       <Divider />
                       <CardFooter>
-                        <Button
-                          color='default'
-                          variant='ghost'
-                          startContent={<Github />}
-                          endContent={<ExternalLink size={15} />}
-                          size='sm'
-                        >
-                          View repository
-                        </Button>
+                        <div className='flex flex-row flex-wrap gap-1'>
+                          <Button
+                            color='default'
+                            variant='ghost'
+                            startContent={<Github />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View repository
+                          </Button>
+                          <Button
+                            color='secondary'
+                            variant='ghost'
+                            startContent={<Zap />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View live demo
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </div>
@@ -208,15 +220,26 @@ export default function Page({ params }: { params: { id: number } }) {
                       </CardBody>
                       <Divider />
                       <CardFooter>
-                        <Button
-                          color='default'
-                          variant='ghost'
-                          startContent={<Github />}
-                          endContent={<ExternalLink size={15} />}
-                          size='sm'
-                        >
-                          View repository
-                        </Button>
+                        <div className='flex flex-row flex-wrap gap-1'>
+                          <Button
+                            color='default'
+                            variant='ghost'
+                            startContent={<Github />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View repository
+                          </Button>
+                          <Button
+                            color='secondary'
+                            variant='ghost'
+                            startContent={<Zap />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View live demo
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </div>
@@ -246,15 +269,26 @@ export default function Page({ params }: { params: { id: number } }) {
                       </CardBody>
                       <Divider />
                       <CardFooter>
-                        <Button
-                          color='default'
-                          variant='ghost'
-                          startContent={<Github />}
-                          endContent={<ExternalLink size={15} />}
-                          size='sm'
-                        >
-                          View repository
-                        </Button>
+                        <div className='flex flex-row flex-wrap gap-1'>
+                          <Button
+                            color='default'
+                            variant='ghost'
+                            startContent={<Github />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View repository
+                          </Button>
+                          <Button
+                            color='secondary'
+                            variant='ghost'
+                            startContent={<Zap />}
+                            endContent={<ExternalLink size={15} />}
+                            size='sm'
+                          >
+                            View live demo
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </div>
