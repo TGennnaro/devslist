@@ -3,6 +3,9 @@ import { Card, CardBody, CardHeader, CardFooter } from '@nextui-org/card';
 import { Divider } from '@nextui-org/divider';
 import { Chip } from '@nextui-org/chip';
 import {
+  Briefcase,
+  Calculator,
+  Calendar,
   ExternalLink,
   Facebook,
   Github,
@@ -10,6 +13,8 @@ import {
   Instagram,
   Linkedin,
   MapPin,
+  Scroll,
+  TextQuote,
   Twitter,
   UserPlus,
   Youtube,
@@ -297,18 +302,62 @@ export default function Page({ params }: { params: { id: number } }) {
                 <h1 className='text-3xl font-medium'>Education</h1>
               </CardHeader>
               <CardBody>
-                <div className='flex flex-row gap-3 items-center'>
-                  <GraduationCap size={48} />
-                  <div className='flex flex-col gap-1'>
-                    <div>
-                      <h1 className='font-semibold'>East Bumble University</h1>
-                      <h1 className='font-semibold text-small'>
-                        <div className='flex items-center gap-1'>
-                          <MapPin /> Cupertino, CA
-                        </div>
-                      </h1>
-                      <h1>Bachelor of Science - BS, Computer Science</h1>
-                      <h1>September 2020-May 2024</h1>
+                <div className='flex flex-col gap-3'>
+                  <div className='flex flex-row gap-3 items-center'>
+                    <GraduationCap size={75} />
+                    <div className='flex flex-col gap-1'>
+                      <div>
+                        <h1 className='font-bold'>West Bumble University</h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <MapPin /> Westbumble, CA
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Scroll /> Master of Science in Computer Science
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Calculator /> 3.75/4.0 GPA
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Calendar /> September 2024 - January 2025
+                          </div>
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='flex flex-row gap-3 items-center'>
+                    <GraduationCap size={75} />
+                    <div className='flex flex-col gap-1'>
+                      <div>
+                        <h1 className='font-bold'>East Bumble University</h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <MapPin /> Eastbumble, CA
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Scroll /> Bachelor of Science in Computer Science
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Calculator /> 3.5/4.0 GPA
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <Calendar /> September 2020 - May 2024
+                          </div>
+                        </h1>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -319,17 +368,32 @@ export default function Page({ params }: { params: { id: number } }) {
                 <h1 className='text-3xl font-medium'>Work History</h1>
               </CardHeader>
               <CardBody>
-                {' '}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-                auctor urna ante, quis suscipit nisl dictum eu. Nulla aliquam
-                suscipit nulla eu gravida. Curabitur commodo lacus at magna
-                dignissim, sed tempus est varius. Ut dignissim metus egestas,
-                ultrices sem quis, cursus risus. Nulla placerat nibh et neque
-                scelerisque gravida. Integer ligula nibh, lacinia a suscipit
-                sed, finibus id mauris. Vestibulum id eleifend quam, vel
-                imperdiet purus. Pellentesque commodo nunc lectus. Nulla id
-                dolor quis enim iaculis aliquet eu nec arcu. Aliquam erat
-                volutpat.
+                <div className='flex flex-col gap-3'>
+                  <div className='flex flex-row gap-3 items-center'>
+                    <Briefcase size={75} />
+                    <div className='flex flex-col gap-1'>
+                      <div>
+                        <h1 className='font-bold'>Search Engineer @ Google</h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <MapPin /> Mountain View, CA
+                          </div>
+                        </h1>
+                        <h1 className='font-semibold text-small'>
+                          <div className='flex items-center gap-1'>
+                            <TextQuote /> Developed AI-enhanced algorithms to
+                            improve search engine results
+                          </div>
+                          <h1 className='font-semibold text-small'>
+                            <div className='flex items-center gap-1'>
+                              <Calendar /> September 2022 - May 2023
+                            </div>
+                          </h1>
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardBody>
             </Card>
           </div>
