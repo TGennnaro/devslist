@@ -37,14 +37,14 @@ export default function Page({ params }: { params: { id: number } }) {
                       src={`https://i.pravatar.cc/150?u=${params.id}`}
                       className='h-full w-full'
                     />
-                    <h1 className='md:text-3xl sm:text-2xl font-semibold'>
+                    <div className='md:text-3xl sm:text-2xl font-semibold'>
                       User {params.id}
-                    </h1>
-                    <h1 className='md:text-xl sm:text-medium font-semibold'>
+                    </div>
+                    <div className='md:text-xl sm:text-medium font-semibold'>
                       <div className='flex items-center gap-1'>
                         <MapPin /> Cupertino, CA
                       </div>
-                    </h1>
+                    </div>
                     {params.id % 2 == 0 ? (
                       <Chip color='primary'>Developer</Chip>
                     ) : (
@@ -67,9 +67,9 @@ export default function Page({ params }: { params: { id: number } }) {
             <div>
               <Card>
                 <CardBody>
-                  <h1 className='md:text-3xl sm:text-2xl font-semibold mb-3'>
+                  <div className='md:text-3xl sm:text-2xl font-semibold mb-3'>
                     Socials
-                  </h1>
+                  </div>
                   <div className='flex flex-col gap-1'>
                     <Button
                       color='default'
@@ -123,7 +123,7 @@ export default function Page({ params }: { params: { id: number } }) {
           <div className='flex flex-col gap-3'>
             <Card>
               <CardHeader>
-                <h1 className='text-3xl font-medium'>About Me</h1>
+                <div className='text-3xl font-medium'>About Me</div>
               </CardHeader>
               <CardBody>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
@@ -140,7 +140,7 @@ export default function Page({ params }: { params: { id: number } }) {
             </Card>
             <Card>
               <CardHeader>
-                <h1 className='text-3xl font-medium'>Projects</h1>
+                <div className='text-3xl font-medium'>Projects</div>
               </CardHeader>
               <CardBody>
                 <div className='grid w-full gap-3 md:grid-cols-2 sm:grid-cols-1'>
@@ -263,7 +263,7 @@ export default function Page({ params }: { params: { id: number } }) {
             </Card>
             <Card>
               <CardHeader>
-                <h1 className='text-3xl font-medium'>Skills</h1>
+                <div className='text-3xl font-medium'>Skills</div>
               </CardHeader>
               <CardBody>
                 <div className='flex flex-row flex-wrap gap-1'>
@@ -299,7 +299,7 @@ export default function Page({ params }: { params: { id: number } }) {
             </Card>
             <Card>
               <CardHeader>
-                <h1 className='text-3xl font-medium'>Education</h1>
+                <div className='text-3xl font-medium'>Education</div>
               </CardHeader>
               <CardBody>
                 <div className='flex flex-col gap-3'>
@@ -307,27 +307,27 @@ export default function Page({ params }: { params: { id: number } }) {
                     <GraduationCap size={75} />
                     <div className='flex flex-col gap-1'>
                       <div>
-                        <h1 className='font-bold'>West Bumble University</h1>
-                        <h1 className='font-semibold text-small'>
+                        <div className='font-bold'>West Bumble University</div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Westbumble, CA
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Scroll /> Master of Science in Computer Science
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Calculator /> 3.75/4.0 GPA
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Calendar /> September 2024 - January 2025
                           </div>
-                        </h1>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -336,27 +336,27 @@ export default function Page({ params }: { params: { id: number } }) {
                     <GraduationCap size={75} />
                     <div className='flex flex-col gap-1'>
                       <div>
-                        <h1 className='font-bold'>East Bumble University</h1>
-                        <h1 className='font-semibold text-small'>
+                        <div className='font-bold'>East Bumble University</div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Eastbumble, CA
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Scroll /> Bachelor of Science in Computer Science
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Calculator /> 3.5/4.0 GPA
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <Calendar /> September 2020 - May 2024
                           </div>
-                        </h1>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -365,7 +365,7 @@ export default function Page({ params }: { params: { id: number } }) {
             </Card>
             <Card>
               <CardHeader>
-                <h1 className='text-3xl font-medium'>Work History</h1>
+                <div className='text-3xl font-medium'>Work History</div>
               </CardHeader>
               <CardBody>
                 <div className='flex flex-col gap-3'>
@@ -373,23 +373,25 @@ export default function Page({ params }: { params: { id: number } }) {
                     <Briefcase size={75} />
                     <div className='flex flex-col gap-1'>
                       <div>
-                        <h1 className='font-bold'>Search Engineer @ Google</h1>
-                        <h1 className='font-semibold text-small'>
+                        <div className='font-bold'>
+                          Search Engineer @ Google
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Mountain View, CA
                           </div>
-                        </h1>
-                        <h1 className='font-semibold text-small'>
+                        </div>
+                        <div className='font-semibold text-small'>
                           <div className='flex items-center gap-1'>
                             <TextQuote /> Developed AI-enhanced algorithms to
                             improve search engine results
                           </div>
-                          <h1 className='font-semibold text-small'>
+                          <div className='font-semibold text-small'>
                             <div className='flex items-center gap-1'>
                               <Calendar /> September 2022 - May 2023
                             </div>
-                          </h1>
-                        </h1>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
