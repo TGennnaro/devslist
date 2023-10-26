@@ -16,6 +16,7 @@ export default function JobMap() {
   const mapDiv = useRef(null);
   const { theme, setTheme } = useTheme();
   const [map, setMap] = useState<Map | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const lightModeBasemap = Basemap.fromId('gray-vector');
   const darkModeBasemap = Basemap.fromId('dark-gray-vector');
@@ -69,6 +70,7 @@ export default function JobMap() {
       graphicsLayer.add(pointGraphic);
 
       setMap(map);
+      setIsLoading(false);
     }
   }, []);
 
@@ -93,9 +95,9 @@ export default function JobMap() {
   return (
     <>
       <link
-        id="mapMode"
-        rel="stylesheet"
-        href="https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/dark/main.css"
+        id='mapMode'
+        rel='stylesheet'
+        href='https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/dark/main.css'
       />
       <div className={styles.mapDiv} ref={mapDiv}></div>
     </>

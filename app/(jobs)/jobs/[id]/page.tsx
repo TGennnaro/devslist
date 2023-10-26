@@ -2,33 +2,22 @@ import { Avatar } from '@nextui-org/avatar';
 import { Card, CardBody, CardHeader, CardFooter } from '@nextui-org/card';
 import { Divider } from '@nextui-org/divider';
 import { Chip } from '@nextui-org/chip';
-import {
-  Briefcase,
-  Calculator,
-  Calendar,
-  ExternalLink,
-  Facebook,
-  Github,
-  GraduationCap,
-  Instagram,
-  Linkedin,
-  MapPin,
-  Scroll,
-  Send,
-  TextQuote,
-  Twitter,
-  UserPlus,
-  Youtube,
-  Zap,
-} from 'lucide-react';
+import { MapPin, Send } from 'lucide-react';
 import { Button } from '@nextui-org/button';
 import Text from '@/components/Text';
+
+import { Metadata } from 'next';
+
+const metadata: Metadata = {
+  title: 'Job Posting',
+  description: 'Find your next job',
+};
 
 export default function Page({ params }: { params: { id: number } }) {
   return (
     <>
-      <div className='flex flex-col gap-3 items-center justify-center'>
-        <div className='flex flex-row gap-10 items-center'>
+      <div className='flex flex-col gap-4'>
+        <div className='flex flex-row gap-5'>
           <div>
             <div className='text-3xl font-bold'>Job Posting {params.id}</div>
             <div className='text-medium font-semibold'>Apple, Inc.</div>
@@ -39,8 +28,20 @@ export default function Page({ params }: { params: { id: number } }) {
             </Button>
           </div>
         </div>
+        <div className='text-2xl'>Location</div>
+        <Text variant='body'>
+          <div className='flex items-center gap-1'>
+            <MapPin /> Cupertino, CA
+          </div>
+        </Text>
+        <div className='text-2xl'>Job Type</div>
+        <Text variant='body'>
+          <div className='flex items-center gap-1'>
+            <MapPin /> Cupertino, CA
+          </div>
+        </Text>
         <div className='text-2xl'>Job Description</div>
-        <Text variant='body' className='w-[50%]'>
+        <Text variant='body'>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
           blandit turpis dui, a elementum nulla malesuada eu. Phasellus in erat
           in dui cursus ultrices eget ut ligula. Maecenas fringilla, ex non
