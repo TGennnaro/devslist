@@ -23,11 +23,11 @@ import {
   NavbarMenuToggle,
   Navbar as NextUINavbar,
 } from '@nextui-org/navbar';
+import { Mail } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FaEnvelope } from 'react-icons/fa';
 
 export const Navbar = () => {
   const session = useSession();
@@ -88,7 +88,7 @@ export const Navbar = () => {
           <>
             <Badge color='danger' content={50} shape='circle' size='sm'>
               <NextLink href='#'>
-                <FaEnvelope size={25} />
+                <Mail size={25} />
               </NextLink>
             </Badge>
 

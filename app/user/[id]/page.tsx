@@ -342,22 +342,22 @@ export default function Page({ params }: { params: { id: number } }) {
                     <div className='flex flex-col gap-1'>
                       <div>
                         <div className='font-bold'>West Bumble University</div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Westbumble, CA
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Scroll /> Master of Science in Computer Science
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Calculator /> 3.75/4.0 GPA
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Calendar /> September 2024 - January 2025
                           </div>
@@ -371,22 +371,22 @@ export default function Page({ params }: { params: { id: number } }) {
                     <div className='flex flex-col gap-1'>
                       <div>
                         <div className='font-bold'>East Bumble University</div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Eastbumble, CA
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Scroll /> Bachelor of Science in Computer Science
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Calculator /> 3.5/4.0 GPA
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <Calendar /> September 2020 - May 2024
                           </div>
@@ -410,17 +410,17 @@ export default function Page({ params }: { params: { id: number } }) {
                         <div className='font-bold'>
                           Search Engineer @ Google
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <MapPin /> Mountain View, CA
                           </div>
                         </div>
-                        <div className='font-semibold text-small'>
+                        <div className='text-small'>
                           <div className='flex items-center gap-1'>
                             <TextQuote /> Developed AI-enhanced algorithms to
                             improve search engine results
                           </div>
-                          <div className='font-semibold text-small'>
+                          <div className='text-small'>
                             <div className='flex items-center gap-1'>
                               <Calendar /> September 2022 - May 2023
                             </div>
