@@ -131,10 +131,10 @@ export default function Page({ params }: { params: { id: number } }) {
             <div>
               <div className='text-2xl font-semibold'>Requirements</div>
               <Text variant='body'>
-                Bachelor's or Master's Degree: A degree in Computer Science,
-                Software Engineering, or a related field is typically required.
-                iOS Development Expertise: Strong proficiency in iOS app
-                development using Swift and Objective-C, along with a deep
+                Bachelor&apos;s or Master&apos;s Degree: A degree in Computer
+                Science, Software Engineering, or a related field is typically
+                required. iOS Development Expertise: Strong proficiency in iOS
+                app development using Swift and Objective-C, along with a deep
                 understanding of iOS.
               </Text>
             </div>
@@ -142,7 +142,7 @@ export default function Page({ params }: { params: { id: number } }) {
               <div className='text-2xl font-semibold'>Responsibilities</div>
               <Text variant='body'>
                 Design, develop, and maintain innovative and high-quality iOS
-                applications for Apple's ecosystem.
+                applications for Apple&apos;s ecosystem.
               </Text>
             </div>
           </div>

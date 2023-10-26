@@ -65,19 +65,25 @@ export default function JobMap() {
         geometry: point,
         symbol: pictureMarkerSymbol,
         attributes: {
-          JOB_TITLE: 'Software Developer',
-          SALARY: 100000,
+          jobTitle: 'Software Developer',
+          company: 'Apple, Inc.',
+          location: 'West Long Branch, NJ',
+          salary: 100000,
         },
         popupTemplate: {
           // autocasts as new PopupTemplate()
-          title: '{JOB_TITLE}',
+          title: '{jobTitle}',
           content: [
             {
               type: 'fields',
               fieldInfos: [
                 {
-                  fieldName: 'SALARY',
-                  label: 'Salary',
+                  fieldName: 'company',
+                  label: 'Company',
+                },
+                {
+                  fieldName: 'location',
+                  label: 'Location',
                 },
               ],
             },
@@ -98,7 +104,7 @@ export default function JobMap() {
       const sheet = document.getElementById('mapMode') as HTMLLinkElement;
 
       // Change CSS
-      sheet.href = `https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/${theme}/main.css`;
+      sheet.href = 'https://js.arcgis.com/4.28/esri/themes/dark/main.css';
 
       // Change basemap based on theme
       if (map != null && theme === 'dark') {
