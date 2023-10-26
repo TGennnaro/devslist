@@ -9,14 +9,13 @@ import Point from '@arcgis/core/geometry/Point';
 import Basemap from '@arcgis/core/Basemap.js';
 import Locate from '@arcgis/core/widgets/Locate';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
-import styles from '../styles/JobMap.module.css';
+import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
 
 export default function JobMap() {
   const mapDiv = useRef(null);
   const { theme, setTheme } = useTheme();
   const [map, setMap] = useState<Map | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const lightModeBasemap = Basemap.fromId('gray-vector');
   const darkModeBasemap = Basemap.fromId('dark-gray-vector');
@@ -65,12 +64,30 @@ export default function JobMap() {
       const pointGraphic = new Graphic({
         geometry: point,
         symbol: pictureMarkerSymbol,
+        attributes: {
+          JOB_TITLE: 'Software Developer',
+          SALARY: 100000,
+        },
+        popupTemplate: {
+          // autocasts as new PopupTemplate()
+          title: '{JOB_TITLE}',
+          content: [
+            {
+              type: 'fields',
+              fieldInfos: [
+                {
+                  fieldName: 'SALARY',
+                  label: 'Salary',
+                },
+              ],
+            },
+          ],
+        },
       });
 
-      graphicsLayer.add(pointGraphic);
+      graphicsLayer.graphics.add(pointGraphic);
 
       setMap(map);
-      setIsLoading(false);
     }
   }, []);
 
