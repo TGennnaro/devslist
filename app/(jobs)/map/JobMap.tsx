@@ -114,19 +114,20 @@ export default function JobMap() {
       // Now that element has ID, we can manipulate it
       const rootMapView = document.getElementById('devsListJobMap-rootMapView');
 
-      // Change basemap & Calcite theme based on NextUI theme selection
-      if (map != null && theme === 'dark') {
-        if (rootMapView) {
-          rootMapView.classList.remove('calcite-mode-light');
-          rootMapView.classList.add('calcite-mode-dark');
-        }
+      // Change basemap based on NextUI theme selection
+      if (map && theme === 'dark') {
         map.basemap = darkModeBasemap;
-      } else if (map != null && theme === 'light') {
-        if (rootMapView) {
-          rootMapView.classList.remove('calcite-mode-dark');
-          rootMapView.classList.add('calcite-mode-light');
-        }
+      } else if (map && theme === 'light') {
         map.basemap = lightModeBasemap;
+      }
+
+      // Change Calcite theme based on NextUI theme selection
+      if (rootMapView && theme === 'dark') {
+        rootMapView.classList.remove('calcite-mode-light');
+        rootMapView.classList.add('calcite-mode-dark');
+      } else if (rootMapView && theme === 'light') {
+        rootMapView.classList.remove('calcite-mode-dark');
+        rootMapView.classList.add('calcite-mode-light');
       }
     }
   }, [theme]);
