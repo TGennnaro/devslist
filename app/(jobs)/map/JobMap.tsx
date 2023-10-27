@@ -14,7 +14,7 @@ import { useTheme } from 'next-themes';
 
 export default function JobMap() {
   const mapDiv = useRef(null);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [map, setMap] = useState<Map | null>(null);
 
   const lightModeBasemap = Basemap.fromId('gray-vector');
@@ -98,18 +98,34 @@ export default function JobMap() {
   }, []);
 
   // Separate useEffect to prevent complete map reload due to theme state dependency
-  // Programmatically update map theme based on user's NextUI theme selection
+  // Programmatically update map theme based on NextUI theme selection
   useEffect(() => {
     if (mapDiv.current) {
-      const sheet = document.getElementById('mapMode') as HTMLLinkElement;
+      // By default, Esri root map has this Calcite class
+      const calciteTheme = document.querySelector(
+        '.esri-ui.calcite-mode-light'
+      );
 
-      // Change CSS
-      sheet.href = `https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`;
+      // If element exists , assign id to it
+      if (calciteTheme) {
+        calciteTheme.id = 'devsListJobMap-rootMapView';
+      }
 
-      // Change basemap based on theme
+      // Now that element has ID, we can manipulate it
+      const rootMapView = document.getElementById('devsListJobMap-rootMapView');
+
+      // Change basemap & Calcite theme based on NextUI theme selection
       if (map != null && theme === 'dark') {
+        if (rootMapView) {
+          rootMapView.classList.remove('calcite-mode-light');
+          rootMapView.classList.add('calcite-mode-dark');
+        }
         map.basemap = darkModeBasemap;
       } else if (map != null && theme === 'light') {
+        if (rootMapView) {
+          rootMapView.classList.remove('calcite-mode-dark');
+          rootMapView.classList.add('calcite-mode-light');
+        }
         map.basemap = lightModeBasemap;
       }
     }
@@ -118,11 +134,11 @@ export default function JobMap() {
   return (
     <>
       <link
-        id='mapMode'
+        id='mapTheme'
         rel='stylesheet'
-        href='https://js.arcgis.com/4.28/esri/themes/dark/main.css'
+        href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
       />
-      <div className={styles.mapDiv} ref={mapDiv}></div>
+      <div className={`${styles.mapDiv}`} ref={mapDiv} id='root'></div>
     </>
   );
 }
