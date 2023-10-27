@@ -6,7 +6,7 @@ import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
-import Basemap from '@arcgis/core/Basemap.js';
+import Basemap from '@arcgis/core/Basemap';
 import Locate from '@arcgis/core/widgets/Locate';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import styles from '@/styles/JobMap.module.css';
@@ -91,7 +91,7 @@ export default function JobMap() {
         },
       });
 
-      graphicsLayer.graphics.add(pointGraphic);
+      graphicsLayer.add(pointGraphic);
 
       setMap(map);
     }
@@ -104,7 +104,7 @@ export default function JobMap() {
       const sheet = document.getElementById('mapMode') as HTMLLinkElement;
 
       // Change CSS
-      sheet.href = 'https://js.arcgis.com/4.28/esri/themes/dark/main.css';
+      sheet.href = `https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`;
 
       // Change basemap based on theme
       if (map != null && theme === 'dark') {
@@ -120,7 +120,7 @@ export default function JobMap() {
       <link
         id='mapMode'
         rel='stylesheet'
-        href='https://js.arcgis.com/4.27/@arcgis/core/assets/esri/themes/dark/main.css'
+        href='https://js.arcgis.com/4.28/esri/themes/dark/main.css'
       />
       <div className={styles.mapDiv} ref={mapDiv}></div>
     </>
