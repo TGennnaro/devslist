@@ -3,7 +3,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
+import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import Basemap from '@arcgis/core/Basemap';
@@ -47,18 +49,78 @@ export default function JobMap() {
       });
       view.ui.add(locate, 'top-left');
 
-      const graphicsLayer = new GraphicsLayer();
-      map.add(graphicsLayer);
-
-      const point = new Point({
-        longitude: -74.00504,
-        latitude: 40.27984,
-      });
-
+      // Map marker symbol
       const pictureMarkerSymbol = new PictureMarkerSymbol({
         url: '/map_marker.png',
         width: '25px',
         height: '30px',
+      });
+
+      // Renderer for markers on the FeatureLayer
+      const renderer = new SimpleRenderer({
+        symbol: pictureMarkerSymbol,
+      });
+
+      // Attributes for popup that appears when map marker is clicked
+      const popupTemplate = new PopupTemplate({
+        title: '{jobTitle}',
+        content: [
+          {
+            type: 'fields',
+            fieldInfos: [
+              {
+                fieldName: 'company',
+                label: 'Company',
+              },
+              {
+                fieldName: 'location',
+                label: 'Location',
+              },
+            ],
+          },
+        ],
+      });
+
+      // Feature layer
+      const featureLayer = new FeatureLayer({
+        title: 'Jobs Around You',
+        fields: [
+          {
+            name: 'ObjectID',
+            alias: 'Object ID',
+            type: 'oid',
+          },
+          {
+            name: 'jobTitle',
+            alias: 'Job Title',
+            type: 'string',
+          },
+          {
+            name: 'company',
+            alias: 'Company',
+            type: 'string',
+          },
+          {
+            name: 'location',
+            alias: 'Location',
+            type: 'string',
+          },
+        ],
+        objectIdField: 'ObjectID',
+        geometryType: 'point',
+        spatialReference: {
+          wkid: 4326,
+        },
+        source: [], // Adding an empty feature collection
+        renderer: renderer,
+        popupTemplate: popupTemplate,
+      });
+
+      map.add(featureLayer);
+
+      const point = new Point({
+        longitude: -74.00504,
+        latitude: 40.27984,
       });
 
       const pointGraphic = new Graphic({
@@ -70,28 +132,9 @@ export default function JobMap() {
           location: 'West Long Branch, NJ',
           salary: 100000,
         },
-        popupTemplate: {
-          // autocasts as new PopupTemplate()
-          title: '{jobTitle}',
-          content: [
-            {
-              type: 'fields',
-              fieldInfos: [
-                {
-                  fieldName: 'company',
-                  label: 'Company',
-                },
-                {
-                  fieldName: 'location',
-                  label: 'Location',
-                },
-              ],
-            },
-          ],
-        },
       });
 
-      graphicsLayer.add(pointGraphic);
+      featureLayer.applyEdits({ addFeatures: [pointGraphic] });
 
       setMap(map);
     }
@@ -106,7 +149,7 @@ export default function JobMap() {
         '.esri-ui.calcite-mode-light'
       );
 
-      // If element exists , assign id to it
+      // If element exists, assign id to it
       if (calciteTheme) {
         calciteTheme.id = 'devsListJobMap-rootMapView';
       }
