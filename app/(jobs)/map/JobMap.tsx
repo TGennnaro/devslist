@@ -10,6 +10,7 @@ import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import Basemap from '@arcgis/core/Basemap';
 import Locate from '@arcgis/core/widgets/Locate';
+import Search from '@arcgis/core/widgets/Search';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
@@ -36,18 +37,6 @@ export default function JobMap() {
         center: [-74.00504, 40.27984],
         zoom: 12,
       });
-
-      // Map widgets
-      const locate = new Locate({
-        view: view,
-        useHeadingEnabled: false,
-        popupEnabled: false,
-        goToOverride: function (view, options) {
-          options.target.scale = 24000;
-          return view.goTo(options.target);
-        },
-      });
-      view.ui.add(locate, 'top-left');
 
       // Map marker symbol
       const pictureMarkerSymbol = new PictureMarkerSymbol({
@@ -133,6 +122,36 @@ export default function JobMap() {
           salary: 100000,
         },
       });
+
+      // Map widgets
+      const locate = new Locate({
+        view: view,
+        useHeadingEnabled: false,
+        popupEnabled: false,
+        goToOverride: function (view, options) {
+          options.target.scale = 24000;
+          return view.goTo(options.target);
+        },
+      });
+      view.ui.add(locate, 'top-left');
+
+      const search = new Search({
+        view: view,
+        includeDefaultSources: false,
+        sources: [
+          {
+            //@ts-ignore
+            layer: featureLayer,
+            searchFields: ['jobTitle'],
+            displayField: 'jobTitle',
+            exactMatch: false,
+            outFields: ['*'],
+            name: 'Find a job',
+            placeholder: 'e.g., Software Engineer',
+          },
+        ],
+      });
+      view.ui.add(search, 'top-right');
 
       featureLayer.applyEdits({ addFeatures: [pointGraphic] });
 
