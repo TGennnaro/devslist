@@ -4,13 +4,14 @@ import React, { useRef, useEffect, useState } from 'react';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
+import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import Basemap from '@arcgis/core/Basemap';
 import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
+import Legend from '@arcgis/core/widgets/Legend';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
@@ -39,15 +40,58 @@ export default function JobMap() {
       });
 
       // Map marker symbol
-      const pictureMarkerSymbol = new PictureMarkerSymbol({
-        url: '/map_marker.png',
+      const defaultPictureMarkerSymbol = new PictureMarkerSymbol({
+        url: '/default_map_marker.png',
+        width: '25px',
+        height: '30px',
+      });
+
+      const fullTimeJobPictureMarkerSymbol = new PictureMarkerSymbol({
+        url: '/full_time_job_map_marker.png',
+        width: '25px',
+        height: '30px',
+      });
+
+      const partTimeJobPictureMarkerSymbol = new PictureMarkerSymbol({
+        url: '/part_time_job_map_marker.png',
+        width: '25px',
+        height: '30px',
+      });
+
+      const internshipPictureMarkerSymbol = new PictureMarkerSymbol({
+        url: '/internship_map_marker.png',
+        width: '25px',
+        height: '30px',
+      });
+
+      const freelancePictureMarkerSymbol = new PictureMarkerSymbol({
+        url: '/freelance_map_marker.png',
         width: '25px',
         height: '30px',
       });
 
       // Renderer for markers on the FeatureLayer
-      const renderer = new SimpleRenderer({
-        symbol: pictureMarkerSymbol,
+      const renderer = new UniqueValueRenderer({
+        field: 'jobType',
+        defaultSymbol: defaultPictureMarkerSymbol,
+        uniqueValueInfos: [
+          {
+            value: 'Full-Time',
+            symbol: fullTimeJobPictureMarkerSymbol,
+          },
+          {
+            value: 'Part-Time',
+            symbol: partTimeJobPictureMarkerSymbol,
+          },
+          {
+            value: 'Internship',
+            symbol: internshipPictureMarkerSymbol,
+          },
+          {
+            value: 'Freelance',
+            symbol: freelancePictureMarkerSymbol,
+          },
+        ],
       });
 
       // Attributes for popup that appears when map marker is clicked
@@ -94,6 +138,11 @@ export default function JobMap() {
             alias: 'Location',
             type: 'string',
           },
+          {
+            name: 'jobType',
+            alias: 'Job Type',
+            type: 'string',
+          },
         ],
         objectIdField: 'ObjectID',
         geometryType: 'point',
@@ -114,11 +163,11 @@ export default function JobMap() {
 
       const pointGraphic = new Graphic({
         geometry: point,
-        symbol: pictureMarkerSymbol,
         attributes: {
           jobTitle: 'Software Developer',
           company: 'Apple, Inc.',
           location: 'West Long Branch, NJ',
+          jobType: 'Full-Time',
           salary: 100000,
         },
       });
@@ -152,6 +201,12 @@ export default function JobMap() {
         ],
       });
       view.ui.add(search, 'top-right');
+
+      let legend = new Legend({
+        view: view,
+      });
+
+      view.ui.add(legend, 'bottom-right');
 
       featureLayer.applyEdits({ addFeatures: [pointGraphic] });
 
