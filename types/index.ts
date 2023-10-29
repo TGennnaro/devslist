@@ -24,9 +24,9 @@ export type JobPosting = {
   jobResponsibilities: string | undefined;
   workAddress: string | undefined;
   skills: string | undefined;
-  expirationDate: Date | undefined;
-  showPayRate: boolean | undefined;
+  expirationDate: string | undefined;
+  showPayRate: string | undefined;
   payType?: string | undefined;
-  salary?: number | undefined;
-  hourlyRate?: number | undefined;
+  salary?: string | undefined;
+  hourlyRate?: string | undefined;
 };

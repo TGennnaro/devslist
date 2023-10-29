@@ -1,93 +1,92 @@
 import {
-	pgTable,
-	pgView,
-	serial,
-	text,
-	uniqueIndex,
-	integer,
-	json,
-	date,
-	varchar,
-	boolean,
-	timestamp,
-	real,
-	customType,
+  pgTable,
+  pgView,
+  serial,
+  text,
+  uniqueIndex,
+  integer,
+  json,
+  date,
+  varchar,
+  boolean,
+  timestamp,
+  real,
+  customType,
 } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
 
 const bytea = customType<{ data: string; notNull: false; default: false }>({
-	dataType() {
-		return 'bytea';
-	},
-	toDriver(val) {
-		let newVal = val;
-		if (val.startsWith('0x')) {
-			newVal = val.slice(2);
-		}
+  dataType() {
+    return 'bytea';
+  },
+  toDriver(val) {
+    let newVal = val;
+    if (val.startsWith('0x')) {
+      newVal = val.slice(2);
+    }
 
-		return Buffer.from(newVal, 'hex');
-	},
-	fromDriver(val: any) {
-		return val.toString('hex');
-	},
+    return Buffer.from(newVal, 'hex');
+  },
+  fromDriver(val: any) {
+    return val.toString('hex');
+  },
 });
 
 export const Users = pgTable(
-	'users',
-	{
-		id: serial('id').primaryKey(),
-		firstName: text('first_name').notNull(),
-		lastName: text('last_name').notNull(),
-		phone: varchar('phone', { length: 15 }),
-		email: text('email').notNull().unique(),
-		password: text('password').notNull(),
-		profilePhoto: bytea('profile_photo'),
-		city: text('city'),
-		state: text('state'),
-		country: text('country'),
-		skills: json('skills').default([]).notNull(),
-		resume: bytea('resume'),
-		about: text('about'),
-		dob: date('dob'),
-		roles: text('roles').$type<'user' | 'employer'>(),
-		githubID: text('github_id'),
-		gender: boolean('gender'),
-		veteranStatus: boolean('veteran_status'),
-		ethnicity: text('ethnicity'),
-		disability: boolean('disability'),
-	},
-	(users) => {
-		return {
-			uniqueIdx: uniqueIndex('unique_idx').on(users.email),
-		};
-	}
+  'users',
+  {
+    id: serial('id').primaryKey(),
+    firstName: text('first_name').notNull(),
+    lastName: text('last_name').notNull(),
+    phone: varchar('phone', { length: 15 }),
+    email: text('email').notNull().unique(),
+    password: text('password').notNull(),
+    profilePhoto: bytea('profile_photo'),
+    city: text('city'),
+    state: text('state'),
+    country: text('country'),
+    skills: json('skills').default([]).notNull(),
+    resume: bytea('resume'),
+    about: text('about'),
+    dob: date('dob'),
+    githubID: text('github_id'),
+    gender: boolean('gender'),
+    veteranStatus: boolean('veteran_status'),
+    ethnicity: text('ethnicity'),
+    disability: boolean('disability'),
+  },
+  (users) => {
+    return {
+      uniqueIdx: uniqueIndex('unique_idx').on(users.email),
+    };
+  }
 );
 
 export type User = typeof Users.$inferSelect;
 
 export const userView = pgView('user_view').as((qb) =>
-	qb.select().from(Users).where(eq(Users.roles, 'user'))
+  qb.select().from(Users).where(eq(Users.roles, 'user'))
 );
 export const employerView = pgView('employer_view').as((qb) =>
-	qb.select().from(Users).where(eq(Users.roles, 'employer'))
+  qb.select().from(Users).where(eq(Users.roles, 'employer'))
 );
 
 export const Jobs = pgTable('jobs', {
-	jobid: serial('jobid').primaryKey(),
-	userid: serial('userid')
-		.notNull()
-		.references(() => Users.id),
-	companyid: integer('company_id')
-		.notNull()
-		.references(() => Company.companyid),
-	jobTitle: text('jobTitle').notNull(),
-	salary: integer('salary'),
-	skills: json('skills').notNull(),
-	address: text('address'),
-	jobDescription: text('jobDescription').notNull(),
-	jobType: text('jobType').notNull(),
-	startDate: date('startDate').notNull(),
-	endDate: date('endDate').notNull(),
+  jobid: serial('jobid').primaryKey(),
+  userid: integer('userid')
+    .notNull()
+    .references(() => Users.id),
+  companyid: integer('company_id')
+    .notNull()
+    .references(() => Company.companyid),
+  jobTitle: text('jobTitle').notNull(),
+  salary: integer('salary'),
+  skills: json('skills').notNull(),
+  address: text('address'),
+  jobDescription: text('jobDescription').notNull(),
+  jobType: text('jobType').notNull(),
+  startDate: date('startDate').notNull(),
+  endDate: date('endDate').notNull(),
 });
 
 // export const Application = pgTable(
@@ -207,12 +206,12 @@ export const Jobs = pgTable('jobs', {
 // );
 
 export const Company = pgTable('company', {
-	companyid: serial('companyid').primaryKey(),
-	name: text('name').notNull(),
-	address: text('address').notNull(),
-	testid: serial('testid').references(() => Users.id),
-	logo: bytea('logo').notNull(),
-	url: text('url'),
+  companyid: serial('companyid').primaryKey(),
+  name: text('name').notNull(),
+  address: text('address').notNull(),
+  testid: integer('testid').references(() => Users.id),
+  logo: bytea('logo').notNull(),
+  url: text('url'),
 });
 
 // export const Education = pgTable(

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { JobPosting } from '@/types';
 import { z } from 'zod';
+import { db } from '@/db';
+import { Jobs } from '@/db/schema';
 
 const schema = z.object({
   jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
@@ -35,11 +37,11 @@ export async function POST(req: Request, res: Response) {
     jobDescription: formData.get('jobDescription') as string,
     workAddress: formData.get('workAddress') as string,
     skills: formData.get('skills') as string,
-    expirationDate: formData.get('expirationDate') as any,
-    showPayRate: (formData.get('showPayRate') as any) ?? undefined,
+    expirationDate: formData.get('expirationDate') as string,
+    showPayRate: (formData.get('showPayRate') as string) ?? undefined,
     payType: (formData.get('payType') as string) ?? undefined,
-    salary: (formData.get('salary') as any) ?? undefined,
-    hourlyRate: (formData.get('hourlyRate') as any) ?? undefined,
+    salary: (formData.get('salary') as string) ?? undefined,
+    hourlyRate: (formData.get('hourlyRate') as string) ?? undefined,
   };
 
   // for (const [k, v] of Object.entries(data)) {
@@ -64,6 +66,27 @@ export async function POST(req: Request, res: Response) {
     } = schema.parse(data);
     console.log('Data passed');
     console.log(data);
+
+    console.log('inserting');
+
+    try {
+      await db.insert(Jobs).values({
+        jobTitle,
+        userid: 1,
+        companyid: 1,
+        salary: 30000,
+        skills,
+        address: workAddress,
+        jobDescription,
+        jobType,
+        startDate: new Date().toISOString(),
+        endDate: expirationDate,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    console.log('inserted');
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.log(e.issues);

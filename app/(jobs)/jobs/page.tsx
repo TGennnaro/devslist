@@ -20,7 +20,7 @@ export default function Jobs() {
         <JobSearchBar />
       </div>
 
-      <div className='flex gap-8 pt-8'>
+      <div className='flex flex-col md:flex-row gap-8 pt-8'>
         <Filters />
         <div>
           <div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
