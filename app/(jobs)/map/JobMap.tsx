@@ -109,6 +109,10 @@ export default function JobMap() {
                 fieldName: 'location',
                 label: 'Location',
               },
+              {
+                fieldName: 'jobType',
+                label: 'Job Type',
+              },
             ],
           },
         ],
