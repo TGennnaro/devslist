@@ -134,7 +134,7 @@ export default function JobPostingForm() {
                     value={skillValue}
                     onValueChange={setSkillValue}
                     endContent={
-                      <button>
+                      <button type='button'>
                         <Plus onClick={() => addToSkillsList()} />
                       </button>
                     }
@@ -186,7 +186,7 @@ export default function JobPostingForm() {
                       onOpenChange={(open) => setIsDateSelectorOpen(open)}
                     >
                       <PopoverTrigger>
-                        <button>
+                        <button type='button'>
                           <Calendar />
                         </button>
                       </PopoverTrigger>
