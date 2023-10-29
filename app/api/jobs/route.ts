@@ -99,3 +99,12 @@ export async function POST(req: Request, res: Response) {
   }
   return NextResponse.json({ message: 'OK' }, { status: 200 });
 }
+
+export async function GET(req: Request) {
+  try {
+    const data = await db.select().from(Jobs);
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: error });
+  }
+}
