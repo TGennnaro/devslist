@@ -15,20 +15,9 @@ import {
 } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
 
-const bytea = customType<{ data: string; notNull: false; default: false }>({
+const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
 	dataType() {
 		return 'bytea';
-	},
-	toDriver(val) {
-		let newVal = val;
-		if (val.startsWith('0x')) {
-			newVal = val.slice(2);
-		}
-
-		return Buffer.from(newVal, 'hex');
-	},
-	fromDriver(val: any) {
-		return val.toString('hex');
 	},
 });
 
@@ -49,7 +38,7 @@ export const Users = pgTable(
 		resume: bytea('resume'),
 		about: text('about'),
 		dob: date('dob'),
-		roles: text('roles').$type<'user' | 'employer'>(),
+		isEmployer: boolean('is_employer').default(false),
 		githubID: text('github_id'),
 		gender: boolean('gender'),
 		veteranStatus: boolean('veteran_status'),
@@ -66,10 +55,10 @@ export const Users = pgTable(
 export type User = typeof Users.$inferSelect;
 
 export const userView = pgView('user_view').as((qb) =>
-	qb.select().from(Users).where(eq(Users.roles, 'user'))
+	qb.select().from(Users).where(eq(Users.isEmployer, false))
 );
 export const employerView = pgView('employer_view').as((qb) =>
-	qb.select().from(Users).where(eq(Users.roles, 'employer'))
+	qb.select().from(Users).where(eq(Users.isEmployer, true))
 );
 
 export const Jobs = pgTable('jobs', {
