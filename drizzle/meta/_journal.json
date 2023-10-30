@@ -1,13 +1,27 @@
 {
-	"version": "0",
-	"dialect": "pg",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "5",
-			"when": 1698101474353,
-			"tag": "0000_loud_rocket_raccoon",
-			"breakpoints": true
-		}
-	]
+  "version": "0",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1698101474353,
+      "tag": "0000_loud_rocket_raccoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1698345364935,
+      "tag": "0001_shocking_rhino",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1698346439893,
+      "tag": "0002_married_white_tiger",
+      "breakpoints": true
+    }
+  ]
 }
