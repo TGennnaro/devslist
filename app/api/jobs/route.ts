@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-import { JobPosting } from '@/types';
+import { Job } from '@/types';
 import { z } from 'zod';
 import { db } from '@/db';
 import { Jobs } from '@/db/schema';
+import { Company } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 const schema = z.object({
   jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
@@ -30,7 +32,7 @@ const schema = z.object({
 
 export async function POST(req: Request, res: Response) {
   const formData = await req.formData();
-  const data: JobPosting = {
+  const data: Job = {
     jobTitle: formData.get('jobTitle') as string,
     jobType: formData.get('jobType') as string,
     jobResponsibilities: formData.get('jobResponsibilities') as string,
@@ -65,9 +67,6 @@ export async function POST(req: Request, res: Response) {
       hourlyRate,
     } = schema.parse(data);
     console.log('Data passed');
-    console.log(data);
-
-    console.log('inserting');
 
     try {
       await db.insert(Jobs).values({

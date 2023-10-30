@@ -49,6 +49,7 @@ export const Users = pgTable(
     resume: bytea('resume'),
     about: text('about'),
     dob: date('dob'),
+    roles: text('roles').$type<'user' | 'employer'>(),
     githubID: text('github_id'),
     gender: boolean('gender'),
     veteranStatus: boolean('veteran_status'),
@@ -73,7 +74,7 @@ export const employerView = pgView('employer_view').as((qb) =>
 
 export const Jobs = pgTable('jobs', {
   jobid: serial('jobid').primaryKey(),
-  userid: integer('userid')
+  userid: serial('userid')
     .notNull()
     .references(() => Users.id),
   companyid: integer('company_id')
@@ -209,7 +210,7 @@ export const Company = pgTable('company', {
   companyid: serial('companyid').primaryKey(),
   name: text('name').notNull(),
   address: text('address').notNull(),
-  testid: integer('testid').references(() => Users.id),
+  testid: serial('testid').references(() => Users.id),
   logo: bytea('logo').notNull(),
   url: text('url'),
 });

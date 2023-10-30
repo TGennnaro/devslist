@@ -17,7 +17,7 @@ export type ProfileFormEntry = {
   [key: string]: string | FormDataEntryValue | undefined;
 };
 
-export type JobPosting = {
+export type Job = {
   jobTitle: string | undefined;
   jobType: string | undefined;
   jobDescription: string | undefined;
