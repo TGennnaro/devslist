@@ -3,9 +3,13 @@ import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
 import NextLink from 'next/link';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
-import { FaMapPin } from 'react-icons/fa';
-import { FcClock, FcMoneyTransfer, FcWorkflow } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
+import {
+  Briefcase,
+  CalendarClock,
+  CircleDollarSign,
+  MapPin,
+} from 'lucide-react';
 
 const generateRatingStars = (companyRating: number) => {
   const stars = [];
@@ -74,7 +78,7 @@ export default function JobCard({
             | {companyRating.toFixed(1)} {generateRatingStars(companyRating)}
           </p>
           <p className='flex items-center gap-1 text-small text-default-500'>
-            <FcClock /> Available until {expirationDate}
+            <CalendarClock /> Available until {expirationDate}
           </p>
         </div>
       </CardHeader>
@@ -85,15 +89,15 @@ export default function JobCard({
         </div>
         <div className='flex items-center gap-1'>
           <span className='font-semibold'>Location:</span>
-          <FaMapPin className='text-red-500' /> {location}
+          <MapPin /> {location}
         </div>
         <div className='flex items-center gap-1'>
           <span className='font-semibold'>Pay:</span>
-          <FcMoneyTransfer /> {pay}
+          <CircleDollarSign /> {pay}
         </div>
         <div className='flex items-center gap-1'>
           <span className='font-semibold'>Type:</span>
-          <FcWorkflow /> {jobType}
+          <Briefcase /> {jobType}
         </div>
         {/* <div className='flex items-center gap-1 pt-3 font-semibold'>
 					<FcOrganization /> Company Overview

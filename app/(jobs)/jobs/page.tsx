@@ -38,20 +38,24 @@ export default function Jobs() {
         <Filters />
         <div>
           <div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
-            {jobs.map((job: any) => {
+            {jobs.map((listing: any) => {
               return (
                 <JobCard
-                  key={job.jobid}
-                  id={job.jobid}
-                  position={job.jobTitle}
-                  company={job.companyID}
+                  key={listing.jobs.jobid}
+                  id={listing.jobs.jobid}
+                  position={listing.jobs.jobTitle}
+                  company={listing.company.name}
                   companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
                   companyRating={4.5}
-                  postedDate='October 31, 2023'
-                  expirationDate='November 30, 2023'
-                  location='Cupertino, CA'
-                  pay='$150,000/yr'
-                  jobType='Full Time'
+                  postedDate={new Date(
+                    listing.jobs.startDate
+                  ).toLocaleDateString()}
+                  expirationDate={new Date(
+                    listing.jobs.endDate
+                  ).toLocaleDateString()}
+                  location={listing.jobs.address}
+                  pay={'$150,000/yr'}
+                  jobType={listing.jobs.jobType}
                 />
               );
             })}

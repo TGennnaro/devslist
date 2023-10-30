@@ -101,7 +101,10 @@ export async function POST(req: Request, res: Response) {
 
 export async function GET(req: Request) {
   try {
-    const data = await db.select().from(Jobs);
+    const data = await db
+      .select()
+      .from(Jobs)
+      .leftJoin(Company, eq(Jobs.companyid, Company.companyid));
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ error: error });
