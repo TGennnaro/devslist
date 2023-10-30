@@ -51,15 +51,6 @@ export default function Jobs() {
                   location='Cupertino, CA'
                   pay='$150,000/yr'
                   jobType='Full Time'
-                  companyOverview='Apple, Inc. is a world-renowned technology company known for
-          pioneering innovation and iconic, user-centric products that have
-          changed the way we live and connect.'
-                  requirements="Bachelor's or Master's Degree: A degree in Computer Science,
-          Software Engineering, or a related field is typically required. iOS
-          Development Expertise: Strong proficiency in iOS app development using
-          Swift and Objective-C, along with a deep understanding of iOS."
-                  responsibilities="Design, develop, and maintain innovative and high-quality iOS
-          applications for Apple's ecosystem."
                 />
               );
             })}
