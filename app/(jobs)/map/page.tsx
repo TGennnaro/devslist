@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 // @arcgis/core does not currently work with SSR, so we need to disable it for the map component
-const JobMapNoSSR = dynamic(() => import('@/components/JobMap'), {
+const JobMapNoSSR = dynamic(() => import('@/app/(jobs)/map/JobMap'), {
   ssr: false,
 });
 
