@@ -5,6 +5,7 @@ import NextLink from 'next/link';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { FaMapPin } from 'react-icons/fa';
 import { FcClock, FcMoneyTransfer, FcWorkflow } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
 const generateRatingStars = (companyRating: number) => {
   const stars = [];
@@ -29,6 +30,7 @@ const generateRatingStars = (companyRating: number) => {
 };
 
 export default function JobCard({
+  id,
   position,
   company,
   companyLogo,
@@ -39,6 +41,7 @@ export default function JobCard({
   pay,
   jobType,
 }: {
+  id: number;
   position: string;
   company: string;
   companyLogo: string;
@@ -49,6 +52,7 @@ export default function JobCard({
   pay?: string;
   jobType: string;
 }) {
+  const router = useRouter();
   return (
     <Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
       <CardHeader className='flex gap-3'>
@@ -105,7 +109,11 @@ export default function JobCard({
 				<p>{responsibilities}</p> */}
       </CardBody>
       <CardFooter className='gap-3'>
-        <Button variant='flat' size='md'>
+        <Button
+          variant='flat'
+          size='md'
+          onClick={() => router.push(`/jobs/${id}`)}
+        >
           View Job
         </Button>
       </CardFooter>

@@ -42,6 +42,7 @@ export default function Jobs() {
               return (
                 <JobCard
                   key={job.jobid}
+                  id={job.jobid}
                   position={job.jobTitle}
                   company={job.companyID}
                   companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
