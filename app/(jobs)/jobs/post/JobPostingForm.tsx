@@ -12,6 +12,7 @@ import { DayPicker } from 'react-day-picker';
 import { useMutation } from 'react-query';
 import { FormEvent, useRef } from 'react';
 import 'react-day-picker/dist/style.css';
+import { useRouter } from 'next/navigation';
 
 export default function JobPostingForm() {
   const [payTypeSelectionHidden, setPayTypeSelectionHidden] = useState(false);
@@ -21,15 +22,21 @@ export default function JobPostingForm() {
   const [skillValue, setSkillValue] = useState('');
   const [selected, setSelected] = useState<Date | undefined>(new Date());
   const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+  const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
       formData.append('skills', JSON.stringify(skillsList));
+      setIsPosting(true);
       return fetch('/api/jobs', {
         method: 'POST',
         body: formData,
+      }).then((response) => {
+        setIsPosting(false);
+        router.push('/jobs');
       });
     },
   });
@@ -261,6 +268,8 @@ export default function JobPostingForm() {
                   onClick={() => console.log('post')}
                   endContent={<Send />}
                   type='submit'
+                  isDisabled={isPosting}
+                  isLoading={isPosting}
                 >
                   Post Job
                 </Button>
