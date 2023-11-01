@@ -69,25 +69,31 @@ export async function POST(req: Request, res: Response) {
 		console.log('Data passed');
 
 		try {
-			await db.insert(Jobs).values({
-				jobTitle,
-				userid: 1,
-				companyid: 1,
-				salary: 30000,
-				skills,
-				address: workAddress,
-				jobDescription,
-				jobType,
-				startDate: new Date().toISOString(),
-				endDate: expirationDate,
-				jobRequirements: '',
-				jobResponsibilities,
-			});
+			const job = await db
+				.insert(Jobs)
+				.values({
+					jobTitle,
+					userid: 7,
+					companyid: 11,
+					salary: 30000,
+					skills,
+					address: workAddress,
+					jobDescription,
+					jobType,
+					startDate: new Date().toISOString(),
+					endDate: expirationDate,
+					jobRequirements: '',
+					jobResponsibilities,
+				})
+				.returning({ insertedId: Jobs.jobid });
+
+			return NextResponse.json(
+				{ message: 'OK', id: job[0].insertedId },
+				{ status: 200 }
+			);
 		} catch (err) {
 			console.log(err);
 		}
-
-		console.log('inserted');
 	} catch (e) {
 		if (e instanceof z.ZodError) {
 			console.log(e.issues);
@@ -98,6 +104,7 @@ export async function POST(req: Request, res: Response) {
 			{ status: 500 }
 		);
 	}
+
 	return NextResponse.json({ message: 'OK' }, { status: 200 });
 }
 
