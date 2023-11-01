@@ -1,87 +1,87 @@
 import {
-  pgTable,
-  pgView,
-  serial,
-  text,
-  uniqueIndex,
-  integer,
-  json,
-  date,
-  varchar,
-  boolean,
-  timestamp,
-  real,
-  customType,
+	pgTable,
+	pgView,
+	serial,
+	text,
+	uniqueIndex,
+	integer,
+	json,
+	date,
+	varchar,
+	boolean,
+	timestamp,
+	real,
+	customType,
 } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
 
 const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
-  dataType() {
-    return 'bytea';
-  },
+	dataType() {
+		return 'bytea';
+	},
 });
 
 export const Users = pgTable(
-  'users',
-  {
-    id: serial('id').primaryKey(),
-    firstName: text('first_name').notNull(),
-    lastName: text('last_name').notNull(),
-    phone: varchar('phone', { length: 15 }),
-    email: text('email').notNull().unique(),
-    password: text('password').notNull(),
-    profilePhoto: bytea('profile_photo'),
-    city: text('city'),
-    state: text('state'),
-    country: text('country'),
-    skills: json('skills').default([]).notNull(),
-    resume: bytea('resume'),
-    about: text('about'),
-    dob: date('dob'),
-    isEmployer: boolean('is_employer').default(false),
-    githubID: text('github_id'),
-    gender: boolean('gender'),
-    veteranStatus: boolean('veteran_status'),
-    ethnicity: text('ethnicity'),
-    disability: boolean('disability'),
-  },
-  (users) => {
-    return {
-      uniqueIdx: uniqueIndex('unique_idx').on(users.email),
-    };
-  }
+	'users',
+	{
+		id: serial('id').primaryKey(),
+		firstName: text('first_name').notNull(),
+		lastName: text('last_name').notNull(),
+		phone: varchar('phone', { length: 15 }),
+		email: text('email').notNull().unique(),
+		password: text('password').notNull(),
+		picture_url: text('picture_url'),
+		city: text('city'),
+		state: text('state'),
+		country: text('country'),
+		skills: json('skills').default([]).notNull(),
+		resume: bytea('resume'),
+		about: text('about'),
+		dob: date('dob'),
+		isEmployer: boolean('is_employer').default(false),
+		githubID: text('github_id'),
+		gender: boolean('gender'),
+		veteranStatus: boolean('veteran_status'),
+		ethnicity: text('ethnicity'),
+		disability: boolean('disability'),
+	},
+	(users) => {
+		return {
+			uniqueIdx: uniqueIndex('unique_idx').on(users.email),
+		};
+	}
 );
 
 export type User = typeof Users.$inferSelect;
 
 export const userView = pgView('user_view').as((qb) =>
-  qb.select().from(Users).where(eq(Users.isEmployer, false))
+	qb.select().from(Users).where(eq(Users.isEmployer, false))
 );
 export const employerView = pgView('employer_view').as((qb) =>
-  qb.select().from(Users).where(eq(Users.isEmployer, true))
+	qb.select().from(Users).where(eq(Users.isEmployer, true))
 );
 
 export const Jobs = pgTable('jobs', {
-  jobid: serial('jobid').primaryKey(),
-  userid: integer('userid')
-    .notNull()
-    .references(() => Users.id),
-  companyid: integer('company_id')
-    .notNull()
-    .references(() => Company.companyid),
-  jobTitle: text('jobTitle').notNull(),
-  showPayRate: boolean('showPayRate').default(true).notNull(),
-  payType: text('payType'),
-  hourlyRate: real('hourlyRate'),
-  salary: real('salary'),
-  skills: json('skills').notNull(),
-  address: text('address'),
-  jobDescription: text('jobDescription').notNull(),
-  jobResponsibilities: text('jobResponsibilities').notNull(),
-  jobRequirements: text('jobRequirements').notNull(),
-  jobType: text('jobType').notNull(),
-  startDate: date('startDate').notNull(),
-  endDate: date('endDate').notNull(),
+	jobid: serial('jobid').primaryKey(),
+	userid: integer('userid')
+		.notNull()
+		.references(() => Users.id, { onDelete: 'cascade' }),
+	companyid: integer('company_id')
+		.notNull()
+		.references(() => Company.companyid, { onDelete: 'cascade' }),
+	jobTitle: text('jobTitle').notNull(),
+	showPayRate: boolean('showPayRate').default(true).notNull(),
+	payType: text('payType'),
+	hourlyRate: real('hourlyRate'),
+	salary: real('salary'),
+	skills: json('skills').notNull(),
+	address: text('address'),
+	jobDescription: text('jobDescription').notNull(),
+	jobResponsibilities: text('jobResponsibilities').notNull(),
+	jobRequirements: text('jobRequirements').notNull(),
+	jobType: text('jobType').notNull(),
+	startDate: date('startDate').notNull(),
+	endDate: date('endDate').notNull(),
 });
 
 // export const Application = pgTable(
@@ -90,7 +90,7 @@ export const Jobs = pgTable('jobs', {
 // 		appid: serial('appid').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		jobid: text('jobid')
 // 			.notNull()
 // 			.references(() => Jobs.jobid),
@@ -110,7 +110,7 @@ export const Jobs = pgTable('jobs', {
 // 		linkType: serial('linkType').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid)
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 			.primaryKey(),
 // 		url: text('url').notNull(),
 // 	},
@@ -127,7 +127,7 @@ export const Jobs = pgTable('jobs', {
 // 		experienceid: serial('experienceid').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		startDate: date('startDate').notNull(),
 // 		endDate: date('endDate').notNull(),
 // 		company: text('company').notNull(),
@@ -148,10 +148,10 @@ export const Jobs = pgTable('jobs', {
 // 		connectionid: serial('connectionid').primaryKey(),
 // 		user1id: text('user1id')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		user2id: text('user2id')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		status: integer('status').notNull(),
 // 	},
 // 	(connection) => {
@@ -167,10 +167,10 @@ export const Jobs = pgTable('jobs', {
 // 		reviewid: serial('userid').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		companyid: text('companyID')
 // 			.notNull()
-// 			.references(() => Company.companyid),
+// 			.references() => Company.companyid, { onDelete: 'CASCADE' },
 // 		rating: real('rating').notNull(),
 // 		description: text('description').notNull(),
 // 		reviewTimeStamp: timestamp('tim').notNull(),
@@ -188,7 +188,7 @@ export const Jobs = pgTable('jobs', {
 // 		postid: serial('postid').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		postTitle: text('postTitle').notNull(),
 // 		postContent: text('postContent').notNull(),
 // 		postTimeStamp: timestamp('tim').notNull(),
@@ -201,12 +201,12 @@ export const Jobs = pgTable('jobs', {
 // );
 
 export const Company = pgTable('company', {
-  companyid: serial('companyid').primaryKey(),
-  name: text('name').notNull(),
-  address: text('address').notNull(),
-  userid: integer('userid').references(() => Users.id),
-  logo: bytea('logo').notNull(),
-  url: text('url'),
+	companyid: serial('companyid').primaryKey(),
+	name: text('name').notNull(),
+	address: text('address').notNull(),
+	userid: integer('userid').references(() => Users.id, { onDelete: 'cascade' }),
+	logo: bytea('logo').notNull(),
+	url: text('url'),
 });
 
 // export const Education = pgTable(
@@ -215,7 +215,7 @@ export const Company = pgTable('company', {
 // 		educationID: serial('educationID').primaryKey(),
 // 		userid: text('userid')
 // 			.notNull()
-// 			.references(() => Users.userid),
+// 			.references() => Users.userid, { onDelete: 'CASCADE' },
 // 		startDate: date('startDate').notNull(),
 // 		endDate: date('endDate').notNull(),
 // 		degree: text('degree').notNull(),
