@@ -76,6 +76,8 @@ export const Jobs = pgTable('jobs', {
 	salary: real('salary'),
 	skills: json('skills').notNull(),
 	address: text('address'),
+	longitude: real('longitude'),
+	latitude: real('latitude'),
 	jobDescription: text('jobDescription').notNull(),
 	jobResponsibilities: text('jobResponsibilities').notNull(),
 	jobRequirements: text('jobRequirements').notNull(),

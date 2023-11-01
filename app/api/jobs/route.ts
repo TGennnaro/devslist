@@ -34,6 +34,24 @@ const schema = z.object({
 	hourlyRate: z.string().optional(),
 });
 
+async function getCoords(fromAddress: string) {
+	try {
+		const response = await fetch(
+			`https://geocod.xyz/api/public/getCoords?apikey=${process.env.GEOCOD_API_KEY}&postaladdress=${fromAddress}`
+		);
+		if (response.ok) {
+			const data = await response.json();
+			const latitude = data.lat;
+			const longitude = data.lon;
+			return [latitude, longitude];
+		}
+	} catch (error) {
+		console.log(error);
+	}
+
+	return [null, null];
+}
+
 export async function POST(req: Request, res: Response) {
 	const session = await getServerSession(authOptions);
 	const formData = await req.formData();
@@ -77,6 +95,8 @@ export async function POST(req: Request, res: Response) {
 		console.log('Data passed');
 
 		try {
+			const [latitude, longitude] = await getCoords(workAddress);
+
 			const job = await db
 				.insert(Jobs)
 				.values({
@@ -86,6 +106,8 @@ export async function POST(req: Request, res: Response) {
 					salary: Number(salary),
 					skills,
 					address: workAddress,
+					latitude: latitude,
+					longitude: longitude,
 					jobDescription,
 					jobType,
 					startDate: new Date().toISOString(),
