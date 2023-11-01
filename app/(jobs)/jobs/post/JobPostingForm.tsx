@@ -34,10 +34,13 @@ export default function JobPostingForm() {
       return fetch('/api/jobs', {
         method: 'POST',
         body: formData,
-      }).then((response) => {
-        setIsPosting(false);
-        router.push('/jobs');
-      });
+      })
+        .then(async (response) => await response.json())
+        .then((response) => {
+          setIsPosting(false);
+          console.log(response);
+          router.push('/jobs');
+        });
     },
   });
 
