@@ -25,18 +25,19 @@ const schema = z.object({
 
 	expirationDate: z.string(),
 
-	showPayRate: z.boolean().optional(),
+	showPayRate: z.string().optional(),
 
 	payType: z.string().optional(),
 
-	salary: z.number().optional(),
+	salary: z.string().optional(),
 
-	hourlyRate: z.number().optional(),
+	hourlyRate: z.string().optional(),
 });
 
 export async function POST(req: Request, res: Response) {
 	const session = await getServerSession(authOptions);
 	const formData = await req.formData();
+	console.log(formData);
 	const data: Job = {
 		jobTitle: formData.get('jobTitle') as string,
 		jobType: formData.get('jobType') as string,
@@ -82,7 +83,7 @@ export async function POST(req: Request, res: Response) {
 					jobTitle,
 					userid: session?.user.id!,
 					companyid: 11,
-					salary,
+					salary: Number(salary),
 					skills,
 					address: workAddress,
 					jobDescription,
@@ -91,9 +92,9 @@ export async function POST(req: Request, res: Response) {
 					endDate: expirationDate,
 					jobRequirements,
 					jobResponsibilities,
-					showPayRate,
+					showPayRate: showPayRate === 'true',
 					payType,
-					hourlyRate,
+					hourlyRate: Number(hourlyRate),
 				})
 				.returning({ insertedId: Jobs.jobid });
 

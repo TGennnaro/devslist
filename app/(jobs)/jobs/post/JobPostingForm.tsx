@@ -88,7 +88,7 @@ export default function JobPostingForm() {
 									name='jobTitle'
 									label='Job Title'
 									labelPlacement='outside'
-									placeholder='Job Title'
+									placeholder='Software Engineer'
 									variant='bordered'
 									radius='sm'
 									isRequired
@@ -108,7 +108,16 @@ export default function JobPostingForm() {
 									name='jobDescription'
 									label='Job description'
 									labelPlacement='outside'
-									placeholder='Job description'
+									placeholder='Join the team in developing game-changing software!'
+									variant='bordered'
+									radius='sm'
+									isRequired
+								/>
+								<Input
+									name='jobRequirements'
+									label='Job requirements'
+									labelPlacement='outside'
+									placeholder="Bachelor's degree in Computer Science or equivalent."
 									variant='bordered'
 									radius='sm'
 									isRequired
@@ -117,7 +126,7 @@ export default function JobPostingForm() {
 									name='jobResponsibilities'
 									label='Job responsibilities'
 									labelPlacement='outside'
-									placeholder='Job responsibilities'
+									placeholder='Develop AI and machine learning algorithms.'
 									variant='bordered'
 									radius='sm'
 									isRequired
@@ -126,7 +135,7 @@ export default function JobPostingForm() {
 									name='workAddress'
 									label='Work address'
 									labelPlacement='outside'
-									placeholder='Work address'
+									placeholder='123 Location Place, Random, NJ USA 12345'
 									variant='bordered'
 									radius='sm'
 									isRequired
@@ -134,10 +143,9 @@ export default function JobPostingForm() {
 
 								<div className='flex flex-row gap-3 items-center'>
 									<Input
-										name='requiredSkill'
-										label='Enter one required skill'
+										label='Enter required skills (one at a time)'
 										labelPlacement='outside'
-										placeholder='Enter one required skill'
+										placeholder='Python'
 										variant='bordered'
 										radius='sm'
 										value={skillValue}
@@ -218,7 +226,7 @@ export default function JobPostingForm() {
 									defaultSelected
 									onClick={() => handleShowPayTypeSelection()}
 									name='showPayRate'
-									value='yes'
+									value='true'
 								>
 									Display pay rate (recommended){' '}
 								</Checkbox>
