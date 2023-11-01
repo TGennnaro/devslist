@@ -5,6 +5,8 @@ import { db } from '@/db';
 import { Jobs } from '@/db/schema';
 import { Company } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 const schema = z.object({
 	jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
@@ -12,6 +14,8 @@ const schema = z.object({
 	jobType: z.string(),
 
 	jobResponsibilities: z.string(),
+
+	jobRequirements: z.string(),
 
 	jobDescription: z.string(),
 
@@ -21,22 +25,24 @@ const schema = z.object({
 
 	expirationDate: z.string(),
 
-	showPayRate: z.string().optional(),
+	showPayRate: z.boolean().optional(),
 
 	payType: z.string().optional(),
 
-	salary: z.string().optional(),
+	salary: z.number().optional(),
 
-	hourlyRate: z.string().optional(),
+	hourlyRate: z.number().optional(),
 });
 
 export async function POST(req: Request, res: Response) {
+	const session = await getServerSession(authOptions);
 	const formData = await req.formData();
 	const data: Job = {
 		jobTitle: formData.get('jobTitle') as string,
 		jobType: formData.get('jobType') as string,
 		jobResponsibilities: formData.get('jobResponsibilities') as string,
 		jobDescription: formData.get('jobDescription') as string,
+		jobRequirements: formData.get('jobRequirements') as string,
 		workAddress: formData.get('workAddress') as string,
 		skills: formData.get('skills') as string,
 		expirationDate: formData.get('expirationDate') as string,
@@ -57,6 +63,7 @@ export async function POST(req: Request, res: Response) {
 			jobTitle,
 			jobType,
 			jobResponsibilities,
+			jobRequirements,
 			jobDescription,
 			workAddress,
 			skills,
@@ -73,17 +80,20 @@ export async function POST(req: Request, res: Response) {
 				.insert(Jobs)
 				.values({
 					jobTitle,
-					userid: 7,
+					userid: session?.user.id!,
 					companyid: 11,
-					salary: 30000,
+					salary,
 					skills,
 					address: workAddress,
 					jobDescription,
 					jobType,
 					startDate: new Date().toISOString(),
 					endDate: expirationDate,
-					jobRequirements: '',
+					jobRequirements,
 					jobResponsibilities,
+					showPayRate,
+					payType,
+					hourlyRate,
 				})
 				.returning({ insertedId: Jobs.jobid });
 
