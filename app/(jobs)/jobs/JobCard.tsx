@@ -54,7 +54,7 @@ export default function JobCard({
 	postedDate: string;
 	expirationDate: string;
 	location: string;
-	pay?: string;
+	pay?: string | null;
 	jobType: string;
 }) {
 	const router = useRouter();
@@ -84,44 +84,47 @@ export default function JobCard({
 				</div>
 			</CardHeader>
 			<CardBody>
-				<div className='flex gap-1'>
-					<span className='font-semibold'>Posted:</span>
-					{postedDate}
-				</div>
-				<div className='flex items-center gap-1'>
-					<span className='font-semibold'>Location:</span>
-					<div className='shrink-0'>
-						<MapPin />
-					</div>{' '}
-					{location}
-				</div>
-				<div className='flex items-center gap-1'>
-					<span className='font-semibold'>Pay:</span>
-					<CircleDollarSign /> {pay}
-				</div>
-				<div className='flex items-center gap-1'>
-					<span className='font-semibold'>Type:</span>
-					{jobType === 'Full-Time' ? (
-						<Chip startContent={<Briefcase />} color='primary'>
-							Full Time
-						</Chip>
-					) : jobType === 'Part-Time' ? (
-						<Chip startContent={<Briefcase />} color='secondary'>
-							Part Time
-						</Chip>
-					) : jobType === 'Internship' ? (
-						<Chip startContent={<Briefcase />} color='success'>
-							Internship
-						</Chip>
-					) : jobType === 'Freelance' ? (
-						<Chip startContent={<Briefcase />} color='warning'>
-							Freelance
-						</Chip>
-					) : (
-						''
-					)}
-				</div>
-				{/* <div className='flex items-center gap-1 pt-3 font-semibold'>
+				<div className='flex flex-col gap-1'>
+					<div className='flex gap-1'>
+						<span className='font-semibold'>Posted:</span>
+						{postedDate}
+					</div>
+					<div className='flex items-center gap-1'>
+						<span className='font-semibold'>Location:</span>
+						<div className='shrink-0'>
+							<MapPin />
+						</div>{' '}
+						{location}
+					</div>
+					{pay ? (
+						<div className='flex items-center gap-1'>
+							<span className='font-semibold'>Pay:</span>
+							<CircleDollarSign /> {pay}
+						</div>
+					) : null}
+					<div className='flex items-center gap-1'>
+						<span className='font-semibold'>Type:</span>
+						{jobType === 'Full-Time' ? (
+							<Chip startContent={<Briefcase />} color='primary'>
+								Full Time
+							</Chip>
+						) : jobType === 'Part-Time' ? (
+							<Chip startContent={<Briefcase />} color='secondary'>
+								Part Time
+							</Chip>
+						) : jobType === 'Internship' ? (
+							<Chip startContent={<Briefcase />} color='success'>
+								Internship
+							</Chip>
+						) : jobType === 'Freelance' ? (
+							<Chip startContent={<Briefcase />} color='warning'>
+								Freelance
+							</Chip>
+						) : (
+							''
+						)}
+					</div>
+					{/* <div className='flex items-center gap-1 pt-3 font-semibold'>
 					<FcOrganization /> Company Overview
 				</div>
 				<p>{companyOverview}</p>
@@ -133,6 +136,7 @@ export default function JobCard({
 					<FcList /> Responsibilities
 				</div>
 				<p>{responsibilities}</p> */}
+				</div>
 			</CardBody>
 			<CardFooter className='gap-3'>
 				<Button

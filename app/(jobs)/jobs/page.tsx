@@ -91,7 +91,13 @@ export default function Jobs() {
 											listing.jobs.endDate
 										).toLocaleDateString()}
 										location={listing.jobs.address}
-										pay={'$150,000/yr'}
+										pay={
+											listing.jobs.showPayRate
+												? listing.jobs.salary
+													? '$' + listing.jobs.salary + '/yr'
+													: '$' + listing.jobs.hourlyRate + '/hr'
+												: null
+										}
 										jobType={listing.jobs.jobType}
 									/>
 								);
