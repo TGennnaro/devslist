@@ -3,13 +3,14 @@
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
 import { useMutation } from 'react-query';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
 	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
 	const mutation = useMutation({
 		mutationFn: (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
@@ -30,18 +31,19 @@ export default function RegisterForm() {
 		onSuccess: async (res) => {
 			const response = await res.json();
 			if (res.status === 200) {
-				signIn('credentials', {
+				setIsLoading(true);
+				const res = await signIn('credentials', {
 					username: response.username,
 					password: response.password,
 					redirect: false,
-				}).then((res) => {
-					if (res?.status === 401) toast.error('Invalid username or password');
-					else if (res?.status !== 200)
-						toast.error('An internal error occurred');
-					else if (res?.status === 200) {
-						router.push('/');
-					}
 				});
+
+				if (res?.status === 401) toast.error('Invalid username or password');
+				else if (res?.status !== 200) toast.error('An internal error occurred');
+				else if (res?.status === 200) {
+					router.push('/');
+				}
+				setIsLoading(false);
 			} else {
 				toast.error('Something went wrong, try again');
 				console.log(response);
@@ -72,7 +74,7 @@ export default function RegisterForm() {
 				color='primary'
 				className='w-full mt-6'
 				type='submit'
-				isLoading={mutation.isLoading}
+				isLoading={mutation.isLoading || isLoading}
 			>
 				Register
 			</Button>
