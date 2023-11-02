@@ -65,11 +65,13 @@ export default function Jobs() {
 			<h1 className={title()}>Jobs</h1>
 
 			<div className='flex flex-col md:flex-row gap-8 pt-8'>
-				<Filters
-					setSearchQuery={setSearchQuery}
-					selectedJobTypes={selectedJobTypes}
-					setSelectedJobTypes={setSelectedJobTypes}
-				/>
+				<div className='shrink-0 grow-0'>
+					<Filters
+						setSearchQuery={setSearchQuery}
+						selectedJobTypes={selectedJobTypes}
+						setSelectedJobTypes={setSelectedJobTypes}
+					/>
+				</div>
 				<div>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
 						{filteredJobs.length > 0 ? (
