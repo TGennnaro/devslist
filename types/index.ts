@@ -23,7 +23,9 @@ export type Job = {
 	jobDescription: string | undefined;
 	jobResponsibilities: string | undefined;
 	jobRequirements: string | undefined;
-	workAddress: string | undefined;
+	workAddress?: string | undefined;
+	latitude?: string | undefined;
+	longitude?: string | undefined;
 	skills: string | undefined;
 	expirationDate: string | undefined;
 	showPayRate: string | undefined;

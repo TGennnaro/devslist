@@ -19,7 +19,11 @@ const schema = z.object({
 
 	jobDescription: z.string(),
 
-	workAddress: z.string(),
+	workAddress: z.string().optional(),
+
+	latitude: z.string().optional(),
+
+	longitude: z.string().optional(),
 
 	skills: z.string(),
 
@@ -62,7 +66,9 @@ export async function POST(req: Request, res: Response) {
 		jobResponsibilities: formData.get('jobResponsibilities') as string,
 		jobDescription: formData.get('jobDescription') as string,
 		jobRequirements: formData.get('jobRequirements') as string,
-		workAddress: formData.get('workAddress') as string,
+		workAddress: (formData.get('workAddress') as string) ?? undefined,
+		latitude: (formData.get('latitude') as string) ?? undefined,
+		longitude: (formData.get('longitude') as string) ?? undefined,
 		skills: formData.get('skills') as string,
 		expirationDate: formData.get('expirationDate') as string,
 		showPayRate: (formData.get('showPayRate') as string) ?? undefined,
@@ -85,6 +91,8 @@ export async function POST(req: Request, res: Response) {
 			jobRequirements,
 			jobDescription,
 			workAddress,
+			latitude,
+			longitude,
 			skills,
 			expirationDate,
 			showPayRate,
@@ -95,7 +103,7 @@ export async function POST(req: Request, res: Response) {
 		console.log('Data passed');
 
 		try {
-			const [latitude, longitude] = await getCoords(workAddress);
+			// const [latitude, longitude] = await getCoords(workAddress);
 
 			const job = await db
 				.insert(Jobs)
@@ -106,8 +114,8 @@ export async function POST(req: Request, res: Response) {
 					salary: Number(salary),
 					skills,
 					address: workAddress,
-					latitude: latitude,
-					longitude: longitude,
+					latitude: Number(latitude),
+					longitude: Number(longitude),
 					jobDescription,
 					jobType,
 					startDate: new Date().toISOString(),

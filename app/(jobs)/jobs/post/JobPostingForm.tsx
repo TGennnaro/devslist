@@ -6,23 +6,38 @@ import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { RadioGroup, Radio } from '@nextui-org/radio';
 import { Chip } from '@nextui-org/chip';
-import { Calendar, Eye, Plus, Send } from 'lucide-react';
+import { Calendar, Plus, Send } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { DayPicker } from 'react-day-picker';
 import { useMutation } from 'react-query';
 import { FormEvent, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import 'react-day-picker/dist/style.css';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
+
+const AddressSearch = dynamic(
+	() => import('@/app/(jobs)/jobs/post/AddressSearch'),
+	{
+		ssr: false,
+	}
+);
 
 export default function JobPostingForm() {
 	const [payTypeSelectionHidden, setPayTypeSelectionHidden] = useState(false);
 	const [hourlyInputHidden, setHourlyInputHidden] = useState(true);
 	const [salaryInputHidden, setSalaryInputHidden] = useState(true);
+	const [workLocationSearchHidden, setWorkLocationSearchHidden] =
+		useState(false);
+	const [workLocationLatitude, setWorkLocationLatitude] = useState(null);
+	const [workLocationLongitude, setWorkLocationLongitude] = useState(null);
+	const [workLocation, setWorkLocation] = useState(null);
 	const [skillsList, setSkillsList] = useState<string[]>([]);
 	const [skillValue, setSkillValue] = useState('');
 	const [selected, setSelected] = useState<Date | undefined>(new Date());
 	const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
 	const [isPosting, setIsPosting] = useState(false);
+	const { theme } = useTheme();
 	const router = useRouter();
 
 	const mutation = useMutation({
@@ -30,6 +45,15 @@ export default function JobPostingForm() {
 			e.preventDefault();
 			const formData = new FormData(e.target as HTMLFormElement);
 			formData.append('skills', JSON.stringify(skillsList));
+
+			workLocation ? formData.append('workAddress', workLocation) : null;
+			workLocationLatitude
+				? formData.append('latitude', workLocationLatitude)
+				: null;
+			workLocationLongitude
+				? formData.append('longitude', workLocationLongitude)
+				: null;
+
 			setIsPosting(true);
 			return fetch('/api/jobs', {
 				method: 'POST',
@@ -63,6 +87,15 @@ export default function JobPostingForm() {
 		salaryInputHidden
 			? setSalaryInputHidden(false)
 			: setSalaryInputHidden(true);
+	}
+
+	function handleShowWorkLocationSearch() {
+		setWorkLocationLatitude(null);
+		setWorkLocationLongitude(null);
+		setWorkLocation(null);
+		workLocationSearchHidden
+			? setWorkLocationSearchHidden(false)
+			: setWorkLocationSearchHidden(true);
 	}
 
 	function addToSkillsList() {
@@ -127,15 +160,6 @@ export default function JobPostingForm() {
 									label='Job responsibilities'
 									labelPlacement='outside'
 									placeholder='Develop AI and machine learning algorithms.'
-									variant='bordered'
-									radius='sm'
-									isRequired
-								/>
-								<Input
-									name='workAddress'
-									label='Work address'
-									labelPlacement='outside'
-									placeholder='123 Location Place, Random, NJ USA 12345'
 									variant='bordered'
 									radius='sm'
 									isRequired
@@ -224,6 +248,24 @@ export default function JobPostingForm() {
 
 								<Checkbox
 									defaultSelected
+									onClick={() => handleShowWorkLocationSearch()}
+									name='showWorkLocation'
+									value='true'
+								>
+									Physical work location?
+								</Checkbox>
+
+								{workLocationSearchHidden ? null : (
+									<AddressSearch
+										theme={theme}
+										setLatitude={setWorkLocationLatitude}
+										setLongitude={setWorkLocationLongitude}
+										setWorkLocation={setWorkLocation}
+									/>
+								)}
+
+								<Checkbox
+									defaultSelected
 									onClick={() => handleShowPayTypeSelection()}
 									name='showPayRate'
 									value='true'
@@ -282,14 +324,6 @@ export default function JobPostingForm() {
 									isLoading={isPosting}
 								>
 									Post Job
-								</Button>
-								<Button
-									variant='flat'
-									color='secondary'
-									onClick={() => console.log('preview')}
-									endContent={<Eye />}
-								>
-									Preview Job Posting
 								</Button>
 							</div>
 						</CardBody>
