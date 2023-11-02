@@ -6,19 +6,44 @@ import { Checkbox } from '@nextui-org/checkbox';
 import { Input, Textarea } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
 import { Plus } from 'lucide-react';
-import { FormEvent, useRef } from 'react';
-import ImageUpload from './ImageUpload';
+import { FormEvent } from 'react';
 import { useMutation } from 'react-query';
+import ImageUpload from './ImageUpload';
+import { User } from '@/db/schema';
+import React from 'react';
+import { toast } from 'sonner';
 
-export default function ProfileForm() {
+export default function ProfileForm({
+	defaultValues,
+}: {
+	defaultValues: Omit<User, 'password'> | null;
+}) {
 	const mutation = useMutation({
-		mutationFn: (e: FormEvent<HTMLFormElement>) => {
+		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			const formData = new FormData(e.target as HTMLFormElement);
+			const target = e.target as HTMLFormElement;
+			const formData = new FormData(target as HTMLFormElement);
+			for (const checkbox of target.querySelectorAll('input[type=checkbox]')) {
+				const checkboxInput = checkbox as HTMLInputElement;
+				formData.set(checkboxInput.name, checkboxInput.checked.toString());
+			}
 			return fetch('/api/profile', {
 				method: 'POST',
 				body: formData,
 			});
+		},
+		onSuccess: async (res) => {
+			if (res.status === 200) {
+				toast.success('Profile updated.');
+			} else {
+				const json = await res.json();
+				if (res.status === 500) {
+					toast.error('Something went wrong, try again');
+				} else {
+					toast.error('Error: ' + json.message);
+				}
+				console.error(json.message);
+			}
 		},
 	});
 	return (
@@ -33,7 +58,12 @@ export default function ProfileForm() {
 					</Text>
 				</div>
 				<div className='flex flex-col col-span-8 gap-8'>
-					<Checkbox name='employer'>I am an employer</Checkbox>
+					<Checkbox
+						name='employer'
+						defaultSelected={defaultValues?.isEmployer ?? undefined}
+					>
+						I am an employer
+					</Checkbox>
 					<Textarea
 						name='about'
 						label='About'
@@ -42,6 +72,7 @@ export default function ProfileForm() {
 						variant='bordered'
 						radius='sm'
 						minRows={4}
+						defaultValue={defaultValues?.about ?? undefined}
 					/>
 					<div className=''>
 						<Input
@@ -95,6 +126,7 @@ export default function ProfileForm() {
 							placeholder='First name'
 							variant='bordered'
 							radius='sm'
+							defaultValue={defaultValues?.firstName ?? undefined}
 						/>
 						<Input
 							name='lastName'
@@ -103,6 +135,7 @@ export default function ProfileForm() {
 							placeholder='Last name'
 							variant='bordered'
 							radius='sm'
+							defaultValue={defaultValues?.lastName ?? undefined}
 						/>
 					</div>
 					<Input
@@ -113,6 +146,7 @@ export default function ProfileForm() {
 						placeholder='Email address'
 						variant='bordered'
 						radius='sm'
+						defaultValue={defaultValues?.email ?? undefined}
 					/>
 					<div className='grid grid-cols-2 gap-x-4'>
 						<Input
@@ -122,6 +156,7 @@ export default function ProfileForm() {
 							placeholder='City'
 							variant='bordered'
 							radius='sm'
+							defaultValue={defaultValues?.city ?? undefined}
 						/>
 						<Select
 							name='state'
@@ -130,6 +165,9 @@ export default function ProfileForm() {
 							placeholder='State'
 							variant='bordered'
 							radius='sm'
+							defaultSelectedKeys={[
+								...(defaultValues?.state ? [defaultValues?.state] : []),
+							]}
 						>
 							<SelectItem key='pennsylvania' value='pennsylvania'>
 								Pennsylvania
@@ -147,9 +185,16 @@ export default function ProfileForm() {
 							placeholder='Country'
 							variant='bordered'
 							radius='sm'
+							selectionMode='single'
+							defaultSelectedKeys={[
+								...(defaultValues?.country ? [defaultValues?.country] : []),
+							]}
 						>
 							<SelectItem key='united-states' value='united-states'>
 								United States
+							</SelectItem>
+							<SelectItem key='canada' value='canada'>
+								Canada
 							</SelectItem>
 						</Select>
 					</div>
@@ -179,6 +224,7 @@ export default function ProfileForm() {
 							placeholder='Phone number'
 							variant='bordered'
 							radius='sm'
+							defaultValue={defaultValues?.phone ?? undefined}
 						/>
 						<Input
 							name='birthday'
@@ -187,6 +233,7 @@ export default function ProfileForm() {
 							placeholder='Birthday'
 							variant='bordered'
 							radius='sm'
+							defaultValue={defaultValues?.dob ?? undefined}
 						/>
 					</div>
 					<div className='grid grid-cols-6 gap-x-4'>
@@ -197,6 +244,11 @@ export default function ProfileForm() {
 							placeholder='Gender'
 							variant='bordered'
 							radius='sm'
+							defaultSelectedKeys={...defaultValues?.gender !== null
+								? defaultValues?.gender === true
+									? ['male']
+									: ['female']
+								: []}
 						>
 							<SelectItem key='male' value='male'>
 								Male
@@ -213,6 +265,11 @@ export default function ProfileForm() {
 							variant='bordered'
 							radius='sm'
 							className='col-span-3'
+							defaultSelectedKeys={...defaultValues?.veteranStatus !== null
+								? defaultValues?.veteranStatus === true
+									? ['yes']
+									: ['no']
+								: []}
 						>
 							<SelectItem key='yes' value='yes'>
 								I am a protected veteran
@@ -229,6 +286,9 @@ export default function ProfileForm() {
 							variant='bordered'
 							radius='sm'
 							className='col-span-2'
+							defaultSelectedKeys={...defaultValues?.ethnicity
+								? [defaultValues?.ethnicity]
+								: []}
 						>
 							<SelectItem key='white' value='white'>
 								Caucasian
@@ -269,7 +329,12 @@ export default function ProfileForm() {
 			</section>
 
 			<section className='flex justify-end'>
-				<Button color='primary' radius='sm' type='submit'>
+				<Button
+					color='primary'
+					radius='sm'
+					type='submit'
+					isLoading={mutation.isLoading}
+				>
 					Save changes
 				</Button>
 			</section>
