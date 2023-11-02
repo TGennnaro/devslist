@@ -17,7 +17,7 @@ export default function LoginForm() {
 		setIsLoading(true);
 		const formData = new FormData(e.target as HTMLFormElement);
 		signIn('credentials', {
-			username: formData.get('email') as string,
+			username: (formData.get('email') as string).toLowerCase(),
 			password: formData.get('password') as string,
 			redirect: false,
 		}).then((res) => {
