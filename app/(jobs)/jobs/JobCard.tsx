@@ -90,7 +90,10 @@ export default function JobCard({
 				</div>
 				<div className='flex items-center gap-1'>
 					<span className='font-semibold'>Location:</span>
-					<MapPin /> {location}
+					<div className='shrink-0'>
+						<MapPin />
+					</div>{' '}
+					{location}
 				</div>
 				<div className='flex items-center gap-1'>
 					<span className='font-semibold'>Pay:</span>
