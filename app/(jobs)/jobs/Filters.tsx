@@ -2,11 +2,11 @@ import { Checkbox } from '@nextui-org/checkbox';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import JobSearchBar from './JobSearchBar';
 
-export default function Filters() {
+export default function Filters({ setSearchQuery }: { setSearchQuery: any }) {
 	return (
 		<div className='flex flex-col gap-8 w-80'>
 			<div>
-				<JobSearchBar />
+				<JobSearchBar setSearchQuery={setSearchQuery} />
 			</div>
 			<hr className='my-4 border-divider' />
 			<div>

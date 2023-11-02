@@ -2,7 +2,6 @@
 import { title } from '@/components/primitives';
 import { useEffect, useState } from 'react';
 import JobCard from '@/app/(jobs)/jobs/JobCard';
-import JobSearchBar from '@/app/(jobs)/jobs/JobSearchBar';
 import { Pagination } from '@nextui-org/pagination';
 import { Metadata } from 'next';
 import Filters from './Filters';
@@ -14,6 +13,7 @@ import Filters from './Filters';
 
 export default function Jobs() {
 	const [jobs, setJobs] = useState([]);
+	const [searchQuery, setSearchQuery] = useState('');
 
 	const fetchJobs = async () => {
 		const jobs = await fetch('/api/jobs');
@@ -21,6 +21,26 @@ export default function Jobs() {
 		setJobs(data);
 		console.log(data);
 	};
+
+	const filterItems = (searchQuery: string) => {
+		return jobs.filter(
+			(listing: any) =>
+				listing.jobs.jobTitle
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
+				listing.jobs.address
+					?.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
+				listing.jobs.jobRequirements
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
+				listing.jobs.skills.some((skill: string) =>
+					skill.toLowerCase().includes(searchQuery.toLowerCase())
+				)
+		);
+	};
+
+	const filteredJobs = filterItems(searchQuery);
 
 	useEffect(() => {
 		fetchJobs();
@@ -31,10 +51,10 @@ export default function Jobs() {
 			<h1 className={title()}>Jobs</h1>
 
 			<div className='flex flex-col md:flex-row gap-8 pt-8'>
-				<Filters />
+				<Filters setSearchQuery={setSearchQuery} />
 				<div>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
-						{jobs.map((listing: any) => {
+						{filteredJobs.map((listing: any) => {
 							return (
 								<JobCard
 									key={listing.jobs.jobid}
