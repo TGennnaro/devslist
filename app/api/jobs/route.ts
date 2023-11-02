@@ -102,7 +102,7 @@ export async function POST(req: Request, res: Response) {
 				.values({
 					jobTitle,
 					userid: session?.user.id!,
-					companyid: 11,
+					companyid: 13,
 					salary: Number(salary),
 					skills,
 					address: workAddress,
