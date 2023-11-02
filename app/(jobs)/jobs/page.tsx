@@ -14,6 +14,7 @@ import Filters from './Filters';
 export default function Jobs() {
 	const [jobs, setJobs] = useState([]);
 	const [searchQuery, setSearchQuery] = useState('');
+	const [selectedJobTypes, setSelectedJobTypes] = useState([]);
 
 	const fetchJobs = async () => {
 		const jobs = await fetch('/api/jobs');
@@ -22,9 +23,9 @@ export default function Jobs() {
 		console.log(data);
 	};
 
-	const filterItems = (searchQuery: string) => {
-		return jobs.filter(
-			(listing: any) =>
+	const filterJobs = (searchQuery: string, selectedJobTypes: string[]) => {
+		return jobs.filter((listing: any) => {
+			const matchesSearchQuery =
 				listing.jobs.jobTitle
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase()) ||
@@ -34,13 +35,26 @@ export default function Jobs() {
 				listing.jobs.jobRequirements
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase()) ||
+				listing.company.name
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
 				listing.jobs.skills.some((skill: string) =>
 					skill.toLowerCase().includes(searchQuery.toLowerCase())
-				)
-		);
+				);
+
+			console.log(selectedJobTypes.length);
+
+			const matchesSelectedJobTypes =
+				selectedJobTypes.length === 0 ||
+				selectedJobTypes.some((jobType: string) =>
+					listing.jobs.jobType.includes(jobType)
+				);
+
+			return matchesSearchQuery && matchesSelectedJobTypes;
+		});
 	};
 
-	const filteredJobs = filterItems(searchQuery);
+	const filteredJobs = filterJobs(searchQuery, selectedJobTypes);
 
 	useEffect(() => {
 		fetchJobs();
@@ -51,30 +65,38 @@ export default function Jobs() {
 			<h1 className={title()}>Jobs</h1>
 
 			<div className='flex flex-col md:flex-row gap-8 pt-8'>
-				<Filters setSearchQuery={setSearchQuery} />
+				<Filters
+					setSearchQuery={setSearchQuery}
+					selectedJobTypes={selectedJobTypes}
+					setSelectedJobTypes={setSelectedJobTypes}
+				/>
 				<div>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
-						{filteredJobs.map((listing: any) => {
-							return (
-								<JobCard
-									key={listing.jobs.jobid}
-									id={listing.jobs.jobid}
-									position={listing.jobs.jobTitle}
-									company={listing.company.name}
-									companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
-									companyRating={4.5}
-									postedDate={new Date(
-										listing.jobs.startDate
-									).toLocaleDateString()}
-									expirationDate={new Date(
-										listing.jobs.endDate
-									).toLocaleDateString()}
-									location={listing.jobs.address}
-									pay={'$150,000/yr'}
-									jobType={listing.jobs.jobType}
-								/>
-							);
-						})}
+						{filteredJobs.length > 0 ? (
+							filteredJobs.map((listing: any) => {
+								return (
+									<JobCard
+										key={listing.jobs.jobid}
+										id={listing.jobs.jobid}
+										position={listing.jobs.jobTitle}
+										company={listing.company.name}
+										companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
+										companyRating={4.5}
+										postedDate={new Date(
+											listing.jobs.startDate
+										).toLocaleDateString()}
+										expirationDate={new Date(
+											listing.jobs.endDate
+										).toLocaleDateString()}
+										location={listing.jobs.address}
+										pay={'$150,000/yr'}
+										jobType={listing.jobs.jobType}
+									/>
+								);
+							})
+						) : (
+							<div>No results found</div>
+						)}
 					</div>
 					<div className='flex flex-row items-center justify-center my-52'>
 						<Pagination total={5} initialPage={1} />

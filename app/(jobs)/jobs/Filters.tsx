@@ -1,8 +1,16 @@
-import { Checkbox } from '@nextui-org/checkbox';
+import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import JobSearchBar from './JobSearchBar';
 
-export default function Filters({ setSearchQuery }: { setSearchQuery: any }) {
+export default function Filters({
+	setSearchQuery,
+	selectedJobTypes,
+	setSelectedJobTypes,
+}: {
+	setSearchQuery: any;
+	selectedJobTypes: any;
+	setSelectedJobTypes: any;
+}) {
 	return (
 		<div className='flex flex-col gap-8 w-80'>
 			<div>
@@ -11,20 +19,16 @@ export default function Filters({ setSearchQuery }: { setSearchQuery: any }) {
 			<hr className='my-4 border-divider' />
 			<div>
 				<label className='block mb-6'>Type</label>
-				<ul className='flex flex-col gap-3'>
-					<li>
-						<Checkbox>Full Time</Checkbox>
-					</li>
-					<li>
-						<Checkbox>Part Time</Checkbox>
-					</li>
-					<li>
-						<Checkbox>Freelance</Checkbox>
-					</li>
-					<li>
-						<Checkbox>Internship</Checkbox>
-					</li>
-				</ul>
+				<CheckboxGroup
+					color='primary'
+					value={selectedJobTypes}
+					onValueChange={setSelectedJobTypes}
+				>
+					<Checkbox value='Full-Time'>Full-Time</Checkbox>
+					<Checkbox value='Part-Time'>Part-Time</Checkbox>
+					<Checkbox value='Freelance'>Freelance</Checkbox>
+					<Checkbox value='Internship'>Internship</Checkbox>
+				</CheckboxGroup>
 			</div>
 			<hr className='my-4 border-divider' />
 			<div className='w-full'>
