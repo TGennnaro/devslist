@@ -41,7 +41,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 				.from(Jobs)
 				.where(eq(Jobs.id, params.id))
 				.limit(1)
-				.leftJoin(Company, eq(Jobs.id, Company.id));
+				.leftJoin(Company, eq(Jobs.companyId, Company.id));
 			return job[0];
 		}
 
@@ -49,94 +49,93 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 		return (
 			<>
-				<div className='flex flex-row items-center gap-5 mb-8'>
-					<div>
+				<div className='flex flex-row items-center justify-between mb-8'>
+					<div className='flex items-center gap-4'>
 						<Image
 							isBlurred
 							alt='Company logo'
-							height={40}
+							width={64}
+							height={64}
 							radius='sm'
 							src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
-							width={40}
-							className=' p-0.5 dark:bg-gray-500'
+							className='object-contain p-1 dark:bg-gray-500 aspect-square'
 						/>
-					</div>
-					<div>
-						<div className='text-3xl font-bold'>{jobData.jobs.jobTitle}</div>
-						<div className='font-semibold text-medium'>
-							{jobData.company?.name}
+						<div>
+							<div className='text-3xl font-bold'>{jobData.jobs.jobTitle}</div>
+							<div className='font-semibold text-medium text-light'>
+								{jobData.company?.name}
+							</div>
 						</div>
 					</div>
-					<div>
-						<Button endContent={<Send />} variant='solid' color='primary'>
-							Apply Now
-						</Button>
-					</div>
+					<Button
+						startContent={<Send size={16} />}
+						variant='solid'
+						color='primary'
+					>
+						Apply
+					</Button>
 				</div>
 
 				<div className='flex flex-col gap-5 md:flex-row'>
 					<div className='basis-1/3'>
 						<div className='flex flex-col gap-3'>
-							<div>
-								<div className='text-2xl font-semibold'>Availability</div>
-								<Text variant='body'>
-									<div className='flex items-center gap-1'>
-										<CalendarClock />{' '}
-										{new Date(jobData.jobs.startDate).toLocaleDateString()} -{' '}
-										{new Date(jobData.jobs.endDate).toLocaleDateString()}
-									</div>
-								</Text>
+							<div className='text-xl font-semibold'>Information</div>
+							<div className='flex items-center'>
+								<CalendarClock size={16} className='mr-2' />
+								<span className='text-light'>
+									Available{' '}
+									{new Date(jobData.jobs.startDate).toLocaleDateString()} -{' '}
+									{new Date(jobData.jobs.endDate).toLocaleDateString()}
+								</span>
 							</div>
-							<Divider />
-							<div>
-								<div className='text-2xl font-semibold'>Location</div>
-								<Text variant='body'>
-									<div className='flex items-center gap-1'>
-										<MapPin /> {jobData.jobs.address}
-									</div>
-								</Text>
+							<div className='flex'>
+								<MapPin size={16} className='mt-1 mr-2 shrink-0' />
+								<span className='text-light'>
+									{jobData.jobs.address ?? 'Not listed'}
+								</span>
 							</div>
-							{jobData.jobs.showPayRate ? (
-								<>
-									<Divider />
-									<div>
-										<div className='text-2xl font-semibold'>Pay</div>
-										<Text variant='body'>
-											<div className='flex items-center gap-1'>
-												<CircleDollarSign />
-												{jobData.jobs.salary
-													? '$' + jobData.jobs.salary + '/yr'
-													: '$' + jobData.jobs.hourlyRate + '/hr'}
-											</div>
-										</Text>
-									</div>
-								</>
-							) : null}
-							<Divider />
-							<div className='text-2xl font-semibold'>Job Type</div>
-							<div>
+							<div className='flex items-center gap-4'>
 								{jobData.jobs.jobType === 'Full-Time' ? (
-									<Chip startContent={<Briefcase />} color='primary'>
+									<Chip
+										startContent={<Briefcase size={16} className='ml-1' />}
+										className='text-blue-600 dark:text-blue-300 bg-blue-300/30 dark:bg-blue-600/30'
+									>
 										Full Time
 									</Chip>
 								) : jobData.jobs.jobType === 'Part-Time' ? (
-									<Chip startContent={<Briefcase />} color='secondary'>
+									<Chip
+										startContent={<Briefcase size={16} className='ml-1' />}
+										className='text-purple-600 dark:text-purple-300 bg-purple-300/30 dark:bg-purple-600/30'
+									>
 										Part Time
 									</Chip>
 								) : jobData.jobs.jobType === 'Internship' ? (
-									<Chip startContent={<Briefcase />} color='success'>
+									<Chip
+										startContent={<Briefcase size={16} className='ml-1' />}
+										className='text-green-600 dark:text-green-300 bg-green-300/30 dark:bg-green-600/30'
+									>
 										Internship
 									</Chip>
 								) : jobData.jobs.jobType === 'Freelance' ? (
-									<Chip startContent={<Briefcase />} color='warning'>
+									<Chip
+										startContent={<Briefcase size={16} className='ml-1' />}
+										className='text-pink-600 dark:text-pink-300 bg-pink-300/30 dark:bg-pink-600/30'
+									>
 										Freelance
 									</Chip>
 								) : (
 									''
 								)}
+								<span className='text-light'>
+									{jobData.jobs.showPayRate
+										? jobData.jobs.salary
+											? '$' + jobData.jobs.salary + '/year'
+											: '$' + jobData.jobs.hourlyRate + '/hour'
+										: null}
+								</span>
 							</div>
 							<Divider />
-							<div className='text-2xl font-semibold'>Recruiter</div>
+							<div className='text-xl font-semibold'>Recruiter</div>
 							<div>
 								<User
 									name='D.B. Cooper'
@@ -149,34 +148,34 @@ export default async function Page({ params }: { params: { id: number } }) {
 						</div>
 					</div>
 					<div className='basis-2/3'>
-						<div className='flex flex-col gap-3'>
+						<div className='flex flex-col gap-6'>
 							<div>
-								<div className='text-2xl font-semibold'>Company Overview</div>
+								<div className='mb-2 text-xl font-medium'>Company Overview</div>
 								<Text variant='body'>placeholder</Text>
 							</div>
 							<div>
-								<div className='text-2xl font-semibold'>Description</div>
+								<div className='mb-2 text-xl font-medium'>Description</div>
 								<Text variant='body'>{jobData.jobs.jobDescription}</Text>
 							</div>
 							<div>
-								<div className='text-2xl font-semibold'>Requirements</div>
+								<div className='mb-2 text-xl font-medium'>Requirements</div>
 								<Text variant='body'>{jobData.jobs.jobRequirements}</Text>
 							</div>
 							<div>
-								<div className='text-2xl font-semibold'>Skills</div>
-								<div className='flex flex-row items-center gap-1'>
+								<div className='mb-2 text-xl font-medium'>Responsibilities</div>
+								<Text variant='body'>{jobData.jobs.jobResponsibilities}</Text>
+							</div>
+							<div>
+								<div className='mb-2 text-xl font-medium'>Skills</div>
+								<div className='flex flex-row items-center gap-1 py-2'>
 									{(jobData.jobs.skills as string[]).map((skill: string) => {
 										return (
-											<Chip key={skill} color='default' variant='faded'>
+											<Chip key={skill} color='default' variant='flat'>
 												{skill}
 											</Chip>
 										);
 									})}
 								</div>
-							</div>
-							<div>
-								<div className='text-2xl font-semibold'>Responsibilities</div>
-								<Text variant='body'>{jobData.jobs.jobResponsibilities}</Text>
 							</div>
 						</div>
 					</div>
