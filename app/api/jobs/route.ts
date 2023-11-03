@@ -4,37 +4,25 @@ import { z } from 'zod';
 import { db } from '@/db';
 import { Jobs } from '@/db/schema';
 import { Company } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getUser } from '@/lib/server_utils';
 
 const schema = z.object({
 	jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
-
 	jobType: z.string(),
-
 	jobResponsibilities: z.string(),
-
 	jobRequirements: z.string(),
-
 	jobDescription: z.string(),
-
 	workAddress: z.string().optional(),
-
 	latitude: z.string().optional(),
-
 	longitude: z.string().optional(),
-
 	skills: z.string(),
-
 	expirationDate: z.string(),
-
 	showPayRate: z.string().optional(),
-
 	payType: z.string().optional(),
-
 	salary: z.string().optional(),
-
 	hourlyRate: z.string().optional(),
 });
 
@@ -83,6 +71,9 @@ export async function POST(req: Request, res: Response) {
 	//   }
 	// }
 
+	const user = await getUser();
+	if (!user) throw new Error('Unauthorized');
+
 	try {
 		const {
 			jobTitle,
@@ -109,8 +100,8 @@ export async function POST(req: Request, res: Response) {
 				.insert(Jobs)
 				.values({
 					jobTitle,
-					userid: session?.user.id!,
-					companyid: 13,
+					userId: user.id,
+					companyId: 16,
 					salary: Number(salary),
 					skills,
 					address: workAddress,
@@ -126,7 +117,7 @@ export async function POST(req: Request, res: Response) {
 					payType,
 					hourlyRate: Number(hourlyRate),
 				})
-				.returning({ insertedId: Jobs.jobid });
+				.returning({ insertedId: Jobs.id });
 
 			return NextResponse.json(
 				{ message: 'OK', id: job[0].insertedId },
@@ -134,6 +125,10 @@ export async function POST(req: Request, res: Response) {
 			);
 		} catch (err) {
 			console.log(err);
+			return NextResponse.json(
+				{ message: 'Internal server error' },
+				{ status: 500 }
+			);
 		}
 	} catch (e) {
 		if (e instanceof z.ZodError) {
@@ -145,8 +140,6 @@ export async function POST(req: Request, res: Response) {
 			{ status: 500 }
 		);
 	}
-
-	return NextResponse.json({ message: 'OK' }, { status: 200 });
 }
 
 export async function GET(req: Request) {
@@ -154,7 +147,8 @@ export async function GET(req: Request) {
 		const data = await db
 			.select()
 			.from(Jobs)
-			.leftJoin(Company, eq(Jobs.companyid, Company.companyid));
+			.leftJoin(Company, eq(Jobs.companyId, Company.id))
+			.orderBy(desc(Jobs.startDate));
 		return NextResponse.json(data);
 	} catch (error) {
 		return NextResponse.json({ error: error });
