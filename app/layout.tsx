@@ -45,18 +45,18 @@ export default function RootLayout({
 				<Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>
 					<div className='relative flex flex-col h-screen'>
 						<Navbar />
-						<main className='container flex-grow px-6 pt-16 mx-auto max-w-7xl'>
+						<main className='container flex-grow px-6 pt-16 mx-auto mb-16 max-w-7xl'>
 							{children}
 						</main>
-						<footer className='flex items-center justify-center w-full py-3'>
+						<footer className='flex items-center justify-center w-full py-3 text-sm text-light'>
+							Copyright © 2023 DevsList
+							<span className='mx-2'>·</span>
 							<Link
-								isExternal
-								className='flex items-center gap-1 text-current'
-								href='https://nextui-docs-v2.vercel.app?utm_source=next-app-template'
-								title='nextui.org homepage'
+								href='https://github.com/TGennnaro/devslist'
+								target='_blank'
+								className='text-sm underline text-light'
 							>
-								<span className='text-default-600'>Powered by</span>
-								<p className='text-primary'>NextUI</p>
+								Source code
 							</Link>
 						</footer>
 					</div>
