@@ -7,10 +7,16 @@ import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import {
 	Briefcase,
+	Calendar,
 	CalendarClock,
+	ChevronRight,
 	CircleDollarSign,
+	List,
 	MapPin,
 } from 'lucide-react';
+import { dateSince, timeSince } from '@/lib/utils';
+
+const MAX_DESC_LENGTH = 200;
 
 const generateRatingStars = (companyRating: number) => {
 	const stars = [];
@@ -45,17 +51,19 @@ export default function JobCard({
 	location,
 	pay,
 	jobType,
+	description,
 }: {
 	id: number;
 	position: string;
 	company: string;
 	companyLogo: string;
 	companyRating: number;
-	postedDate: string;
+	postedDate: Date;
 	expirationDate: string;
-	location: string;
+	location: string | null;
 	pay?: string | null;
 	jobType: string;
+	description: string;
 }) {
 	const router = useRouter();
 	return (
@@ -79,50 +87,58 @@ export default function JobCard({
 						| {companyRating.toFixed(1)} {generateRatingStars(companyRating)}
 					</p>
 					<p className='flex items-center gap-1 text-small text-default-500'>
-						<CalendarClock /> Available until {expirationDate}
+						<CalendarClock size={16} /> Available until {expirationDate}
 					</p>
 				</div>
 			</CardHeader>
-			<CardBody>
-				<div className='flex flex-col gap-1'>
-					<div className='flex gap-1'>
-						<span className='font-semibold'>Posted:</span>
-						{postedDate}
-					</div>
-					<div className='flex items-center gap-1'>
-						<span className='font-semibold'>Location:</span>
-						<div className='shrink-0'>
-							<MapPin />
-						</div>{' '}
-						{location}
-					</div>
-					{pay ? (
-						<div className='flex items-center gap-1'>
-							<span className='font-semibold'>Pay:</span>
-							<CircleDollarSign /> {pay}
-						</div>
-					) : null}
-					<div className='flex items-center gap-1'>
-						<span className='font-semibold'>Type:</span>
+			<CardBody className='px-3 py-2'>
+				<div className='flex flex-col gap-4'>
+					<div className='flex items-center gap-4'>
 						{jobType === 'Full-Time' ? (
-							<Chip startContent={<Briefcase />} color='primary'>
+							<Chip
+								startContent={<Briefcase size={16} className='ml-1' />}
+								className='text-blue-600 dark:text-blue-300 bg-blue-300/30 dark:bg-blue-600/30'
+							>
 								Full Time
 							</Chip>
 						) : jobType === 'Part-Time' ? (
-							<Chip startContent={<Briefcase />} color='secondary'>
+							<Chip
+								startContent={<Briefcase size={16} className='ml-1' />}
+								className='text-purple-600 dark:text-purple-300 bg-purple-300/30 dark:bg-purple-600/30'
+							>
 								Part Time
 							</Chip>
 						) : jobType === 'Internship' ? (
-							<Chip startContent={<Briefcase />} color='success'>
+							<Chip
+								startContent={<Briefcase size={16} className='ml-1' />}
+								className='text-green-600 dark:text-green-300 bg-green-300/30 dark:bg-green-600/30'
+							>
 								Internship
 							</Chip>
 						) : jobType === 'Freelance' ? (
-							<Chip startContent={<Briefcase />} color='warning'>
+							<Chip
+								startContent={<Briefcase size={16} className='ml-1' />}
+								className='text-pink-600 dark:text-pink-300 bg-pink-300/30 dark:bg-pink-600/30'
+							>
 								Freelance
 							</Chip>
 						) : (
 							''
 						)}
+						{pay ? <span className='text-light'>{pay}</span> : null}
+					</div>
+					<div className='flex'>
+						<MapPin size={16} className='mt-1 mr-2 shrink-0' />
+						<span className='text-light'>{location ?? 'Not listed'}</span>
+					</div>
+					<div>
+						<div className='flex items-center gap-1 pt-3 font-semibold'>
+							<List size={16} className='mr-2' /> Description
+						</div>
+						<p className='text-light'>
+							{description.substring(0, MAX_DESC_LENGTH) +
+								(description.length > MAX_DESC_LENGTH ? '...' : '')}
+						</p>
 					</div>
 					{/* <div className='flex items-center gap-1 pt-3 font-semibold'>
 					<FcOrganization /> Company Overview
@@ -138,14 +154,19 @@ export default function JobCard({
 				<p>{responsibilities}</p> */}
 				</div>
 			</CardBody>
-			<CardFooter className='gap-3'>
+			<CardFooter className='flex items-center justify-between'>
 				<Button
-					variant='flat'
 					size='md'
 					onClick={() => router.push(`/jobs/${id}`)}
+					color='primary'
+					endContent={<ChevronRight size={16} />}
 				>
 					View Job
 				</Button>
+				<div className='flex items-center text-sm text-light'>
+					<Calendar size={16} className='mr-1' />
+					{dateSince(postedDate)}
+				</div>
 			</CardFooter>
 		</Card>
 	);
