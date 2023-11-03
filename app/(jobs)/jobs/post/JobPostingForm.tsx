@@ -15,6 +15,7 @@ import dynamic from 'next/dynamic';
 import 'react-day-picker/dist/style.css';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { toast } from 'sonner';
 
 const AddressSearch = dynamic(
 	() => import('@/app/(jobs)/jobs/post/AddressSearch'),
@@ -36,12 +37,11 @@ export default function JobPostingForm() {
 	const [skillValue, setSkillValue] = useState('');
 	const [selected, setSelected] = useState<Date | undefined>(new Date());
 	const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
-	const [isPosting, setIsPosting] = useState(false);
 	const { theme } = useTheme();
 	const router = useRouter();
 
 	const mutation = useMutation({
-		mutationFn: (e: FormEvent<HTMLFormElement>) => {
+		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
 			const formData = new FormData(e.target as HTMLFormElement);
 			formData.append('skills', JSON.stringify(skillsList));
@@ -54,16 +54,19 @@ export default function JobPostingForm() {
 				? formData.append('longitude', workLocationLongitude)
 				: null;
 
-			setIsPosting(true);
-			return fetch('/api/jobs', {
+			return await fetch('/api/jobs', {
 				method: 'POST',
 				body: formData,
-			})
-				.then(async (response) => await response.json())
-				.then((response) => {
-					setIsPosting(false);
-					router.push(`/jobs/${response.id}`);
-				});
+			});
+		},
+		onSuccess: async (res) => {
+			const json = await res.json();
+			if (res.status === 200) {
+				router.push(`/jobs/${json.id}`);
+			} else {
+				console.error(json.message);
+				toast.error('Error: ' + json.message);
+			}
 		},
 	});
 
@@ -113,7 +116,7 @@ export default function JobPostingForm() {
 				<div className='basis-full'>
 					<Card>
 						<CardBody>
-							<div className='text-2xl font-semibold my-5'>
+							<div className='my-5 text-2xl font-semibold'>
 								Some basic info first
 							</div>
 							<div className='flex flex-col gap-5'>
@@ -133,7 +136,7 @@ export default function JobPostingForm() {
 									<Radio value='Freelance'>Freelance</Radio>
 								</RadioGroup>
 							</div>
-							<div className='text-2xl font-semibold my-5'>
+							<div className='my-5 text-2xl font-semibold'>
 								Let&apos;s learn more about this job
 							</div>
 							<div className='flex flex-col gap-5'>
@@ -165,7 +168,7 @@ export default function JobPostingForm() {
 									isRequired
 								/>
 
-								<div className='flex flex-row gap-3 items-center'>
+								<div className='flex flex-row items-center gap-3'>
 									<Input
 										label='Enter required skills (one at a time)'
 										labelPlacement='outside'
@@ -179,6 +182,12 @@ export default function JobPostingForm() {
 												<Plus onClick={() => addToSkillsList()} />
 											</button>
 										}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter') {
+												e.preventDefault();
+												addToSkillsList();
+											}
+										}}
 									/>
 								</div>
 								{skillsList.length != 0 ? (
@@ -206,7 +215,7 @@ export default function JobPostingForm() {
 									</Card>
 								) : null}
 							</div>
-							<div className='text-2xl font-semibold my-5'>
+							<div className='my-5 text-2xl font-semibold'>
 								Job posting settings
 							</div>
 							<div className='flex flex-col gap-5'>
@@ -320,8 +329,8 @@ export default function JobPostingForm() {
 									onClick={() => console.log('post')}
 									endContent={<Send />}
 									type='submit'
-									isDisabled={isPosting}
-									isLoading={isPosting}
+									isDisabled={mutation.isLoading}
+									isLoading={mutation.isLoading}
 								>
 									Post Job
 								</Button>
