@@ -46,7 +46,11 @@ export default function AddressSearch({
 				rel='stylesheet'
 				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
 			/>
-			<div id='searchDiv' ref={searchDiv}></div>
+			<div
+				id='searchDiv'
+				ref={searchDiv}
+				className='[&>*:not(:nth-child(1))]:hidden' // fixes double search bar issue
+			></div>
 			<p>
 				<span className='font-semibold'>{selectedAddress}</span>
 			</p>
