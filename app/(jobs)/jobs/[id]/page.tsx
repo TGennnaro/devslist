@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 		const result = await db
 			.select()
 			.from(Jobs)
-			.where(eq(Jobs.jobid, params.id))
+			.where(eq(Jobs.id, params.id))
 			.limit(1);
 		return result.length > 0;
 	}
@@ -39,9 +39,9 @@ export default async function Page({ params }: { params: { id: number } }) {
 			const job = await db
 				.select()
 				.from(Jobs)
-				.where(eq(Jobs.jobid, params.id))
+				.where(eq(Jobs.id, params.id))
 				.limit(1)
-				.leftJoin(Company, eq(Jobs.companyid, Company.companyid));
+				.leftJoin(Company, eq(Jobs.id, Company.id));
 			return job[0];
 		}
 
@@ -49,7 +49,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 		return (
 			<>
-				<div className='flex flex-row gap-5 mb-8 items-center'>
+				<div className='flex flex-row items-center gap-5 mb-8'>
 					<div>
 						<Image
 							isBlurred
@@ -63,7 +63,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 					</div>
 					<div>
 						<div className='text-3xl font-bold'>{jobData.jobs.jobTitle}</div>
-						<div className='text-medium font-semibold'>
+						<div className='font-semibold text-medium'>
 							{jobData.company?.name}
 						</div>
 					</div>
@@ -74,7 +74,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 					</div>
 				</div>
 
-				<div className='flex flex-col md:flex-row gap-5'>
+				<div className='flex flex-col gap-5 md:flex-row'>
 					<div className='basis-1/3'>
 						<div className='flex flex-col gap-3'>
 							<div>
