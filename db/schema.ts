@@ -62,29 +62,31 @@ export const employerView = pgView('employer_view').as((qb) =>
 );
 
 export const Jobs = pgTable('jobs', {
-	jobid: serial('jobid').primaryKey(),
-	userid: integer('userid')
+	id: serial('id').primaryKey(),
+	userId: integer('user_id')
 		.notNull()
 		.references(() => Users.id, { onDelete: 'cascade' }),
-	companyid: integer('company_id')
+	companyId: integer('company_id')
 		.notNull()
-		.references(() => Company.companyid, { onDelete: 'cascade' }),
-	jobTitle: text('jobTitle').notNull(),
-	showPayRate: boolean('showPayRate').default(true).notNull(),
-	payType: text('payType'),
-	hourlyRate: real('hourlyRate'),
+		.references(() => Company.id, { onDelete: 'cascade' }),
+	jobTitle: text('job_title').notNull(),
+	showPayRate: boolean('show_pay_rate').default(true).notNull(),
+	payType: text('pay_type'),
+	hourlyRate: real('hourly_rate'),
 	salary: real('salary'),
 	skills: json('skills').notNull(),
 	address: text('address'),
 	longitude: real('longitude'),
 	latitude: real('latitude'),
-	jobDescription: text('jobDescription').notNull(),
-	jobResponsibilities: text('jobResponsibilities').notNull(),
-	jobRequirements: text('jobRequirements').notNull(),
-	jobType: text('jobType').notNull(),
-	startDate: date('startDate').notNull(),
-	endDate: date('endDate').notNull(),
+	jobDescription: text('job_description').notNull(),
+	jobResponsibilities: text('job_responsibilities').notNull(),
+	jobRequirements: text('job_requirements').notNull(),
+	jobType: text('job_type').notNull(),
+	startDate: date('start_date').notNull(),
+	endDate: date('end_date').notNull(),
 });
+
+export type Job = typeof Jobs.$inferSelect;
 
 // export const Application = pgTable(
 // 	'application',
@@ -203,13 +205,17 @@ export const Jobs = pgTable('jobs', {
 // );
 
 export const Company = pgTable('company', {
-	companyid: serial('companyid').primaryKey(),
+	id: serial('id').primaryKey(),
 	name: text('name').notNull(),
 	address: text('address').notNull(),
-	userid: integer('userid').references(() => Users.id, { onDelete: 'cascade' }),
+	userId: integer('user_id').references(() => Users.id, {
+		onDelete: 'cascade',
+	}),
 	logo: bytea('logo').notNull(),
 	url: text('url'),
 });
+
+export type Company = typeof Company.$inferSelect;
 
 // export const Education = pgTable(
 // 	'education',
