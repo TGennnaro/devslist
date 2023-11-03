@@ -5,6 +5,7 @@ import JobCard from '@/app/(jobs)/jobs/JobCard';
 import { Pagination } from '@nextui-org/pagination';
 import { Metadata } from 'next';
 import Filters from './Filters';
+import { Company, Job } from '@/db/schema';
 
 // export const metadata: Metadata = {
 //   title: 'Jobs',
@@ -24,7 +25,7 @@ export default function Jobs() {
 	};
 
 	const filterJobs = (searchQuery: string, selectedJobTypes: string[]) => {
-		return jobs.filter((listing: any) => {
+		return jobs.filter((listing: { jobs: Job; company: Company }) => {
 			const matchesSearchQuery =
 				listing.jobs.jobTitle
 					.toLowerCase()
@@ -38,7 +39,7 @@ export default function Jobs() {
 				listing.company.name
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase()) ||
-				listing.jobs.skills.some((skill: string) =>
+				(listing.jobs.skills as string[]).some((skill: string) =>
 					skill.toLowerCase().includes(searchQuery.toLowerCase())
 				);
 
@@ -64,7 +65,7 @@ export default function Jobs() {
 		<>
 			<h1 className={title()}>Jobs</h1>
 
-			<div className='flex flex-col md:flex-row gap-8 pt-8'>
+			<div className='flex flex-col gap-8 pt-8 md:flex-row'>
 				<div className='shrink-0 grow-0'>
 					<Filters
 						setSearchQuery={setSearchQuery}
@@ -75,18 +76,16 @@ export default function Jobs() {
 				<div>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
 						{filteredJobs.length > 0 ? (
-							filteredJobs.map((listing: any) => {
+							filteredJobs.map((listing: { jobs: Job; company: Company }) => {
 								return (
 									<JobCard
-										key={listing.jobs.jobid}
-										id={listing.jobs.jobid}
+										key={listing.jobs.id}
+										id={listing.jobs.id}
 										position={listing.jobs.jobTitle}
 										company={listing.company.name}
 										companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
 										companyRating={4.5}
-										postedDate={new Date(
-											listing.jobs.startDate
-										).toLocaleDateString()}
+										postedDate={new Date(listing.jobs.startDate)}
 										expirationDate={new Date(
 											listing.jobs.endDate
 										).toLocaleDateString()}
@@ -94,11 +93,12 @@ export default function Jobs() {
 										pay={
 											listing.jobs.showPayRate
 												? listing.jobs.salary
-													? '$' + listing.jobs.salary + '/yr'
-													: '$' + listing.jobs.hourlyRate + '/hr'
+													? '$' + listing.jobs.salary + '/year'
+													: '$' + listing.jobs.hourlyRate + '/hour'
 												: null
 										}
 										jobType={listing.jobs.jobType}
+										description={listing.jobs.jobDescription}
 									/>
 								);
 							})
