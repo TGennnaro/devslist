@@ -10,11 +10,18 @@ import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
 
 const schema = z.object({
-	jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
-	jobType: z.string(),
-	jobResponsibilities: z.string(),
-	jobRequirements: z.string(),
-	jobDescription: z.string(),
+	jobTitle: z
+		.string()
+		.min(5, 'Job title must be at least 5 characters long.')
+		.max(100, 'Job title cannot exceed 100 characters.'),
+	jobType: z.enum(['Full-Time', 'Part-Time', 'Internship', 'Freelance'], {
+		errorMap: (issue, ctx) => ({ message: 'Job type must be selected.' }),
+	}),
+	jobDescription: z.string().min(1, 'Job description needs to be specified.'),
+	jobRequirements: z.string().min(1, 'Job requirements need to be specified.'),
+	jobResponsibilities: z
+		.string()
+		.min(1, 'Job responsibilities need to be specified.'),
 	workAddress: z.string().optional(),
 	latitude: z.string().optional(),
 	longitude: z.string().optional(),
@@ -109,7 +116,6 @@ export async function POST(req: Request, res: Response) {
 					longitude: Number(longitude),
 					jobDescription,
 					jobType,
-					startDate: new Date().toISOString(),
 					endDate: expirationDate,
 					jobRequirements,
 					jobResponsibilities,

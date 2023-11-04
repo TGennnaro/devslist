@@ -65,7 +65,7 @@ export default function JobPostingForm() {
 				router.push(`/jobs/${json.id}`);
 			} else {
 				console.error(json.message);
-				toast.error('Error: ' + json.message);
+				toast.error('Error: ' + json.message.message);
 			}
 		},
 	});
@@ -127,9 +127,8 @@ export default function JobPostingForm() {
 									placeholder='Software Engineer'
 									variant='bordered'
 									radius='sm'
-									isRequired
 								/>
-								<RadioGroup label='Job type' isRequired name='jobType'>
+								<RadioGroup label='Job type' name='jobType'>
 									<Radio value='Full-Time'>Full-Time</Radio>
 									<Radio value='Part-Time'>Part-Time</Radio>
 									<Radio value='Internship'>Internship</Radio>
@@ -147,7 +146,6 @@ export default function JobPostingForm() {
 									placeholder='Join the team in developing game-changing software!'
 									variant='bordered'
 									radius='sm'
-									isRequired
 								/>
 								<Input
 									name='jobRequirements'
@@ -156,7 +154,6 @@ export default function JobPostingForm() {
 									placeholder="Bachelor's degree in Computer Science or equivalent."
 									variant='bordered'
 									radius='sm'
-									isRequired
 								/>
 								<Input
 									name='jobResponsibilities'
@@ -165,7 +162,6 @@ export default function JobPostingForm() {
 									placeholder='Develop AI and machine learning algorithms.'
 									variant='bordered'
 									radius='sm'
-									isRequired
 								/>
 
 								<div className='flex flex-row items-center gap-3'>
@@ -282,7 +278,7 @@ export default function JobPostingForm() {
 									Display pay rate (recommended){' '}
 								</Checkbox>
 								{payTypeSelectionHidden ? null : (
-									<RadioGroup label='Select pay type' isRequired name='payType'>
+									<RadioGroup label='Select pay type' name='payType'>
 										<Radio
 											value='hourly'
 											onChange={() => handleShowHourlyInput()}
@@ -306,7 +302,6 @@ export default function JobPostingForm() {
 										placeholder='Salary'
 										variant='bordered'
 										radius='sm'
-										isRequired
 									/>
 								)}
 								{hourlyInputHidden ? null : (
@@ -317,7 +312,6 @@ export default function JobPostingForm() {
 										placeholder='Hourly rate'
 										variant='bordered'
 										radius='sm'
-										isRequired
 									/>
 								)}
 							</div>

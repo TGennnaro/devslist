@@ -74,7 +74,7 @@ export const Jobs = pgTable('jobs', {
 	payType: text('pay_type'),
 	hourlyRate: real('hourly_rate'),
 	salary: real('salary'),
-	skills: json('skills').notNull(),
+	skills: json('skills').default([]).notNull(),
 	address: text('address'),
 	longitude: real('longitude'),
 	latitude: real('latitude'),
@@ -82,7 +82,7 @@ export const Jobs = pgTable('jobs', {
 	jobResponsibilities: text('job_responsibilities').notNull(),
 	jobRequirements: text('job_requirements').notNull(),
 	jobType: text('job_type').notNull(),
-	startDate: date('start_date').notNull(),
+	startDate: date('start_date').defaultNow(),
 	endDate: date('end_date').notNull(),
 });
 
