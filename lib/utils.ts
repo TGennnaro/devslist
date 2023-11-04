@@ -20,17 +20,19 @@ export function timeSince(date: Date) {
 }
 
 export function dateSince(date: Date) {
-	const days = Math.floor(
-		(new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-	);
-	let interval = Math.floor(days / 31536000);
+	const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+	let interval = Math.floor(seconds / 31536000);
 	if (interval >= 1)
 		return interval + ' year' + (interval > 1 ? 's' : '') + ' ago';
-	interval = Math.floor(days / 2592000);
+	interval = Math.floor(seconds / 2592000);
 	if (interval >= 1)
 		return interval + ' month' + (interval > 1 ? 's' : '') + ' ago';
-	interval = Math.floor(days / 86400);
+	interval = Math.floor(seconds / 86400);
 	if (interval >= 1)
 		return interval + ' day' + (interval > 1 ? 's' : '') + ' ago';
-	return 'Today';
+	if (interval === 0) return 'Today';
+}
+
+export function currency(amount: number) {
+	return `$${Math.round(amount).toLocaleString()}`;
 }

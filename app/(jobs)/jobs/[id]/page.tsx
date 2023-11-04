@@ -1,20 +1,14 @@
-import { Divider } from '@nextui-org/divider';
-import { Chip } from '@nextui-org/chip';
-import {
-	Briefcase,
-	CalendarClock,
-	CircleDollarSign,
-	MapPin,
-	Send,
-} from 'lucide-react';
-import { Button } from '@nextui-org/button';
 import Text from '@/components/Text';
-import { Image } from '@nextui-org/image';
-import { Metadata } from 'next';
-import { User } from '@nextui-org/user';
 import { db } from '@/db';
-import { Jobs, Company } from '@/db/schema';
+import { Company, Jobs } from '@/db/schema';
+import { Button } from '@nextui-org/button';
+import { Chip } from '@nextui-org/chip';
+import { Divider } from '@nextui-org/divider';
+import { Image } from '@nextui-org/image';
+import { User } from '@nextui-org/user';
 import { eq } from 'drizzle-orm';
+import { Briefcase, CalendarClock, MapPin, Send } from 'lucide-react';
+import { Metadata } from 'next';
 
 const metadata: Metadata = {
 	title: 'Job Posting',
