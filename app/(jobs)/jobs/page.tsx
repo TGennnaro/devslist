@@ -6,6 +6,7 @@ import { Pagination } from '@nextui-org/pagination';
 import { Metadata } from 'next';
 import Filters from './Filters';
 import { Company, Job } from '@/db/schema';
+import { currency } from '@/lib/utils';
 
 // export const metadata: Metadata = {
 //   title: 'Jobs',
@@ -92,9 +93,9 @@ export default function Jobs() {
 										location={listing.jobs.address}
 										pay={
 											listing.jobs.showPayRate
-												? listing.jobs.salary
-													? '$' + listing.jobs.salary + '/year'
-													: '$' + listing.jobs.hourlyRate + '/hour'
+												? currency(
+														listing.jobs.salary ?? listing.jobs.hourlyRate ?? 0
+												  ) + (listing.jobs.salary ? ' per year' : ' an hour')
 												: null
 										}
 										jobType={listing.jobs.jobType}
