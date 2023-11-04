@@ -82,7 +82,7 @@ export const Jobs = pgTable('jobs', {
 	jobResponsibilities: text('job_responsibilities').notNull(),
 	jobRequirements: text('job_requirements').notNull(),
 	jobType: text('job_type').notNull(),
-	startDate: date('start_date').defaultNow(),
+	startDate: date('start_date').defaultNow().notNull(),
 	endDate: date('end_date').notNull(),
 });
 
