@@ -1,5 +1,6 @@
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GitHubProvider from 'next-auth/providers/github';
 import bcrypt from 'bcrypt';
 import { User, Users } from '@/db/schema';
 import { db } from '@/db';
@@ -47,6 +48,10 @@ export const authOptions: AuthOptions = {
 				}
 			},
 		}),
+		GitHubProvider({
+			clientId: process.env.GITHUB_CLIENT_ID as string,
+			clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+		}),
 	],
 	pages: {
 		signIn: '/login',
@@ -54,15 +59,67 @@ export const authOptions: AuthOptions = {
 	callbacks: {
 		async session({ token, session }) {
 			if (token && session?.user) {
+				const profilePhoto = await db
+					.select({ image: Users.picture_url })
+					.from(Users)
+					.where(eq(Users.id, token.id));
+
 				session.user.id = token.id;
 				session.user.email = token.email;
 				session.user.firstName = token.firstName;
 				session.user.lastName = token.lastName;
+
+				if (profilePhoto) {
+					const { image } = profilePhoto[0];
+					session.user.image = image;
+				}
 			}
 
 			return session;
 		},
-		async jwt({ token, user }) {
+		async jwt({ account, token, user }) {
+			if (account?.provider === 'github') {
+				const dbUser = await db
+					.select()
+					.from(Users)
+					.where(eq(Users.githubID, account.providerAccountId));
+
+				if (dbUser.length === 0) {
+					const insertedUser = await db
+						.insert(Users)
+						.values({
+							email: user.email!,
+							firstName: 'GitHub',
+							lastName: 'User',
+							password: '123',
+							picture_url: user.image,
+							githubID: account.providerAccountId,
+						})
+						.returning({
+							insertedId: Users.id,
+							insertedEmail: Users.email,
+							insertedFirstName: Users.firstName,
+							insertedLastName: Users.lastName,
+						});
+
+					return {
+						id: insertedUser[0].insertedId,
+						email: insertedUser[0].insertedEmail,
+						firstName: insertedUser[0].insertedFirstName,
+						lastName: insertedUser[0].insertedLastName,
+						accessToken: account.access_token,
+					};
+				} else {
+					return {
+						id: dbUser[0].id,
+						email: dbUser[0].email,
+						firstName: dbUser[0].firstName,
+						lastName: dbUser[0].lastName,
+						accessToken: account.access_token,
+					};
+				}
+			}
+
 			const dbUser = await db
 				.select()
 				.from(Users)
