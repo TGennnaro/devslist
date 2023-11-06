@@ -33,3 +33,8 @@ export type Job = {
 	salary?: FormDataEntryValue | undefined;
 	hourlyRate?: FormDataEntryValue | undefined;
 };
+
+export type JobFilters = {
+	searchQuery: string | undefined;
+	jobTypes: string[] | undefined;
+};

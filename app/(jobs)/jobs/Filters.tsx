@@ -1,28 +1,33 @@
 import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import JobSearchBar from './JobSearchBar';
+import { JobFilters } from '@/types';
 
 export default function Filters({
-	setSearchQuery,
-	selectedJobTypes,
-	setSelectedJobTypes,
+	filters,
+	setFilters,
 }: {
-	setSearchQuery: any;
-	selectedJobTypes: any;
-	setSelectedJobTypes: any;
+	filters: JobFilters;
+	setFilters: React.Dispatch<React.SetStateAction<JobFilters>>;
 }) {
 	return (
 		<div className='sticky flex flex-col h-[calc(100vh_-_4rem)] gap-8 top-16 w-80 overflow-auto py-8'>
 			<div>
-				<JobSearchBar setSearchQuery={setSearchQuery} />
+				<JobSearchBar
+					setQuery={(query: string) =>
+						setFilters((prev) => ({ ...prev, searchQuery: query }))
+					}
+				/>
 			</div>
 			<hr className='my-4 border-divider' />
 			<div>
 				<label className='block mb-6'>Type</label>
 				<CheckboxGroup
 					color='primary'
-					value={selectedJobTypes}
-					onValueChange={setSelectedJobTypes}
+					value={filters.jobTypes}
+					onValueChange={(value) =>
+						setFilters((prev) => ({ ...prev, jobTypes: value }))
+					}
 				>
 					<Checkbox value='Full-Time'>Full-Time</Checkbox>
 					<Checkbox value='Part-Time'>Part-Time</Checkbox>
