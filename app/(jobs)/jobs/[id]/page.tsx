@@ -5,9 +5,16 @@ import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
 import { Divider } from '@nextui-org/divider';
 import { Image } from '@nextui-org/image';
+import { Link } from '@nextui-org/link';
 import { User } from '@nextui-org/user';
 import { eq } from 'drizzle-orm';
-import { Briefcase, CalendarClock, MapPin, Send } from 'lucide-react';
+import {
+	Briefcase,
+	CalendarClock,
+	ChevronLeft,
+	MapPin,
+	Send,
+} from 'lucide-react';
 import { Metadata } from 'next';
 
 const metadata: Metadata = {
@@ -43,6 +50,10 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 		return (
 			<>
+				<Link href='/jobs' color='primary' className='py-2 mb-8 cursor-pointer'>
+					<ChevronLeft size={16} className='mr-2' />
+					Go back
+				</Link>
 				<div className='flex flex-row items-center justify-between mb-8'>
 					<div className='flex items-center gap-4'>
 						<Image
