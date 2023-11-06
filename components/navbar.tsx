@@ -106,9 +106,12 @@ export const Navbar = () => {
 									as='button'
 									className='transition-transform'
 									color='primary'
-									name='User'
 									size='sm'
-									src='https://i.pravatar.cc/150?u=a'
+									src={
+										session.data.user?.image
+											? session.data.user.image
+											: undefined
+									}
 								/>
 							</DropdownTrigger>
 							<DropdownMenu aria-label='User Actions' variant='flat'>
