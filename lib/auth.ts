@@ -30,7 +30,7 @@ export const authOptions: AuthOptions = {
 						.from(Users)
 						.where(eq(Users.email, username))
 						.limit(1);
-					if (users.length > 0) {
+					if (users.length > 0 && users[0].password) {
 						const res = await bcrypt.compare(password, users[0].password);
 						if (res === true) {
 							return {
@@ -90,9 +90,6 @@ export const authOptions: AuthOptions = {
 						.insert(Users)
 						.values({
 							email: user.email!,
-							firstName: 'GitHub',
-							lastName: 'User',
-							password: '123',
 							picture_url: user.image,
 							githubID: account.providerAccountId,
 						})
