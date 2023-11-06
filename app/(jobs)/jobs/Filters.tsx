@@ -12,7 +12,7 @@ export default function Filters({
 	setSelectedJobTypes: any;
 }) {
 	return (
-		<div className='sticky flex flex-col h-[calc(100vh_-_5rem)] gap-8 top-0 w-80 overflow-auto'>
+		<div className='sticky flex flex-col h-[calc(100vh_-_4rem)] gap-8 top-16 w-80 overflow-auto py-8'>
 			<div>
 				<JobSearchBar setSearchQuery={setSearchQuery} />
 			</div>
