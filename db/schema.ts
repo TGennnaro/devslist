@@ -29,7 +29,7 @@ export const Users = pgTable(
 		lastName: text('last_name').notNull(),
 		phone: varchar('phone', { length: 15 }),
 		email: text('email').notNull().unique(),
-		password: text('password'),
+		password: text('password').notNull(),
 		picture_url: text('picture_url'),
 		city: text('city'),
 		state: text('state'),
