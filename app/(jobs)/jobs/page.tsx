@@ -1,12 +1,12 @@
 'use client';
+import JobCard, { JobCardSkeleton } from '@/app/(jobs)/jobs/JobCard';
 import { title } from '@/components/primitives';
-import { useEffect, useState } from 'react';
-import JobCard from '@/app/(jobs)/jobs/JobCard';
-import { Pagination } from '@nextui-org/pagination';
-import { Metadata } from 'next';
-import Filters from './Filters';
 import { Company, Job } from '@/db/schema';
 import { currency } from '@/lib/utils';
+import { Pagination } from '@nextui-org/pagination';
+import { useEffect, useState } from 'react';
+import Filters from './Filters';
+import { useQuery } from 'react-query';
 
 // export const metadata: Metadata = {
 //   title: 'Jobs',
@@ -18,12 +18,20 @@ export default function Jobs() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedJobTypes, setSelectedJobTypes] = useState([]);
 
-	const fetchJobs = async () => {
-		const jobs = await fetch('/api/jobs');
-		const data = await jobs.json();
-		setJobs(data);
-		console.log(data);
-	};
+	const query = useQuery({
+		queryKey: 'jobs',
+		queryFn: async () => {
+			const res = await fetch('/api/jobs');
+			if (!res.ok) throw new Error('Network error occurred');
+			return res.json();
+		},
+	});
+	// const fetchJobs = async () => {
+	// 	const jobs = await fetch('/api/jobs');
+	// 	const data = await jobs.json();
+	// 	setJobs(data);
+	// 	console.log(data);
+	// };
 
 	const filterJobs = (searchQuery: string, selectedJobTypes: string[]) => {
 		return jobs.filter((listing: { jobs: Job; company: Company }) => {
@@ -58,9 +66,9 @@ export default function Jobs() {
 
 	const filteredJobs = filterJobs(searchQuery, selectedJobTypes);
 
-	useEffect(() => {
-		fetchJobs();
-	}, []);
+	// useEffect(() => {
+	// 	fetchJobs();
+	// }, []);
 
 	return (
 		<>
@@ -74,9 +82,53 @@ export default function Jobs() {
 						setSelectedJobTypes={setSelectedJobTypes}
 					/>
 				</div>
-				<div>
+				<div className='w-full'>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
-						{filteredJobs.length > 0 ? (
+						{query.isLoading && (
+							<>
+								{Array.from({ length: 6 }).map((_, i) => (
+									<JobCardSkeleton key={i} />
+								))}
+							</>
+						)}
+						{query.isSuccess && (
+							<>
+								{query.data.length > 0 ? (
+									query.data.map((listing: { jobs: Job; company: Company }) => {
+										return (
+											<JobCard
+												key={listing.jobs.id}
+												id={listing.jobs.id}
+												position={listing.jobs.jobTitle}
+												company={listing.company.name}
+												companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
+												companyRating={4.5}
+												postedDate={new Date(listing.jobs.startDate)}
+												expirationDate={new Date(
+													listing.jobs.endDate
+												).toLocaleDateString()}
+												location={listing.jobs.address}
+												pay={
+													listing.jobs.showPayRate
+														? currency(
+																listing.jobs.salary ??
+																	listing.jobs.hourlyRate ??
+																	0
+														  ) +
+														  (listing.jobs.salary ? ' per year' : ' an hour')
+														: null
+												}
+												jobType={listing.jobs.jobType}
+												description={listing.jobs.jobDescription}
+											/>
+										);
+									})
+								) : (
+									<div>No results found</div>
+								)}
+							</>
+						)}
+						{/* {filteredJobs.length > 0 ? (
 							filteredJobs.map((listing: { jobs: Job; company: Company }) => {
 								return (
 									<JobCard
@@ -105,7 +157,7 @@ export default function Jobs() {
 							})
 						) : (
 							<div>No results found</div>
-						)}
+						)} */}
 					</div>
 					<div className='flex flex-row items-center justify-center my-52'>
 						<Pagination total={5} initialPage={1} />
