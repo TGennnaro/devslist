@@ -8,7 +8,7 @@ const textVariants = cva('block', {
 		variant: {
 			body: 'text-gray-700 dark:text-gray-400 text-lg leading-normal',
 			heading:
-				'text-gray-900 dark:text-gray-50 font-bold text-7xl leading-[1.1] tracking-tight',
+				'text-gray-900 dark:text-gray-50 font-bold leading-[1.1] tracking-tight text-5xl sm:text-7xl',
 		},
 	},
 	defaultVariants: {
