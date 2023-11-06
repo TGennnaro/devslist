@@ -68,6 +68,7 @@ export const authOptions: AuthOptions = {
 				session.user.email = token.email;
 				session.user.firstName = token.firstName;
 				session.user.lastName = token.lastName;
+				session.accessToken = token.accessToken;
 
 				if (profilePhoto) {
 					const { image } = profilePhoto[0];
