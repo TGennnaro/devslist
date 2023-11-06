@@ -7,6 +7,7 @@ import { Pagination } from '@nextui-org/pagination';
 import { useEffect, useState } from 'react';
 import Filters from './Filters';
 import { useQuery } from 'react-query';
+import { JobFilters } from '@/types';
 
 // export const metadata: Metadata = {
 //   title: 'Jobs',
@@ -14,61 +15,55 @@ import { useQuery } from 'react-query';
 // };
 
 export default function Jobs() {
-	const [jobs, setJobs] = useState([]);
-	const [searchQuery, setSearchQuery] = useState('');
-	const [selectedJobTypes, setSelectedJobTypes] = useState([]);
+	const [filters, setFilters] = useState<JobFilters>({
+		searchQuery: undefined,
+		jobTypes: undefined,
+	});
 
 	const query = useQuery({
-		queryKey: 'jobs',
+		queryKey: ['jobs', filters],
 		queryFn: async () => {
-			const res = await fetch('/api/jobs');
+			let query = '?';
+			for (const [k, v] of Object.entries(filters)) {
+				if (Array.isArray(v) && v.length > 0) query += `${k}=${v.join(',')}&`;
+				else if (typeof v === 'string') query += `${k}=${v}&`;
+			}
+			const res = await fetch(`/api/jobs${query}`);
 			if (!res.ok) throw new Error('Network error occurred');
 			return res.json();
 		},
 	});
-	// const fetchJobs = async () => {
-	// 	const jobs = await fetch('/api/jobs');
-	// 	const data = await jobs.json();
-	// 	setJobs(data);
-	// 	console.log(data);
+
+	// const filterJobs = (searchQuery: string, selectedJobTypes: string[]) => {
+	// 	return jobs.filter((listing: { jobs: Job; company: Company }) => {
+	// 		const matchesSearchQuery =
+	// 			listing.jobs.jobTitle
+	// 				.toLowerCase()
+	// 				.includes(searchQuery.toLowerCase()) ||
+	// 			listing.jobs.address
+	// 				?.toLowerCase()
+	// 				.includes(searchQuery.toLowerCase()) ||
+	// 			listing.jobs.jobRequirements
+	// 				.toLowerCase()
+	// 				.includes(searchQuery.toLowerCase()) ||
+	// 			listing.company.name
+	// 				.toLowerCase()
+	// 				.includes(searchQuery.toLowerCase()) ||
+	// 			(listing.jobs.skills as string[]).some((skill: string) =>
+	// 				skill.toLowerCase().includes(searchQuery.toLowerCase())
+	// 			);
+
+	// 		const matchesSelectedJobTypes =
+	// 			selectedJobTypes.length === 0 ||
+	// 			selectedJobTypes.some((jobType: string) =>
+	// 				listing.jobs.jobType.includes(jobType)
+	// 			);
+
+	// 		return matchesSearchQuery && matchesSelectedJobTypes;
+	// 	});
 	// };
 
-	const filterJobs = (searchQuery: string, selectedJobTypes: string[]) => {
-		return jobs.filter((listing: { jobs: Job; company: Company }) => {
-			const matchesSearchQuery =
-				listing.jobs.jobTitle
-					.toLowerCase()
-					.includes(searchQuery.toLowerCase()) ||
-				listing.jobs.address
-					?.toLowerCase()
-					.includes(searchQuery.toLowerCase()) ||
-				listing.jobs.jobRequirements
-					.toLowerCase()
-					.includes(searchQuery.toLowerCase()) ||
-				listing.company.name
-					.toLowerCase()
-					.includes(searchQuery.toLowerCase()) ||
-				(listing.jobs.skills as string[]).some((skill: string) =>
-					skill.toLowerCase().includes(searchQuery.toLowerCase())
-				);
-
-			console.log(selectedJobTypes.length);
-
-			const matchesSelectedJobTypes =
-				selectedJobTypes.length === 0 ||
-				selectedJobTypes.some((jobType: string) =>
-					listing.jobs.jobType.includes(jobType)
-				);
-
-			return matchesSearchQuery && matchesSelectedJobTypes;
-		});
-	};
-
-	const filteredJobs = filterJobs(searchQuery, selectedJobTypes);
-
-	// useEffect(() => {
-	// 	fetchJobs();
-	// }, []);
+	// const filteredJobs = filterJobs(searchQuery, selectedJobTypes);
 
 	return (
 		<>
@@ -76,11 +71,7 @@ export default function Jobs() {
 
 			<div className='flex flex-col gap-8 pt-8 md:flex-row'>
 				<div className='shrink-0 grow-0'>
-					<Filters
-						setSearchQuery={setSearchQuery}
-						selectedJobTypes={selectedJobTypes}
-						setSelectedJobTypes={setSelectedJobTypes}
-					/>
+					<Filters filters={filters} setFilters={setFilters} />
 				</div>
 				<div className='w-full'>
 					<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>

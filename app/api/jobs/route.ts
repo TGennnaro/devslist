@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { Job } from '@/types';
+import { Job, JobFilters } from '@/types';
 import { z } from 'zod';
 import { db } from '@/db';
 import { Jobs } from '@/db/schema';
 import { Company } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, inArray, and, sql, ilike } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
@@ -149,10 +149,23 @@ export async function POST(req: Request, res: Response) {
 }
 
 export async function GET(req: Request) {
+	const params = new URLSearchParams(req.url.split('?')[1]);
+	const filters: JobFilters = {
+		searchQuery: params.get('searchQuery') ?? undefined,
+		jobTypes: params.get('jobTypes')?.split(',') ?? undefined,
+	};
 	try {
+		const query = [];
+		if (filters.jobTypes !== undefined && filters.jobTypes.length > 0) {
+			query.push(inArray(Jobs.jobType, filters.jobTypes));
+		}
+		if (filters.searchQuery !== undefined && filters.searchQuery.length > 0) {
+			query.push(ilike(Jobs.jobTitle, `%${filters.searchQuery}%`));
+		}
 		const data = await db
 			.select()
 			.from(Jobs)
+			.where(and(...query))
 			.leftJoin(Company, eq(Jobs.companyId, Company.id))
 			.orderBy(desc(Jobs.startDate));
 		return NextResponse.json(data);
