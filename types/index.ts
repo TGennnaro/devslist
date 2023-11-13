@@ -14,7 +14,8 @@ export type ProfileFormEntry = {
 	country: string | undefined;
 	phoneNumber: string | undefined;
 	birthday: string | undefined;
-	[key: string]: string | FormDataEntryValue | undefined;
+	isEmployer: boolean;
+	[key: string]: string | boolean | FormDataEntryValue | undefined;
 };
 
 export type Job = {
