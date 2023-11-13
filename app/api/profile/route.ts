@@ -49,6 +49,7 @@ const schema = z.object({
 		)
 		.max(10, 'Birthday cannot exceed 10 characters.')
 		.optional(),
+	isEmployer: z.boolean(),
 });
 
 async function handleBlob(
@@ -102,6 +103,7 @@ export async function POST(req: NextRequest, res: Response) {
 		country: formData.get('country') as string,
 		phoneNumber: formData.get('phoneNumber') as string,
 		birthday: formData.get('birthday') as string,
+		isEmployer: formData.get('employer') === 'true',
 	};
 	for (const [k, v] of Object.entries(data)) {
 		if (v === '' || v === null) {
@@ -120,6 +122,7 @@ export async function POST(req: NextRequest, res: Response) {
 			country,
 			phoneNumber,
 			birthday,
+			isEmployer,
 		} = schema.parse(data);
 
 		const session = await getServerSession(authOptions);
@@ -143,6 +146,7 @@ export async function POST(req: NextRequest, res: Response) {
 				state,
 				country,
 				dob: birthday,
+				isEmployer,
 			})
 			.where(eq(Users.id, session?.user.id));
 	} catch (e) {
