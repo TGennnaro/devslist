@@ -25,7 +25,7 @@ export default function Filters({
 				<CheckboxGroup
 					color='primary'
 					value={filters.jobTypes}
-					onValueChange={(value) =>
+					onValueChange={(value: string[]) =>
 						setFilters((prev) => ({ ...prev, jobTypes: value }))
 					}
 				>
