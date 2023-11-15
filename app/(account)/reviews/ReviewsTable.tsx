@@ -17,7 +17,7 @@ import {
 	ModalFooter,
 	useDisclosure,
 } from '@nextui-org/modal';
-import { Slider } from '@nextui-org/react';
+import { Slider } from '@nextui-org/slider';
 
 export default function ReviewsTable() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
