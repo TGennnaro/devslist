@@ -28,7 +28,7 @@ export async function POST(req: Request, res: Response) {
 			firstName,
 			lastName,
 			phone: '1234567890',
-			email,
+			email: email.toLowerCase(),
 			password: hashedPassword,
 		});
 		console.log('User inserted');
