@@ -10,7 +10,7 @@ export default function Page() {
 		<section>
 			<GlowCircle top={20} left={35} percent color='secondary' />
 			<div className='text-center'>
-				<h2 className={title({ size: 'sm' })}>Login to your account</h2>
+				<h2 className={title({ size: 'sm' })}>Log in to your account</h2>
 			</div>
 			<Card className='max-w-lg mx-auto mt-10'>
 				<CardBody className='p-12'>
