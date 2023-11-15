@@ -2,6 +2,9 @@ import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import JobSearchBar from './JobSearchBar';
 import { JobFilters } from '@/types';
+import { Button } from '@nextui-org/button';
+import { Send } from 'lucide-react';
+import NextLink from 'next/link';
 
 export default function Filters({
 	filters,
@@ -11,7 +14,15 @@ export default function Filters({
 	setFilters: React.Dispatch<React.SetStateAction<JobFilters>>;
 }) {
 	return (
-		<div className='sticky flex flex-col h-[calc(100vh_-_4rem)] gap-8 top-16 w-80 overflow-auto py-8'>
+		<div className='sticky flex flex-col h-[calc(100vh_-_4rem)] gap-3 top-16 w-80 overflow-auto py-8'>
+			<div>
+				<NextLink href='/jobs/post'>
+					<Button color='primary' variant='flat' endContent={<Send />}>
+						Post Job
+					</Button>
+				</NextLink>
+			</div>
+			<hr className='my-4 border-divider' />
 			<div>
 				<JobSearchBar
 					setQuery={(query: string) =>
