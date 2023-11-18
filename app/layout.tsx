@@ -49,7 +49,7 @@ export default function RootLayout({
 							{children}
 						</main>
 						<footer className='flex items-center justify-center w-full py-3 text-sm text-light'>
-							Copyright © 2023 DevsList
+							Copyright © {new Date().getFullYear()} DevsList
 							<span className='mx-2'>·</span>
 							<Link
 								href='https://github.com/TGennnaro/devslist'
