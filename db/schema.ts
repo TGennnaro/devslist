@@ -1,10 +1,10 @@
 import {
-	pgTable,
-	pgView,
+	mysqlTable,
+	mysqlView,
 	serial,
 	text,
 	uniqueIndex,
-	integer,
+	int,
 	json,
 	date,
 	varchar,
@@ -12,30 +12,24 @@ import {
 	timestamp,
 	real,
 	customType,
-} from 'drizzle-orm/pg-core';
-import { eq } from 'drizzle-orm';
+} from 'drizzle-orm/mysql-core';
+import { eq, relations } from 'drizzle-orm';
 
-const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
-	dataType() {
-		return 'bytea';
-	},
-});
-
-export const Users = pgTable(
+export const Users = mysqlTable(
 	'users',
 	{
 		id: serial('id').primaryKey(),
 		firstName: text('first_name'),
 		lastName: text('last_name'),
 		phone: varchar('phone', { length: 15 }),
-		email: text('email').notNull().unique(),
+		// email: text('email').notNull().unique(),
 		password: text('password'),
 		picture_url: text('picture_url'),
 		city: text('city'),
 		state: text('state'),
 		country: text('country'),
 		skills: json('skills').default([]).notNull(),
-		resume: bytea('resume'),
+		// resume: bytea('resume'),
 		about: text('about'),
 		dob: date('dob'),
 		isEmployer: boolean('is_employer').default(false),
@@ -44,31 +38,32 @@ export const Users = pgTable(
 		veteranStatus: boolean('veteran_status'),
 		ethnicity: text('ethnicity'),
 		disability: boolean('disability'),
-	},
-	(users) => {
-		return {
-			uniqueIdx: uniqueIndex('unique_idx').on(users.email),
-		};
 	}
+	// (users) => {
+	// 	return {
+	// 		uniqueIdx: uniqueIndex('unique_idx').on(users.email),
+	// 	};
+	// }
 );
 
 export type User = typeof Users.$inferSelect;
 
-export const userView = pgView('user_view').as((qb) =>
+export const userView = mysqlView('user_view').as((qb) =>
 	qb.select().from(Users).where(eq(Users.isEmployer, false))
 );
-export const employerView = pgView('employer_view').as((qb) =>
+export const employerView = mysqlView('employer_view').as((qb) =>
 	qb.select().from(Users).where(eq(Users.isEmployer, true))
 );
 
-export const Jobs = pgTable('jobs', {
+export const usersRelations = relations(Users, ({ many }) => ({
+	jobs: many(Jobs),
+	companies: many(Company),
+}));
+
+export const Jobs = mysqlTable('jobs', {
 	id: serial('id').primaryKey(),
-	userId: integer('user_id')
-		.notNull()
-		.references(() => Users.id, { onDelete: 'cascade' }),
-	companyId: integer('company_id')
-		.notNull()
-		.references(() => Company.id, { onDelete: 'cascade' }),
+	userId: int('user_id').notNull(),
+	companyId: int('company_id').notNull(),
 	jobTitle: text('job_title').notNull(),
 	showPayRate: boolean('show_pay_rate').default(true).notNull(),
 	payType: text('pay_type'),
@@ -82,11 +77,22 @@ export const Jobs = pgTable('jobs', {
 	jobResponsibilities: text('job_responsibilities').notNull(),
 	jobRequirements: text('job_requirements').notNull(),
 	jobType: text('job_type').notNull(),
-	startDate: date('start_date').defaultNow().notNull(),
+	startDate: date('start_date').default(new Date()).notNull(),
 	endDate: date('end_date').notNull(),
 });
 
 export type Job = typeof Jobs.$inferSelect;
+
+export const jobsRelations = relations(Jobs, ({ one }) => ({
+	user: one(Users, {
+		fields: [Jobs.userId],
+		references: [Users.id],
+	}),
+	company: one(Company, {
+		fields: [Jobs.companyId],
+		references: [Company.id],
+	}),
+}));
 
 // export const Application = pgTable(
 // 	'application',
@@ -204,18 +210,23 @@ export type Job = typeof Jobs.$inferSelect;
 // 	}
 // );
 
-export const Company = pgTable('company', {
+export const Company = mysqlTable('company', {
 	id: serial('id').primaryKey(),
 	name: text('name').notNull(),
 	address: text('address').notNull(),
-	userId: integer('user_id').references(() => Users.id, {
-		onDelete: 'cascade',
-	}),
-	logo: bytea('logo').notNull(),
+	userId: int('user_id').notNull(),
+	// logo: bytea('logo').notNull(),
 	url: text('url'),
 });
 
 export type Company = typeof Company.$inferSelect;
+
+export const companyRelations = relations(Company, ({ one }) => ({
+	user: one(Users, {
+		fields: [Company.userId],
+		references: [Users.id],
+	}),
+}));
 
 // export const Education = pgTable(
 // 	'education',

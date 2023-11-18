@@ -1,14 +1,21 @@
 import { sql } from '@vercel/postgres';
-import { drizzle } from 'drizzle-orm/vercel-postgres';
+import { drizzle } from 'drizzle-orm/planetscale-serverless';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { connect } from '@planetscale/database';
 
-export const db = drizzle(sql);
+const connection = connect({
+	host: process.env.DATABASE_HOST,
+	username: process.env.DATABASE_USERNAME,
+	password: process.env.DATABASE_PASSWORD,
+});
 
-async function run() {
-	// @ts-ignore
-	await migrate(db, { migrationsFolder: 'drizzle' }).catch((err) => {
-		console.error('Migration error: ', err);
-	});
-}
+export const db = drizzle(connection);
 
-run();
+// async function run() {
+// 	// @ts-ignore
+// 	await migrate(db, { migrationsFolder: 'drizzle' }).catch((err) => {
+// 		console.error('Migration error: ', err);
+// 	});
+// }
+
+// run();
