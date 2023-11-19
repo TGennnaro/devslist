@@ -108,7 +108,7 @@ export default function JobCard({
 	id: number;
 	position: string;
 	company: string;
-	companyLogo: string;
+	companyLogo: string | null;
 	companyRating: number;
 	postedDate: Date;
 	expirationDate: string;
@@ -120,15 +120,17 @@ export default function JobCard({
 	return (
 		<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
 			<CardHeader className='flex gap-3'>
-				<Image
-					isBlurred
-					alt='Company logo'
-					height={40}
-					radius='sm'
-					src={companyLogo}
-					width={40}
-					className='object-contain p-1 dark:bg-gray-500 aspect-square'
-				/>
+				{companyLogo ? (
+					<Image
+						isBlurred
+						alt='Company logo'
+						height={40}
+						radius='sm'
+						src={companyLogo}
+						width={40}
+						className='object-contain p-1 dark:bg-gray-500 aspect-square'
+					/>
+				) : null}
 				<div className='flex flex-col'>
 					<p className='text-md'>{position}</p>
 					<p className='flex items-center gap-1 text-small text-default-500'>
