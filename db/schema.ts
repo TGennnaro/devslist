@@ -215,7 +215,7 @@ export const Company = mysqlTable('company', {
 	name: text('name').notNull(),
 	address: text('address').notNull(),
 	userId: int('user_id').notNull(),
-	// logo: bytea('logo').notNull(),
+	logo: text('logo'),
 	url: text('url'),
 });
 
