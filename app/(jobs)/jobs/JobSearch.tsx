@@ -57,7 +57,7 @@ export default function JobSearch() {
 											id={listing.jobs.id}
 											position={listing.jobs.jobTitle}
 											company={listing.company.name}
-											companyLogo='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
+											companyLogo={listing.company.logo ?? null}
 											companyRating={4.5}
 											postedDate={new Date(listing.jobs.startDate)}
 											expirationDate={new Date(
