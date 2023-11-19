@@ -106,12 +106,12 @@ export async function POST(req: Request, res: Response) {
 			const job = await db.insert(Jobs).values({
 				jobTitle,
 				userId: user.id,
-				companyId: 17,
+				companyId: 1, // placeholder company ID
 				salary: salary ? Number(salary) : undefined,
 				skills: JSON.parse(skills),
 				address: workAddress,
-				latitude: Number(latitude),
-				longitude: Number(longitude),
+				latitude: latitude ? Number(latitude) : undefined,
+				longitude: longitude ? Number(longitude) : undefined,
 				jobDescription,
 				jobType,
 				endDate: new Date(expirationDate),
@@ -164,7 +164,8 @@ export async function GET(req: Request) {
 			.from(Jobs)
 			.where(and(...query))
 			.leftJoin(Company, eq(Jobs.companyId, Company.id))
-			.orderBy(desc(Jobs.startDate));
+			.orderBy(desc(Jobs.startDate))
+			.limit(10);
 		return NextResponse.json(data);
 	} catch (error) {
 		return NextResponse.json({ error: error });
