@@ -103,30 +103,27 @@ export async function POST(req: Request, res: Response) {
 		try {
 			// const [latitude, longitude] = await getCoords(workAddress);
 
-			const job = await db
-				.insert(Jobs)
-				.values({
-					jobTitle,
-					userId: user.id,
-					companyId: 17,
-					salary: Number(salary),
-					skills,
-					address: workAddress,
-					latitude: Number(latitude),
-					longitude: Number(longitude),
-					jobDescription,
-					jobType,
-					endDate: expirationDate,
-					jobRequirements,
-					jobResponsibilities,
-					showPayRate: showPayRate === 'true',
-					payType,
-					hourlyRate: Number(hourlyRate),
-				})
-				.returning({ insertedId: Jobs.id });
+			const job = await db.insert(Jobs).values({
+				jobTitle,
+				userId: user.id,
+				companyId: 17,
+				salary: salary ? Number(salary) : undefined,
+				skills: JSON.parse(skills),
+				address: workAddress,
+				latitude: Number(latitude),
+				longitude: Number(longitude),
+				jobDescription,
+				jobType,
+				endDate: new Date(expirationDate),
+				jobRequirements,
+				jobResponsibilities,
+				showPayRate: showPayRate === 'true',
+				payType,
+				hourlyRate: hourlyRate ? Number(hourlyRate) : undefined,
+			});
 
 			return NextResponse.json(
-				{ message: 'OK', id: job[0].insertedId },
+				{ message: 'OK', id: Number(job.insertId) },
 				{ status: 200 }
 			);
 		} catch (err) {

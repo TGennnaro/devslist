@@ -86,25 +86,23 @@ export const authOptions: AuthOptions = {
 					.where(eq(Users.githubID, account.providerAccountId));
 
 				if (dbUser.length === 0) {
-					const insertedUser = await db
-						.insert(Users)
-						.values({
-							email: user.email!,
-							picture_url: user.image,
-							githubID: account.providerAccountId,
-						})
-						.returning({
-							insertedId: Users.id,
-							insertedEmail: Users.email,
-							insertedFirstName: Users.firstName,
-							insertedLastName: Users.lastName,
-						});
+					const insertedUser = await db.insert(Users).values({
+						email: user.email!,
+						picture_url: user.image,
+						githubID: account.providerAccountId,
+					});
+
+					// now inserted
+					const insertedUserDetails = await db
+						.select()
+						.from(Users)
+						.where(eq(Users.id, Number(insertedUser.insertId)));
 
 					return {
-						id: insertedUser[0].insertedId,
-						email: insertedUser[0].insertedEmail,
-						firstName: insertedUser[0].insertedFirstName,
-						lastName: insertedUser[0].insertedLastName,
+						id: Number(insertedUser.insertId),
+						email: insertedUserDetails[0].email,
+						firstName: insertedUserDetails[0].firstName,
+						lastName: insertedUserDetails[0].lastName,
 						accessToken: account.access_token,
 					};
 				} else {

@@ -22,7 +22,7 @@ export const Users = mysqlTable(
 		firstName: text('first_name'),
 		lastName: text('last_name'),
 		phone: varchar('phone', { length: 15 }),
-		// email: text('email').notNull().unique(),
+		email: varchar('email', { length: 255 }).notNull().unique(),
 		password: text('password'),
 		picture_url: text('picture_url'),
 		city: text('city'),

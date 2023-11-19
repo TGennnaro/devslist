@@ -145,7 +145,7 @@ export async function POST(req: NextRequest, res: Response) {
 				city,
 				state,
 				country,
-				dob: birthday,
+				dob: birthday ? new Date(birthday) : undefined,
 				isEmployer,
 			})
 			.where(eq(Users.id, session?.user.id));

@@ -233,7 +233,9 @@ export default function ProfileForm({
 							placeholder='Birthday'
 							variant='bordered'
 							radius='sm'
-							defaultValue={defaultValues?.dob ?? undefined}
+							defaultValue={
+								defaultValues?.dob?.toLocaleDateString() ?? undefined
+							}
 						/>
 					</div>
 					<div className='grid grid-cols-6 gap-x-4'>
