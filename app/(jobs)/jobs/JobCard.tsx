@@ -128,7 +128,7 @@ export default function JobCard({
 						radius='sm'
 						src={companyLogo}
 						width={40}
-						className='object-contain p-1 dark:bg-gray-500 aspect-square'
+						className='object-contain aspect-square'
 					/>
 				) : null}
 				<div className='flex flex-col'>
