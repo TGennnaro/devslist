@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { Metadata } from 'next';
+import { getMapEligibleJobs } from '@/lib/server_utils';
 
 export const metadata: Metadata = {
 	title: 'Job Map',
@@ -11,10 +12,10 @@ const JobMapNoSSR = dynamic(() => import('@/app/(jobs)/map/JobMap'), {
 	ssr: false,
 });
 
-export default function Map() {
+export default async function Map() {
 	return (
 		<div className='h-[100vh]'>
-			<JobMapNoSSR />
+			<JobMapNoSSR jobs={await getMapEligibleJobs()} />
 		</div>
 	);
 }

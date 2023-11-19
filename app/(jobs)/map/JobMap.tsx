@@ -15,14 +15,41 @@ import Legend from '@arcgis/core/widgets/Legend';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
+import { createRoot } from 'react-dom/client';
+import { currency } from '@/lib/utils';
+import { JobPopup } from './JobPopup';
+import { Job, Company } from '@/db/schema';
 
-export default function JobMap() {
+export default function JobMap({ jobs }: { jobs: any[] }) {
 	const mapDiv = useRef(null);
 	const { theme } = useTheme();
 	const [map, setMap] = useState<Map | null>(null);
 
 	const lightModeBasemap = Basemap.fromId('gray-vector');
 	const darkModeBasemap = Basemap.fromId('dark-gray-vector');
+
+	async function jobPreview(target: any) {
+		const attributes = target.graphic.attributes;
+		let puNode = document.createElement('div');
+		const root = createRoot(puNode);
+		root.render(
+			<JobPopup
+				id={attributes.id}
+				position={attributes.jobTitle}
+				company={attributes.company}
+				location={attributes.location}
+				jobType={attributes.jobType}
+				pay={
+					attributes.showPayRate === 'true'
+						? currency(attributes.salary ?? attributes.hourlyRate ?? 0) +
+						  (attributes.salary ? ' per year' : ' an hour')
+						: 'Not specified'
+				}
+				companyLogo={attributes.companyLogo}
+			/>
+		);
+		return puNode;
+	}
 
 	useEffect(() => {
 		// Initialize application
@@ -99,21 +126,8 @@ export default function JobMap() {
 				title: '{jobTitle}',
 				content: [
 					{
-						type: 'fields',
-						fieldInfos: [
-							{
-								fieldName: 'company',
-								label: 'Company',
-							},
-							{
-								fieldName: 'location',
-								label: 'Location',
-							},
-							{
-								fieldName: 'jobType',
-								label: 'Job Type',
-							},
-						],
+						type: 'custom',
+						creator: jobPreview,
 					},
 				],
 			});
@@ -128,6 +142,11 @@ export default function JobMap() {
 						type: 'oid',
 					},
 					{
+						name: 'id',
+						alias: 'Job ID',
+						type: 'integer',
+					},
+					{
 						name: 'jobTitle',
 						alias: 'Job Title',
 						type: 'string',
@@ -135,6 +154,11 @@ export default function JobMap() {
 					{
 						name: 'company',
 						alias: 'Company',
+						type: 'string',
+					},
+					{
+						name: 'companyLogo',
+						alias: 'Company Logo',
 						type: 'string',
 					},
 					{
@@ -147,7 +171,48 @@ export default function JobMap() {
 						alias: 'Job Type',
 						type: 'string',
 					},
+					{
+						name: 'showPayRate',
+						alias: 'Show Pay Rate',
+						type: 'string',
+					},
+					{
+						name: 'payType',
+						alias: 'Pay Type',
+						type: 'string',
+					},
+					{
+						name: 'hourlyRate',
+						alias: 'Hourly Rate',
+						type: 'string',
+					},
+					{
+						name: 'salary',
+						alias: 'Salary',
+						type: 'string',
+					},
+					{
+						name: 'skills',
+						alias: 'Skills',
+						type: 'string',
+					},
+					{
+						name: 'jobDescription',
+						alias: 'Job Description',
+						type: 'string',
+					},
+					{
+						name: 'jobResponsibilities',
+						alias: 'Job Responsibilities',
+						type: 'string',
+					},
+					{
+						name: 'jobRequirements',
+						alias: 'Job Requirements',
+						type: 'string',
+					},
 				],
+				outFields: ['*'],
 				objectIdField: 'ObjectID',
 				geometryType: 'point',
 				spatialReference: {
@@ -163,7 +228,7 @@ export default function JobMap() {
 			// Map widgets
 			const locate = new Locate({
 				view: view,
-				useHeadingEnabled: false,
+				rotationEnabled: false,
 				popupEnabled: false,
 				goToOverride: function (view, options) {
 					options.target.scale = 24000;
@@ -198,24 +263,30 @@ export default function JobMap() {
 
 			const generateMapMarkers = async () => {
 				try {
-					const response = await fetch('/api/jobs');
-					const jobs = await response.json();
-
-					jobs.map((job: any) => {
-						if (job.jobs.latitude && job.jobs.longitude) {
+					jobs.map((listing: { jobs: Job; company: Company }) => {
+						if (listing.jobs.latitude && listing.jobs.longitude) {
 							const point = new Point({
-								longitude: job.jobs.longitude,
-								latitude: job.jobs.latitude,
+								longitude: listing.jobs.longitude,
+								latitude: listing.jobs.latitude,
 							});
 
 							const pointGraphic = new Graphic({
 								geometry: point,
 								attributes: {
-									jobTitle: job.jobs.jobTitle,
-									company: 'Apple, Inc.',
-									location: job.jobs.address,
-									jobType: job.jobs.jobType,
-									salary: job.jobs.salary,
+									id: listing.jobs.id,
+									jobTitle: listing.jobs.jobTitle,
+									company: listing.company.name,
+									companyLogo: listing.company.logo,
+									location: listing.jobs.address,
+									jobType: listing.jobs.jobType,
+									showPayRate: listing.jobs.showPayRate,
+									payType: listing.jobs.payType,
+									hourlyRate: listing.jobs.hourlyRate,
+									salary: listing.jobs.salary,
+									skills: listing.jobs.skills,
+									jobDescription: listing.jobs.jobDescription,
+									jobResponsibilities: listing.jobs.jobResponsibilities,
+									jobRequirements: listing.jobs.jobRequirements,
 								},
 							});
 
@@ -230,6 +301,21 @@ export default function JobMap() {
 			generateMapMarkers();
 
 			setMap(map);
+
+			// When map is done loading, zoom to extent of all features
+			const handle = view.watch('updating', function (value) {
+				if (!value) {
+					featureLayer
+
+						.queryExtent()
+
+						.then(function (results) {
+							const extent = results.extent;
+							view.goTo(extent);
+							handle.remove();
+						});
+				}
+			});
 		}
 	}, []);
 
