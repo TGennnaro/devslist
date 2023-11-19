@@ -8,6 +8,5 @@ export const config = {
 		'/applications',
 		'/profile',
 		'/reviews',
-		'/api/:path*',
 	],
 };
