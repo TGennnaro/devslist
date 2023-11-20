@@ -19,14 +19,10 @@ export default function LoginForm() {
 		signIn('credentials', {
 			username: (formData.get('email') as string).toLowerCase(),
 			password: formData.get('password') as string,
-			redirect: false,
+			callbackUrl: '/',
 		}).then((res) => {
 			if (res?.status === 401) toast.error('Invalid username or password');
 			else if (res?.status !== 200) toast.error('An internal error occurred');
-			else if (res?.status === 200) {
-				if (searchParams !== undefined)
-					router.push(searchParams.get('callbackUrl') ?? '/');
-			}
 			setIsLoading(false);
 		});
 	}
