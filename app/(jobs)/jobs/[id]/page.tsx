@@ -56,15 +56,17 @@ export default async function Page({ params }: { params: { id: number } }) {
 				</Link>
 				<div className='flex flex-row items-center justify-between mb-8'>
 					<div className='flex items-center gap-4'>
-						<Image
-							isBlurred
-							alt='Company logo'
-							width={64}
-							height={64}
-							radius='sm'
-							src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png'
-							className='object-contain p-1 dark:bg-gray-500 aspect-square'
-						/>
+						{jobData.company?.logo ? (
+							<Image
+								isBlurred
+								alt='Company logo'
+								width={64}
+								height={64}
+								radius='sm'
+								src={jobData.company.logo}
+								className='object-contain p-1 aspect-square'
+							/>
+						) : null}
 						<div>
 							<div className='text-3xl font-bold'>{jobData.jobs.jobTitle}</div>
 							<div className='font-semibold text-medium text-light'>
