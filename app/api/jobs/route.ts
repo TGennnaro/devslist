@@ -165,10 +165,10 @@ export async function GET(req: Request) {
 			.where(and(...query))
 			.leftJoin(Company, eq(Jobs.companyId, Company.id))
 			.orderBy(desc(Jobs.startDate))
-			.limit(10)
+			.limit(20)
 			.offset(
 				Number(params.get('page')) && Number(params.get('page')) >= 0
-					? (Number(params.get('page')) - 1) * 10
+					? (Number(params.get('page')) - 1) * 20
 					: 0
 			);
 		return NextResponse.json(data);
