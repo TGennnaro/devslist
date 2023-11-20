@@ -1,14 +1,9 @@
 'use client';
 import JobCard, { JobCardSkeleton } from '@/app/(jobs)/jobs/JobCard';
-import { title } from '@/components/primitives';
 import { Company, Job } from '@/db/schema';
-import { authOptions } from '@/lib/auth';
 import { currency } from '@/lib/utils';
 import { JobFilters } from '@/types';
-import { Button } from '@nextui-org/button';
 import { Pagination } from '@nextui-org/pagination';
-import { Plus } from 'lucide-react';
-import { getServerSession } from 'next-auth';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import Filters from './Filters';
