@@ -165,7 +165,12 @@ export async function GET(req: Request) {
 			.where(and(...query))
 			.leftJoin(Company, eq(Jobs.companyId, Company.id))
 			.orderBy(desc(Jobs.startDate))
-			.limit(10);
+			.limit(10)
+			.offset(
+				Number(params.get('page')) && Number(params.get('page')) >= 0
+					? (Number(params.get('page')) - 1) * 10
+					: 0
+			);
 		return NextResponse.json(data);
 	} catch (error) {
 		return NextResponse.json({ error: error });

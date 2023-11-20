@@ -14,6 +14,8 @@ import { useQuery } from 'react-query';
 import Filters from './Filters';
 
 export default function JobSearch() {
+	const [currentPage, setCurrentPage] = useState(1);
+
 	const [filters, setFilters] = useState<JobFilters>({
 		searchQuery: undefined,
 		jobTypes: undefined,
@@ -22,7 +24,7 @@ export default function JobSearch() {
 	const query = useQuery({
 		queryKey: ['jobs', filters],
 		queryFn: async () => {
-			let query = '?';
+			let query = `?page=${currentPage}&`;
 			for (const [k, v] of Object.entries(filters)) {
 				if (Array.isArray(v) && v.length > 0) query += `${k}=${v.join(',')}&`;
 				else if (typeof v === 'string') query += `${k}=${v}&`;
@@ -85,7 +87,7 @@ export default function JobSearch() {
 					)}
 				</div>
 				<div className='flex flex-row items-center justify-center my-52'>
-					<Pagination total={5} initialPage={1} />
+					<Pagination total={50} initialPage={1} onChange={setCurrentPage} />
 				</div>
 			</div>
 		</div>
