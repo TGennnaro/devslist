@@ -4,6 +4,20 @@ export function cn(...args: (string | undefined)[]) {
 	return twMerge(...args);
 }
 
+export const debounce = <F extends (...args: any[]) => any>(
+	func: F,
+	waitFor: number
+) => {
+	let timeout: ReturnType<typeof setTimeout>;
+	return (...args: Parameters<F>): Promise<ReturnType<F>> =>
+		new Promise((resolve) => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+			timeout = setTimeout(() => resolve(func(...args)), waitFor);
+		});
+};
+
 export function timeSince(date: Date) {
 	const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
 	let interval = Math.floor(seconds / 31536000);
