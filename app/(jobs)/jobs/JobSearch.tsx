@@ -17,7 +17,7 @@ export default function JobSearch() {
 	});
 
 	const query = useQuery({
-		queryKey: ['jobs', filters],
+		queryKey: ['jobs', filters, currentPage],
 		queryFn: async () => {
 			let query = `?page=${currentPage}&`;
 			for (const [k, v] of Object.entries(filters)) {
@@ -82,7 +82,7 @@ export default function JobSearch() {
 					)}
 				</div>
 				<div className='flex flex-row items-center justify-center my-52'>
-					<Pagination total={50} initialPage={1} onChange={setCurrentPage} />
+					<Pagination total={50} page={currentPage} onChange={setCurrentPage} />
 				</div>
 			</div>
 		</div>
