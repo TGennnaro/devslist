@@ -20,7 +20,11 @@ import { currency } from '@/lib/utils';
 import { JobPopup } from './JobPopup';
 import { Job, Company } from '@/db/schema';
 
-export default function JobMap({ jobs }: { jobs: any[] }) {
+export default function JobMap({
+	jobs,
+}: {
+	jobs: { jobs: Job; company: Company | null }[];
+}) {
 	const mapDiv = useRef(null);
 	const { theme } = useTheme();
 	const [map, setMap] = useState<Map | null>(null);
@@ -263,7 +267,7 @@ export default function JobMap({ jobs }: { jobs: any[] }) {
 
 			const generateMapMarkers = async () => {
 				try {
-					jobs.map((listing: { jobs: Job; company: Company }) => {
+					jobs.map((listing: { jobs: Job; company: Company | null }) => {
 						if (listing.jobs.latitude && listing.jobs.longitude) {
 							const point = new Point({
 								longitude: listing.jobs.longitude,
@@ -275,8 +279,8 @@ export default function JobMap({ jobs }: { jobs: any[] }) {
 								attributes: {
 									id: listing.jobs.id,
 									jobTitle: listing.jobs.jobTitle,
-									company: listing.company.name,
-									companyLogo: listing.company.logo,
+									company: listing.company?.name,
+									companyLogo: listing.company?.logo,
 									location: listing.jobs.address,
 									jobType: listing.jobs.jobType,
 									showPayRate: listing.jobs.showPayRate,
