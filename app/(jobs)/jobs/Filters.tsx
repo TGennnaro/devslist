@@ -16,14 +16,6 @@ export default function Filters({
 	return (
 		<div className='sticky flex flex-col h-[calc(100vh_-_4rem)] gap-3 top-16 w-80 overflow-auto py-8'>
 			<div>
-				<NextLink href='/jobs/post'>
-					<Button color='primary' variant='flat' endContent={<Send />}>
-						Post Job
-					</Button>
-				</NextLink>
-			</div>
-			<hr className='my-4 border-divider' />
-			<div>
 				<JobSearchBar
 					setQuery={(query: string) =>
 						setFilters((prev) => ({ ...prev, searchQuery: query }))
