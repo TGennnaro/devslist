@@ -24,8 +24,7 @@ export default function LoginForm() {
 			if (res?.status === 401) toast.error('Invalid username or password');
 			else if (res?.status !== 200) toast.error('An internal error occurred');
 			else if (res?.status === 200) {
-				if (searchParams !== undefined)
-					router.push(searchParams.get('callbackUrl') ?? '/');
+				window.location.href = '/';
 			}
 			setIsLoading(false);
 		});
