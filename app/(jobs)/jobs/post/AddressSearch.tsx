@@ -1,59 +1,82 @@
 'use client';
+import { debounce } from '@/lib/utils';
+import { GeoSuggestionResult, GeocodeResult } from '@/types';
 import Search from '@arcgis/core/widgets/Search';
+import { Input } from '@nextui-org/input';
+import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useState, useEffect, useRef } from 'react';
+import { useQuery } from 'react-query';
+import { useDebounce } from 'usehooks-ts';
 
 export default function AddressSearch({
-	theme,
 	setLatitude,
 	setLongitude,
 	setWorkLocation,
+	disabled,
 }: {
-	theme?: string;
 	setLatitude: any;
 	setLongitude: any;
 	setWorkLocation: any;
+	disabled: boolean;
 }) {
-	const searchDiv = useRef(null);
-	const [selectedAddress, setSelectedAddress] = useState('');
-
-	useEffect(() => {
-		if (searchDiv.current) {
-			const search = new Search({ container: searchDiv.current });
-
-			search.on('search-complete', function (result) {
-				if (
-					result.numResults > 0 &&
-					(result as any).results[0].results[0].feature.geometry.x &&
-					(result as any).results[0].results[0].feature.geometry.y
-				) {
-					setSelectedAddress((result as any).searchTerm);
-					setLatitude((result as any).results[0].results[0].feature.geometry.y);
-					setLongitude(
-						(result as any).results[0].results[0].feature.geometry.x
-					);
-					setWorkLocation((result as any).searchTerm);
-				} else {
-					setSelectedAddress('No results found');
-				}
-			});
-		}
-	}, []);
-
+	const [fieldState, setFieldState] = useState({
+		selectedKey: '',
+		inputValue: '',
+		isLoading: false,
+	});
+	const debouncedAddress = useDebounce(fieldState.inputValue, 500);
+	const { isLoading, isError, data, error } = useQuery({
+		queryKey: ['address', debouncedAddress],
+		queryFn: async () => {
+			if (fieldState.inputValue.length === 0) return;
+			const res = await fetch(
+				'/api/address/search?query=' + fieldState.inputValue
+			);
+			if (!res.ok) throw new Error('Network error occurred');
+			return res.json() as Promise<GeoSuggestionResult>;
+		},
+		onSettled: () => {
+			setFieldState((prev) => ({ ...prev, isLoading: false }));
+		},
+	});
 	return (
-		<>
-			<link
-				id='searchBarTheme'
-				rel='stylesheet'
-				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
-			/>
-			<div
-				id='searchDiv'
-				ref={searchDiv}
-				className='[&>*:not(:nth-child(1))]:hidden' // fixes double search bar issue
-			></div>
-			<p>
-				<span className='font-semibold'>{selectedAddress}</span>
-			</p>
-		</>
+		<Autocomplete
+			label='Job location'
+			labelPlacement='outside'
+			variant='bordered'
+			radius='sm'
+			placeholder='Search for an address'
+			isLoading={isLoading || fieldState.isLoading}
+			defaultItems={data?.suggestions ?? []}
+			onInputChange={(value) => {
+				setFieldState((prev) => ({
+					...prev,
+					inputValue: value,
+					isLoading: true,
+				}));
+			}}
+			defaultFilter={() => true}
+			selectedKey={fieldState.selectedKey}
+			onSelectionChange={(item) => {
+				const suggestion = data?.suggestions.find(
+					(suggestion) => suggestion.magicKey === item
+				);
+				setFieldState((prev) => ({
+					...prev,
+					selectedKey: suggestion?.text ?? prev.selectedKey,
+					inputValue: suggestion?.text ?? prev.inputValue,
+				}));
+			}}
+			inputValue={fieldState.inputValue}
+			isInvalid={isError}
+			classNames={{
+				base: 'max-w-xl',
+			}}
+			isDisabled={disabled}
+		>
+			{(item) => (
+				<AutocompleteItem key={item.magicKey}>{item.text}</AutocompleteItem>
+			)}
+		</Autocomplete>
 	);
 }

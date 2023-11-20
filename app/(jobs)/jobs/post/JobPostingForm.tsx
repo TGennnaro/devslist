@@ -1,20 +1,19 @@
 'use client';
-import { useState } from 'react';
-import { Card, CardBody } from '@nextui-org/card';
-import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
+import { Card, CardBody } from '@nextui-org/card';
 import { Checkbox } from '@nextui-org/checkbox';
-import { RadioGroup, Radio } from '@nextui-org/radio';
 import { Chip } from '@nextui-org/chip';
+import { Input, Textarea } from '@nextui-org/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
+import { Radio, RadioGroup } from '@nextui-org/radio';
 import { Calendar, Plus, Send } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-import { DayPicker } from 'react-day-picker';
-import { useMutation } from 'react-query';
-import { FormEvent, useRef } from 'react';
-import dynamic from 'next/dynamic';
-import 'react-day-picker/dist/style.css';
-import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
+import { useMutation } from 'react-query';
 import { toast } from 'sonner';
 
 const AddressSearch = dynamic(
@@ -114,10 +113,7 @@ export default function JobPostingForm() {
 		<form onSubmit={mutation.mutate}>
 			<div className='flex items-center justify-center mt-8 mb-20'>
 				<div className='basis-full'>
-					<div className='my-5 text-2xl font-semibold'>
-						Some basic info first
-					</div>
-					<div className='flex flex-col gap-5'>
+					<div className='flex flex-col max-w-screen-md gap-6'>
 						<Input
 							name='jobTitle'
 							label='Job Title'
@@ -133,12 +129,7 @@ export default function JobPostingForm() {
 							<Radio value='Internship'>Internship</Radio>
 							<Radio value='Freelance'>Freelance</Radio>
 						</RadioGroup>
-					</div>
-					<div className='my-5 text-2xl font-semibold'>
-						Let&apos;s learn more about this job
-					</div>
-					<div className='flex flex-col gap-5'>
-						<Input
+						<Textarea
 							name='jobDescription'
 							label='Job description'
 							labelPlacement='outside'
@@ -146,8 +137,9 @@ export default function JobPostingForm() {
 							variant='bordered'
 							radius='sm'
 							isRequired
+							minRows={4}
 						/>
-						<Input
+						<Textarea
 							name='jobRequirements'
 							label='Job requirements'
 							labelPlacement='outside'
@@ -155,8 +147,9 @@ export default function JobPostingForm() {
 							variant='bordered'
 							radius='sm'
 							isRequired
+							minRows={4}
 						/>
-						<Input
+						<Textarea
 							name='jobResponsibilities'
 							label='Job responsibilities'
 							labelPlacement='outside'
@@ -164,30 +157,29 @@ export default function JobPostingForm() {
 							variant='bordered'
 							radius='sm'
 							isRequired
+							minRows={4}
 						/>
 
-						<div className='flex flex-row items-center gap-3'>
-							<Input
-								label='Enter required skills (one at a time)'
-								labelPlacement='outside'
-								placeholder='Python'
-								variant='bordered'
-								radius='sm'
-								value={skillValue}
-								onValueChange={setSkillValue}
-								endContent={
-									<button type='button'>
-										<Plus onClick={() => addToSkillsList()} />
-									</button>
+						<Input
+							label='Enter required skills (one at a time)'
+							labelPlacement='outside'
+							placeholder='Python'
+							variant='bordered'
+							radius='sm'
+							value={skillValue}
+							onValueChange={setSkillValue}
+							endContent={
+								<button type='button'>
+									<Plus onClick={() => addToSkillsList()} />
+								</button>
+							}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.preventDefault();
+									addToSkillsList();
 								}
-								onKeyDown={(e) => {
-									if (e.key === 'Enter') {
-										e.preventDefault();
-										addToSkillsList();
-									}
-								}}
-							/>
-						</div>
+							}}
+						/>
 						{skillsList.length != 0 ? (
 							<Card>
 								<CardBody>
@@ -212,11 +204,6 @@ export default function JobPostingForm() {
 								</CardBody>
 							</Card>
 						) : null}
-					</div>
-					<div className='my-5 text-2xl font-semibold'>
-						Job posting settings
-					</div>
-					<div className='flex flex-col gap-5'>
 						<Input
 							name='expirationDate'
 							label='Job posting expiration date'
@@ -259,17 +246,15 @@ export default function JobPostingForm() {
 							name='showWorkLocation'
 							value='true'
 						>
-							Physical work location?
+							This job is remote
 						</Checkbox>
 
-						{workLocationSearchHidden ? null : (
-							<AddressSearch
-								theme={theme}
-								setLatitude={setWorkLocationLatitude}
-								setLongitude={setWorkLocationLongitude}
-								setWorkLocation={setWorkLocation}
-							/>
-						)}
+						<AddressSearch
+							setLatitude={setWorkLocationLatitude}
+							setLongitude={setWorkLocationLongitude}
+							setWorkLocation={setWorkLocation}
+							disabled={!workLocationSearchHidden}
+						/>
 
 						<Checkbox
 							defaultSelected
