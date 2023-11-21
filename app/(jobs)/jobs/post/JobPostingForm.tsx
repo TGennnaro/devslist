@@ -7,7 +7,6 @@ import { Input, Textarea } from '@nextui-org/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import { Calendar, Plus, Send } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
@@ -27,16 +26,12 @@ export default function JobPostingForm() {
 	const [payTypeSelectionHidden, setPayTypeSelectionHidden] = useState(false);
 	const [hourlyInputHidden, setHourlyInputHidden] = useState(true);
 	const [salaryInputHidden, setSalaryInputHidden] = useState(true);
-	const [workLocationSearchHidden, setWorkLocationSearchHidden] =
-		useState(false);
-	const [workLocationLatitude, setWorkLocationLatitude] = useState(null);
-	const [workLocationLongitude, setWorkLocationLongitude] = useState(null);
-	const [workLocation, setWorkLocation] = useState(null);
+	const [remotePosition, setRemotePosition] = useState(false);
+	const [workLocation, setWorkLocation] = useState<string>('');
 	const [skillsList, setSkillsList] = useState<string[]>([]);
 	const [skillValue, setSkillValue] = useState('');
 	const [selected, setSelected] = useState<Date | undefined>(new Date());
 	const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
-	const { theme } = useTheme();
 	const router = useRouter();
 
 	const mutation = useMutation({
@@ -44,15 +39,6 @@ export default function JobPostingForm() {
 			e.preventDefault();
 			const formData = new FormData(e.target as HTMLFormElement);
 			formData.append('skills', JSON.stringify(skillsList));
-
-			workLocation ? formData.append('workAddress', workLocation) : null;
-			workLocationLatitude
-				? formData.append('latitude', workLocationLatitude)
-				: null;
-			workLocationLongitude
-				? formData.append('longitude', workLocationLongitude)
-				: null;
-
 			return await fetch('/api/jobs', {
 				method: 'POST',
 				body: formData,
@@ -89,15 +75,6 @@ export default function JobPostingForm() {
 		salaryInputHidden
 			? setSalaryInputHidden(false)
 			: setSalaryInputHidden(true);
-	}
-
-	function handleShowWorkLocationSearch() {
-		setWorkLocationLatitude(null);
-		setWorkLocationLongitude(null);
-		setWorkLocation(null);
-		workLocationSearchHidden
-			? setWorkLocationSearchHidden(false)
-			: setWorkLocationSearchHidden(true);
 	}
 
 	function addToSkillsList() {
@@ -240,21 +217,27 @@ export default function JobPostingForm() {
 							}
 						/>
 
+						<AddressSearch
+							setLocation={setWorkLocation}
+							disabled={remotePosition}
+							name='jobLocation'
+							label='Job location'
+							labelPlacement='outside'
+							placeholder='Search address...'
+							variant='bordered'
+							radius='sm'
+							classNames={{
+								base: 'max-w-xl',
+							}}
+						/>
+
 						<Checkbox
-							defaultSelected
-							onClick={() => handleShowWorkLocationSearch()}
+							onValueChange={(value) => setRemotePosition(value)}
 							name='showWorkLocation'
 							value='true'
 						>
 							This job is remote
 						</Checkbox>
-
-						<AddressSearch
-							setLatitude={setWorkLocationLatitude}
-							setLongitude={setWorkLocationLongitude}
-							setWorkLocation={setWorkLocation}
-							disabled={!workLocationSearchHidden}
-						/>
 
 						<Checkbox
 							defaultSelected
@@ -301,10 +284,9 @@ export default function JobPostingForm() {
 
 					<div className='flex flex-row items-center gap-3 mt-8'>
 						<Button
-							variant='flat'
 							color='primary'
 							onClick={() => console.log('post')}
-							endContent={<Send />}
+							startContent={<Send size={16} />}
 							type='submit'
 							isDisabled={mutation.isLoading}
 							isLoading={mutation.isLoading}
