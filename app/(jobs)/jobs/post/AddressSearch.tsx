@@ -1,24 +1,24 @@
 'use client';
-import { debounce } from '@/lib/utils';
-import { GeoSuggestionResult, GeocodeResult } from '@/types';
-import Search from '@arcgis/core/widgets/Search';
-import { Input } from '@nextui-org/input';
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
-import { useState, useEffect, useRef } from 'react';
+import { GeoSuggestion, GeoSuggestionResult, GeocodeResult } from '@/types';
+import {
+	Autocomplete,
+	AutocompleteItem,
+	AutocompleteProps,
+} from '@nextui-org/react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDebounce } from 'usehooks-ts';
 
 export default function AddressSearch({
-	setLatitude,
-	setLongitude,
-	setWorkLocation,
+	setLocation,
 	disabled,
+	defaultItems,
+	items,
+	...props
 }: {
-	setLatitude: any;
-	setLongitude: any;
-	setWorkLocation: any;
+	setLocation: (address: string) => void;
 	disabled: boolean;
-}) {
+} & Omit<AutocompleteProps, 'children'>) {
 	const [fieldState, setFieldState] = useState({
 		selectedKey: '',
 		inputValue: '',
@@ -41,11 +41,7 @@ export default function AddressSearch({
 	});
 	return (
 		<Autocomplete
-			label='Job location'
-			labelPlacement='outside'
-			variant='bordered'
-			radius='sm'
-			placeholder='Search for an address'
+			{...props}
 			isLoading={isLoading || fieldState.isLoading}
 			defaultItems={data?.suggestions ?? []}
 			onInputChange={(value) => {
@@ -58,24 +54,24 @@ export default function AddressSearch({
 			defaultFilter={() => true}
 			selectedKey={fieldState.selectedKey}
 			onSelectionChange={(item) => {
-				const suggestion = data?.suggestions.find(
-					(suggestion) => suggestion.magicKey === item
-				);
 				setFieldState((prev) => ({
 					...prev,
-					selectedKey: suggestion?.text ?? prev.selectedKey,
-					inputValue: suggestion?.text ?? prev.inputValue,
+					selectedKey: item?.toString() ?? '',
+					inputValue: item?.toString() ?? prev.inputValue,
 				}));
+				setLocation(item?.toString() ?? '');
 			}}
 			inputValue={fieldState.inputValue}
 			isInvalid={isError}
-			classNames={{
-				base: 'max-w-xl',
-			}}
 			isDisabled={disabled}
+			description={
+				fieldState.selectedKey.length > 0
+					? `Selected address: ${fieldState.selectedKey}`
+					: ''
+			}
 		>
 			{(item) => (
-				<AutocompleteItem key={item.magicKey}>{item.text}</AutocompleteItem>
+				<AutocompleteItem key={item.text}>{item.text}</AutocompleteItem>
 			)}
 		</Autocomplete>
 	);
