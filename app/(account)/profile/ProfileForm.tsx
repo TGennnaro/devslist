@@ -5,13 +5,15 @@ import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Input, Textarea } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { Plus } from 'lucide-react';
+import { Plus, Unplug } from 'lucide-react';
 import { FormEvent } from 'react';
 import { useMutation } from 'react-query';
 import ImageUpload from './ImageUpload';
 import { User } from '@/db/schema';
 import React from 'react';
 import { toast } from 'sonner';
+import { signIn } from 'next-auth/react';
+import { GithubIcon } from 'lucide-react';
 
 export default function ProfileForm({
 	defaultValues,
@@ -103,6 +105,23 @@ export default function ProfileForm({
 							Profile picture
 						</label>
 						<ImageUpload />
+					</div>
+					<div>
+						<label className='block mb-2 text-sm font-medium'>
+							GitHub account integration
+						</label>
+						<p>Display your GitHub projects on your DevsList profile!</p>
+						{!session.data?.accessToken ? (
+							<Button
+								className='bg-[rgb(36,41,47)] hover:bg-[rgb(52,60,69)] text-white transition-background rounded-md flex gap-3 py-3 mt-6'
+								onClick={() => signIn('github', { callbackUrl: '/profile' })}
+								startContent={<GithubIcon />}
+							>
+								Connect to GitHub
+							</Button>
+						) : (
+							<p className='text-green-500'>You are connected!</p>
+						)}
 					</div>
 				</div>
 			</div>
