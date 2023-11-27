@@ -79,59 +79,63 @@ export const authOptions: AuthOptions = {
 			return session;
 		},
 		async jwt({ account, token, user }) {
-			if (account?.provider === 'github') {
-				const dbUser = await db
-					.select()
-					.from(Users)
-					.where(eq(Users.githubID, account.providerAccountId));
-
-				if (dbUser.length === 0) {
-					const insertedUser = await db.insert(Users).values({
-						email: user.email!,
-						picture_url: user.image,
-						githubID: account.providerAccountId,
-					});
-
-					// now inserted
-					const insertedUserDetails = await db
+			if (account) {
+				if (account?.provider === 'github') {
+					// Find user using GitHub account ID
+					const dbUser = await db
 						.select()
 						.from(Users)
-						.where(eq(Users.id, Number(insertedUser.insertId)));
+						.where(eq(Users.githubID, account.providerAccountId));
 
-					return {
-						id: Number(insertedUser.insertId),
-						email: insertedUserDetails[0].email,
-						firstName: insertedUserDetails[0].firstName,
-						lastName: insertedUserDetails[0].lastName,
-						accessToken: account.access_token,
-					};
+					if (dbUser.length === 0) {
+						const insertedUser = await db.insert(Users).values({
+							email: user.email!,
+							picture_url: user.image,
+							githubID: account.providerAccountId,
+						});
+
+						const insertedUserDetails = await db
+							.select()
+							.from(Users)
+							.where(eq(Users.id, Number(insertedUser.insertId)));
+
+						return {
+							id: Number(insertedUser.insertId),
+							email: insertedUserDetails[0].email,
+							firstName: insertedUserDetails[0].firstName,
+							lastName: insertedUserDetails[0].lastName,
+							accessToken: account.access_token,
+						};
+					} else {
+						return {
+							id: dbUser[0].id,
+							email: dbUser[0].email,
+							firstName: dbUser[0].firstName,
+							lastName: dbUser[0].lastName,
+							accessToken: account.access_token,
+						};
+					}
 				} else {
+					const dbUser = await db
+						.select()
+						.from(Users)
+						.where(eq(Users.id, token.id));
+
+					if (dbUser.length === 0) {
+						token.id = parseInt(user!.id.toString());
+						return token;
+					}
+
 					return {
 						id: dbUser[0].id,
 						email: dbUser[0].email,
 						firstName: dbUser[0].firstName,
 						lastName: dbUser[0].lastName,
-						accessToken: account.access_token,
 					};
 				}
 			}
 
-			const dbUser = await db
-				.select()
-				.from(Users)
-				.where(eq(Users.id, token.id));
-
-			if (dbUser.length === 0) {
-				token.id = parseInt(user!.id.toString());
-				return token;
-			}
-
-			return {
-				id: dbUser[0].id,
-				email: dbUser[0].email,
-				firstName: dbUser[0].firstName,
-				lastName: dbUser[0].lastName,
-			};
+			return token;
 		},
 	},
 };
