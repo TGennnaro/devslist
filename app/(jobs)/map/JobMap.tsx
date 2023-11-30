@@ -4,6 +4,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter.js';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Graphic from '@arcgis/core/Graphic';
@@ -267,7 +269,7 @@ export default function JobMap({
 
 			view.ui.add(legend, 'bottom-right');
 
-			let jobsLayerView: any;
+			let jobsLayerView: FeatureLayerView;
 
 			const jobTypesElement = document.getElementById('job-type-filter');
 
@@ -281,9 +283,9 @@ export default function JobMap({
 			// to display jobs with the selected job type only
 			function filterByJobType(event: any) {
 				const selectedJobType = event.target.getAttribute('data-job');
-				jobsLayerView.filter = {
+				jobsLayerView.filter = new FeatureFilter({
 					where: "jobType = '" + selectedJobType + "'",
-				};
+				});
 			}
 
 			view.whenLayerView(featureLayer).then((layerView) => {
@@ -304,6 +306,7 @@ export default function JobMap({
 					reactiveUtils.when(
 						() => !jobTypesExpand.expanded,
 						() => {
+							// @ts-ignore
 							jobsLayerView.filter = null;
 						}
 					);
