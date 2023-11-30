@@ -5,7 +5,7 @@ import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Input, Textarea } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { Plus, Unplug } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { FormEvent } from 'react';
 import { useMutation } from 'react-query';
 import ImageUpload from './ImageUpload';
@@ -14,12 +14,14 @@ import React from 'react';
 import { toast } from 'sonner';
 import { signIn } from 'next-auth/react';
 import { GithubIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 export default function ProfileForm({
 	defaultValues,
 }: {
 	defaultValues: Omit<User, 'password'> | null;
 }) {
+	const session = useSession();
 	const mutation = useMutation({
 		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
