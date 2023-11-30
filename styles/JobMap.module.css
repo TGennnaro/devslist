@@ -11,7 +11,7 @@
 	visibility: hidden;
 }
 
-.seasonItem {
+.jobTypeItem {
 	width: 100%;
 	padding: 12px;
 	text-align: center;
@@ -20,12 +20,12 @@
 	height: 40px;
 }
 
-.seasonItem:focus {
+.jobTypeItem:focus {
 	background-color: dimgrey;
 	color: white;
 }
 
-.seasonItem:hover {
+.jobTypeItem:hover {
 	background-color: dimgrey;
 	color: white;
 }

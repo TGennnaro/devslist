@@ -415,16 +415,16 @@ export default function JobMap({
 				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
 			/>
 			<div id='job-type-filter' className='esri-widget'>
-				<div className={`${styles.seasonItem}`} data-job='Full-Time'>
+				<div className={`${styles.jobTypeItem}`} data-job='Full-Time'>
 					Full-Time
 				</div>
-				<div className={`${styles.seasonItem}`} data-job='Part-Time'>
+				<div className={`${styles.jobTypeItem}`} data-job='Part-Time'>
 					Part-Time
 				</div>
-				<div className={`${styles.seasonItem}`} data-job='Internship'>
+				<div className={`${styles.jobTypeItem}`} data-job='Internship'>
 					Internship
 				</div>
-				<div className={`${styles.seasonItem}`} data-job='Freelance'>
+				<div className={`${styles.jobTypeItem}`} data-job='Freelance'>
 					Freelance
 				</div>
 			</div>
