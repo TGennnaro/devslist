@@ -13,6 +13,8 @@ import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
 import Legend from '@arcgis/core/widgets/Legend';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import Expand from '@arcgis/core/widgets/Expand.js';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils.js';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
@@ -265,6 +267,50 @@ export default function JobMap({
 
 			view.ui.add(legend, 'bottom-right');
 
+			let jobsLayerView: any;
+
+			const jobTypesElement = document.getElementById('job-type-filter');
+
+			// Click event handler for job type choices
+			if (jobTypesElement) {
+				jobTypesElement.addEventListener('click', filterByJobType);
+			}
+
+			// User clicked on specific job type
+			// Set an attribute filter on jobs layer view
+			// to display jobs with the selected job type only
+			function filterByJobType(event: any) {
+				const selectedJobType = event.target.getAttribute('data-job');
+				jobsLayerView.filter = {
+					where: "jobType = '" + selectedJobType + "'",
+				};
+			}
+
+			view.whenLayerView(featureLayer).then((layerView) => {
+				// Jobs layer loaded
+				// Get a reference to the layer view
+				jobsLayerView = layerView;
+
+				if (jobTypesElement) {
+					// Set up UI items
+					jobTypesElement.style.visibility = 'visible';
+					const jobTypesExpand = new Expand({
+						view: view,
+						content: jobTypesElement,
+						expandIcon: 'filter',
+						group: 'top-left',
+					});
+					// Clear the filters when user closes the expand widget
+					reactiveUtils.when(
+						() => !jobTypesExpand.expanded,
+						() => {
+							jobsLayerView.filter = null;
+						}
+					);
+					view.ui.add(jobTypesExpand, 'top-left');
+				}
+			});
+
 			const generateMapMarkers = async () => {
 				try {
 					jobs.map((listing: { jobs: Job; company: Company | null }) => {
@@ -365,6 +411,20 @@ export default function JobMap({
 				rel='stylesheet'
 				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
 			/>
+			<div id='job-type-filter' className='esri-widget'>
+				<div className={`${styles.seasonItem}`} data-job='Full-Time'>
+					Full-Time
+				</div>
+				<div className={`${styles.seasonItem}`} data-job='Part-Time'>
+					Part-Time
+				</div>
+				<div className={`${styles.seasonItem}`} data-job='Internship'>
+					Internship
+				</div>
+				<div className={`${styles.seasonItem}`} data-job='Freelance'>
+					Freelance
+				</div>
+			</div>
 			<div className={`${styles.mapDiv}`} ref={mapDiv} id='root'></div>
 		</>
 	);
