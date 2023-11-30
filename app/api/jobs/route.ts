@@ -159,19 +159,29 @@ export async function GET(req: Request) {
 		if (filters.searchQuery !== undefined && filters.searchQuery.length > 0) {
 			query.push(ilike(Jobs.jobTitle, `%${filters.searchQuery}%`));
 		}
-		const data = await db
-			.select()
-			.from(Jobs)
-			.where(and(...query))
-			.leftJoin(Company, eq(Jobs.companyId, Company.id))
-			.orderBy(desc(Jobs.startDate))
-			.limit(20)
-			.offset(
-				Number(params.get('page')) && Number(params.get('page')) >= 0
-					? (Number(params.get('page')) - 1) * 20
-					: 0
-			);
-		return NextResponse.json(data);
+		try {
+			const perPage = Number(params.get('per_page')) ?? 20;
+			const data = await db
+				.select()
+				.from(Jobs)
+				.where(and(...query))
+				.leftJoin(Company, eq(Jobs.companyId, Company.id))
+				.orderBy(desc(Jobs.startDate))
+				.limit(perPage)
+				.offset(
+					Number(params.get('page')) && Number(params.get('page')) >= 0
+						? (Number(params.get('page')) - 1) * perPage
+						: 0
+				);
+			const total = await db
+				.select({ count: sql`COUNT(*)` })
+				.from(Jobs)
+				.where(and(...query));
+			return NextResponse.json({ jobs: data, total: Number(total[0].count) });
+		} catch (error) {
+			console.log(error);
+			return NextResponse.json({ error: error });
+		}
 	} catch (error) {
 		return NextResponse.json({ error: error });
 	}

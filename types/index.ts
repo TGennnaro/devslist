@@ -39,3 +39,22 @@ export type JobFilters = {
 	searchQuery: string | undefined;
 	jobTypes: string[] | undefined;
 };
+
+export type GeocodeResult = {
+	candidates: {
+		address: string;
+		location: { x: number; y: number };
+		score: number;
+	}[];
+	spatialReference: { wkid: number; latestWkid: number };
+};
+
+export type GeoSuggestionResult = {
+	suggestions: GeoSuggestion[];
+};
+
+export type GeoSuggestion = {
+	text: string;
+	magicKey: string;
+	isCollection: boolean;
+};

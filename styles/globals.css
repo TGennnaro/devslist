@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+	scroll-behavior: smooth;
+}
+
 .text-light {
 	@apply text-gray-600 dark:text-gray-400;
 }

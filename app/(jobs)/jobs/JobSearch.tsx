@@ -7,19 +7,23 @@ import { Pagination } from '@nextui-org/pagination';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import Filters from './Filters';
+import { toast } from 'sonner';
+
+const PER_PAGE = 10;
 
 export default function JobSearch() {
 	const [currentPage, setCurrentPage] = useState(1);
+	const [totalResults, setTotalResults] = useState(0);
 
 	const [filters, setFilters] = useState<JobFilters>({
 		searchQuery: undefined,
 		jobTypes: undefined,
 	});
 
-	const query = useQuery({
+	const { isLoading, isError, isSuccess, data, error } = useQuery({
 		queryKey: ['jobs', filters, currentPage],
 		queryFn: async () => {
-			let query = `?page=${currentPage}&`;
+			let query = `?page=${currentPage}&per_page=${PER_PAGE}&`;
 			for (const [k, v] of Object.entries(filters)) {
 				if (Array.isArray(v) && v.length > 0) query += `${k}=${v.join(',')}&`;
 				else if (typeof v === 'string') query += `${k}=${v}&`;
@@ -27,6 +31,14 @@ export default function JobSearch() {
 			const res = await fetch(`/api/jobs${query}`);
 			if (!res.ok) throw new Error('Network error occurred');
 			return res.json();
+		},
+		onError: (err) => {
+			console.error(err);
+			toast.error('An error occurred. See console for details.');
+		},
+		onSuccess: (data) => {
+			setTotalResults(data.total);
+			window.scrollTo(0, 0);
 		},
 	});
 
@@ -37,17 +49,17 @@ export default function JobSearch() {
 			</div>
 			<div className='w-full'>
 				<div className='grid w-full gap-5 md:grid-cols-2 sm:grid-cols-1'>
-					{query.isLoading && (
+					{isLoading && (
 						<>
-							{Array.from({ length: 6 }).map((_, i) => (
+							{Array.from({ length: PER_PAGE }).map((_, i) => (
 								<JobCardSkeleton key={i} />
 							))}
 						</>
 					)}
-					{query.isSuccess && (
+					{isSuccess && (
 						<>
-							{query.data.length > 0 ? (
-								query.data.map((listing: { jobs: Job; company: Company }) => {
+							{data.jobs.length > 0 ? (
+								data.jobs.map((listing: { jobs: Job; company: Company }) => {
 									return (
 										<JobCard
 											key={listing.jobs.id}
@@ -82,7 +94,17 @@ export default function JobSearch() {
 					)}
 				</div>
 				<div className='flex flex-row items-center justify-center my-52'>
-					<Pagination total={50} page={currentPage} onChange={setCurrentPage} />
+					<Pagination
+						total={
+							totalResults && !isNaN(totalResults)
+								? Math.ceil(totalResults / PER_PAGE)
+								: 1
+						}
+						page={currentPage}
+						onChange={setCurrentPage}
+						loop
+						showControls
+					/>
 				</div>
 			</div>
 		</div>
