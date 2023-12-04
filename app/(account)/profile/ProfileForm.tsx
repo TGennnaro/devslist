@@ -1,32 +1,45 @@
 'use client';
 
+import { useState } from 'react';
 import Text from '@/components/Text';
 import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Input, Textarea } from '@nextui-org/input';
+import { Card, CardHeader, CardBody } from '@nextui-org/card';
+import { Chip } from '@nextui-org/chip';
 import { Select, SelectItem } from '@nextui-org/select';
-import { Plus } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import { FormEvent } from 'react';
 import { useMutation } from 'react-query';
 import ImageUpload from './ImageUpload';
-import { User } from '@/db/schema';
+import { GitHubProject, User } from '@/db/schema';
 import React from 'react';
 import { toast } from 'sonner';
 import { signIn } from 'next-auth/react';
 import { GithubIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { GitHubRepo } from '@/types';
+import GitHubProjects from './GitHubProjects';
 
 export default function ProfileForm({
 	defaultValues,
+	availableGitHubProjects,
+	displayedGitHubProjects,
 }: {
 	defaultValues: Omit<User, 'password'> | null;
+	availableGitHubProjects: GitHubRepo[];
+	displayedGitHubProjects: GitHubRepo[];
 }) {
+	const [selectedProjects, setSelectedProjects] = useState<GitHubRepo[]>(
+		displayedGitHubProjects
+	);
 	const session = useSession();
 	const mutation = useMutation({
 		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
 			const target = e.target as HTMLFormElement;
 			const formData = new FormData(target as HTMLFormElement);
+			formData.append('projects', JSON.stringify(selectedProjects));
 			for (const checkbox of target.querySelectorAll('input[type=checkbox]')) {
 				const checkboxInput = checkbox as HTMLInputElement;
 				formData.set(checkboxInput.name, checkboxInput.checked.toString());
@@ -110,7 +123,7 @@ export default function ProfileForm({
 					</div>
 					<div>
 						<label className='block mb-2 text-sm font-medium'>
-							GitHub account integration
+							GitHub project showcase
 						</label>
 						<p>Display your GitHub projects on your DevsList profile!</p>
 						{!session.data?.accessToken ? (
@@ -122,7 +135,20 @@ export default function ProfileForm({
 								Connect to GitHub
 							</Button>
 						) : (
-							<p className='text-green-500'>You are connected!</p>
+							<>
+								<div className='flex flex-row gap-1 items-center'>
+									Status:
+									<Chip color='success' startContent={<Check />}>
+										Linked to GitHub
+									</Chip>
+								</div>
+								<GitHubProjects
+									displayedGitHubProjects={displayedGitHubProjects}
+									availableGitHubProjects={availableGitHubProjects}
+									selectedProjects={selectedProjects}
+									setSelectedProjects={setSelectedProjects}
+								/>
+							</>
 						)}
 					</div>
 				</div>
@@ -134,8 +160,8 @@ export default function ProfileForm({
 						Personal information
 					</span>
 					<Text variant='body' className='text-md'>
-						This information is private and will not be displayed on your
-						profile. It is used to fill out your applications quicker.
+						This information is public and will be displayed on your profile. It
+						is used to fill out your applications quicker.
 					</Text>
 				</div>
 				<div className='flex flex-col col-span-8 gap-8'>
@@ -186,9 +212,9 @@ export default function ProfileForm({
 							placeholder='State'
 							variant='bordered'
 							radius='sm'
-							defaultSelectedKeys={[
-								...(defaultValues?.state ? [defaultValues?.state] : []),
-							]}
+							// defaultSelectedKeys={[
+							// 	...(defaultValues?.state ? [defaultValues?.state] : []),
+							// ]}
 						>
 							<SelectItem key='pennsylvania' value='pennsylvania'>
 								Pennsylvania
@@ -207,9 +233,9 @@ export default function ProfileForm({
 							variant='bordered'
 							radius='sm'
 							selectionMode='single'
-							defaultSelectedKeys={[
-								...(defaultValues?.country ? [defaultValues?.country] : []),
-							]}
+							// defaultSelectedKeys={[
+							// 	...(defaultValues?.country ? [defaultValues?.country] : []),
+							// ]}
 						>
 							<SelectItem key='united-states' value='united-states'>
 								United States
@@ -267,11 +293,11 @@ export default function ProfileForm({
 							placeholder='Gender'
 							variant='bordered'
 							radius='sm'
-							defaultSelectedKeys={...defaultValues?.gender !== null
-								? defaultValues?.gender === true
-									? ['male']
-									: ['female']
-								: []}
+							// defaultSelectedKeys={...defaultValues?.gender !== null
+							// 	? defaultValues?.gender === true
+							// 		? ['male']
+							// 		: ['female']
+							// 	: []}
 						>
 							<SelectItem key='male' value='male'>
 								Male
@@ -288,11 +314,11 @@ export default function ProfileForm({
 							variant='bordered'
 							radius='sm'
 							className='col-span-3'
-							defaultSelectedKeys={...defaultValues?.veteranStatus !== null
-								? defaultValues?.veteranStatus === true
-									? ['yes']
-									: ['no']
-								: []}
+							// defaultSelectedKeys={...defaultValues?.veteranStatus !== null
+							// 	? defaultValues?.veteranStatus === true
+							// 		? ['yes']
+							// 		: ['no']
+							// 	: []}
 						>
 							<SelectItem key='yes' value='yes'>
 								I am a protected veteran
@@ -309,9 +335,9 @@ export default function ProfileForm({
 							variant='bordered'
 							radius='sm'
 							className='col-span-2'
-							defaultSelectedKeys={...defaultValues?.ethnicity
-								? [defaultValues?.ethnicity]
-								: []}
+							// defaultSelectedKeys={...defaultValues?.ethnicity
+							// 	? [defaultValues?.ethnicity]
+							// 	: []}
 						>
 							<SelectItem key='white' value='white'>
 								Caucasian
