@@ -12,6 +12,7 @@ import {
 	timestamp,
 	real,
 	customType,
+	double,
 } from 'drizzle-orm/mysql-core';
 import { eq, relations } from 'drizzle-orm';
 
@@ -67,12 +68,12 @@ export const Jobs = mysqlTable('jobs', {
 	jobTitle: text('job_title').notNull(),
 	showPayRate: boolean('show_pay_rate').default(true).notNull(),
 	payType: text('pay_type'),
-	hourlyRate: real('hourly_rate'),
-	salary: real('salary'),
+	hourlyRate: double('hourly_rate'),
+	salary: double('salary'),
 	skills: json('skills').default([]).notNull(),
 	address: text('address'),
-	longitude: real('longitude'),
-	latitude: real('latitude'),
+	longitude: double('longitude'),
+	latitude: double('latitude'),
 	jobDescription: text('job_description').notNull(),
 	jobResponsibilities: text('job_responsibilities').notNull(),
 	jobRequirements: text('job_requirements').notNull(),
@@ -91,6 +92,26 @@ export const jobsRelations = relations(Jobs, ({ one }) => ({
 	company: one(Company, {
 		fields: [Jobs.companyId],
 		references: [Company.id],
+	}),
+}));
+
+export const GitHubProjects = mysqlTable('githubProjects', {
+	id: serial('id').primaryKey(),
+	userId: int('userId').notNull(),
+	repoId: int('repoId').notNull(),
+	projectName: varchar('projectName', { length: 255 }).notNull(),
+	githubUrl: varchar('githubUrl', { length: 255 }),
+	projectDescription: text('projectDescription'),
+	homepageUrl: varchar('homepageUrl', { length: 255 }),
+	language: varchar('language', { length: 100 }),
+});
+
+export type GitHubProject = typeof GitHubProjects.$inferSelect;
+
+export const githubProjectsRelations = relations(GitHubProjects, ({ one }) => ({
+	user: one(Users, {
+		fields: [GitHubProjects.userId],
+		references: [Users.id],
 	}),
 }));
 
