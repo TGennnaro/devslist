@@ -1,8 +1,8 @@
 import { db } from '@/db';
-import { Users } from '@/db/schema';
+import { GitHubProjects, Users } from '@/db/schema';
 import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
-import { ProfileFormEntry } from '@/types';
+import { GitHubRepo, ProfileFormEntry } from '@/types';
 import { del, head, list, put } from '@vercel/blob';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
@@ -50,6 +50,7 @@ const schema = z.object({
 		.max(10, 'Birthday cannot exceed 10 characters.')
 		.optional(),
 	isEmployer: z.boolean(),
+	projects: z.string(),
 });
 
 async function handleBlob(
@@ -104,6 +105,7 @@ export async function POST(req: NextRequest, res: Response) {
 		phoneNumber: formData.get('phoneNumber') as string,
 		birthday: formData.get('birthday') as string,
 		isEmployer: formData.get('employer') === 'true',
+		projects: formData.get('projects') as string,
 	};
 	for (const [k, v] of Object.entries(data)) {
 		if (v === '' || v === null) {
@@ -123,6 +125,7 @@ export async function POST(req: NextRequest, res: Response) {
 			phoneNumber,
 			birthday,
 			isEmployer,
+			projects,
 		} = schema.parse(data);
 
 		const session = await getServerSession(authOptions);
@@ -149,6 +152,38 @@ export async function POST(req: NextRequest, res: Response) {
 				isEmployer,
 			})
 			.where(eq(Users.id, session?.user.id));
+
+		const githubProjects: GitHubRepo[] = JSON.parse(projects);
+
+		// Two possibilities:
+		//	- User added projects, so add the new projects to DB
+		// 	- User has selected projects, but removed some, so remove the removed projects from DB
+
+		// If user removed projects, then remove from DB what is inside dbProjects but no longer in githubProjects
+		const dbProjects = await db
+			.select()
+			.from(GitHubProjects)
+			.where(eq(GitHubProjects.userId, session?.user.id));
+
+		dbProjects.forEach(async (project) => {
+			if (!githubProjects.some((p) => p.id === project.repoId))
+				await db
+					.delete(GitHubProjects)
+					.where(eq(GitHubProjects.repoId, project.repoId));
+		});
+
+		// Add each selected project to DB
+		githubProjects.forEach(async (project) => {
+			await db.insert(GitHubProjects).values({
+				userId: session?.user.id,
+				projectName: project.name,
+				githubUrl: project.html_url,
+				projectDescription: project.description,
+				homepageUrl: project.homepage,
+				language: project.language,
+				repoId: project.id,
+			});
+		});
 	} catch (e) {
 		if (e instanceof z.ZodError) {
 			console.log(e.issues);
