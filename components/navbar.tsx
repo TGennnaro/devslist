@@ -92,7 +92,8 @@ export const Navbar = () => {
 				)}
 				{session.status === 'authenticated' && (
 					<>
-						<Badge color='danger' content={50} shape='circle' size='sm'>
+						<Badge color='danger' shape='circle' size='sm'>
+							{/*if there are notifications, add content={num notifications} attribute */}
 							<NextLink href='#'>
 								<Mail size={25} />
 							</NextLink>
@@ -118,12 +119,21 @@ export const Navbar = () => {
 									<p className='font-semibold'>Signed in as</p>
 									<p className='font-semibold'>{session.data.user?.email}</p>
 								</DropdownItem>
-								<DropdownItem as={NextLink} href='/profile'>
+								<DropdownItem
+									as={NextLink}
+									href={`/user/${session.data.user.id}`}
+								>
 									Profile
 								</DropdownItem>
-								<DropdownItem>Applications</DropdownItem>
-								<DropdownItem>Reviews</DropdownItem>
-								<DropdownItem showDivider>Settings</DropdownItem>
+								<DropdownItem as={NextLink} href='/applications'>
+									Applications
+								</DropdownItem>
+								<DropdownItem as={NextLink} href='/reviews'>
+									Reviews
+								</DropdownItem>
+								<DropdownItem as={NextLink} href='/profile' showDivider>
+									Settings
+								</DropdownItem>
 								<DropdownItem
 									color='danger'
 									onClick={() => signOut({ callbackUrl: '/' })}
@@ -166,22 +176,26 @@ export const Navbar = () => {
 								</span>
 							</NavbarMenuItem>
 							<NavbarMenuItem>
-								<Link color='foreground' href='#' size='lg'>
+								<Link
+									color='foreground'
+									href={`/user/${session.data.user.id}`}
+									size='lg'
+								>
 									Profile
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>
-								<Link color='foreground' href='#' size='lg'>
+								<Link color='foreground' href='/applications' size='lg'>
 									Applications
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>
-								<Link color='foreground' href='#' size='lg'>
+								<Link color='foreground' href='/reviews' size='lg'>
 									Reviews
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>
-								<Link color='foreground' href='#' size='lg'>
+								<Link color='foreground' href='/profile' size='lg'>
 									Settings
 								</Link>
 							</NavbarMenuItem>
