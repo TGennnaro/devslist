@@ -22,8 +22,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@nextui-org/button';
 import { db } from '@/db';
-import { Users, Company } from '@/db/schema';
+import { Users, Company, GitHubProjects, GitHubProject } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import NextLink from 'next/link';
 
 export default async function Page({ params }: { params: { id: number } }) {
 	// Check if user exists
@@ -49,6 +50,16 @@ export default async function Page({ params }: { params: { id: number } }) {
 		}
 
 		const userData = await fetchUser();
+
+		async function fetchProjectsShowcase() {
+			const showcase = await db
+				.select()
+				.from(GitHubProjects)
+				.where(eq(GitHubProjects.userId, params.id));
+			return showcase;
+		}
+
+		const projectsShowcase = await fetchProjectsShowcase();
 
 		return (
 			<>
@@ -164,162 +175,81 @@ export default async function Page({ params }: { params: { id: number } }) {
 								</CardHeader>
 								<CardBody>{userData.about}</CardBody>
 							</Card>
-							<Card>
-								<CardHeader>
-									<div className='text-3xl font-medium'>Projects</div>
-								</CardHeader>
-								<CardBody>
-									<div className='grid w-full gap-3 md:grid-cols-2 sm:grid-cols-1'>
-										<div>
-											<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
-												<CardHeader className='flex gap-3'>
-													<div className='flex flex-col'>
-														<p className='text-md font-semibold pb-3'>
-															To-Do List
-														</p>
-														<div className='flex flex-row flex-wrap gap-1'>
-															<Chip color='default' variant='faded'>
-																Next.js
-															</Chip>
-															<Chip color='default' variant='faded'>
-																NextUI
-															</Chip>
-															<Chip color='default' variant='faded'>
-																Firebase
-															</Chip>
-														</div>
-													</div>
-												</CardHeader>
-												<Divider />
-												<CardBody>
-													<p>Helps users keep track of what they need to do.</p>
-												</CardBody>
-												<Divider />
-												<CardFooter>
-													<div className='flex flex-row flex-wrap gap-1'>
-														<Button
-															color='default'
-															variant='ghost'
-															startContent={<Github />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View repository
-														</Button>
-														<Button
-															color='secondary'
-															variant='ghost'
-															startContent={<Zap />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View live demo
-														</Button>
-													</div>
-												</CardFooter>
-											</Card>
+							{projectsShowcase.length > 0 ? (
+								<Card>
+									<CardHeader>
+										<div className='text-3xl font-medium'>
+											Projects Showcase
 										</div>
-										<div>
-											<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
-												<CardHeader className='flex gap-3'>
-													<div className='flex flex-col'>
-														<p className='text-md font-semibold pb-3'>
-															To-Do List
-														</p>
-														<div className='flex flex-row flex-wrap gap-1'>
-															<Chip color='default' variant='faded'>
-																Next.js
-															</Chip>
-															<Chip color='default' variant='faded'>
-																NextUI
-															</Chip>
-															<Chip color='default' variant='faded'>
-																Firebase
-															</Chip>
-														</div>
+									</CardHeader>
+									<CardBody>
+										<div className='grid w-full gap-3 md:grid-cols-2 sm:grid-cols-1'>
+											{projectsShowcase.map((project: GitHubProject) => {
+												return (
+													<div key={project.id}>
+														<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
+															<CardHeader className='flex gap-3'>
+																<div className='flex flex-row gap-3'>
+																	<p className='text-md font-semibold pb-3'>
+																		{project.projectName}
+																	</p>
+																	{project.language ? (
+																		<Chip color='default' variant='faded'>
+																			{project.language}
+																		</Chip>
+																	) : null}
+																</div>
+															</CardHeader>
+															<Divider />
+															<CardBody>
+																<p>
+																	{project.projectDescription ??
+																		'No description'}
+																</p>
+															</CardBody>
+															<Divider />
+															<CardFooter>
+																{project.githubUrl ? (
+																	<NextLink
+																		href={project.githubUrl}
+																		target='_BLANK'
+																	>
+																		<Button
+																			color='default'
+																			variant='ghost'
+																			startContent={<Github />}
+																			endContent={<ExternalLink size={15} />}
+																			size='sm'
+																		>
+																			View repository
+																		</Button>
+																	</NextLink>
+																) : null}
+																{project.homepageUrl ? (
+																	<NextLink
+																		href={project.homepageUrl}
+																		target='_BLANK'
+																	>
+																		<Button
+																			color='secondary'
+																			variant='ghost'
+																			startContent={<Zap />}
+																			endContent={<ExternalLink size={15} />}
+																			size='sm'
+																		>
+																			View live demo
+																		</Button>
+																	</NextLink>
+																) : null}
+															</CardFooter>
+														</Card>
 													</div>
-												</CardHeader>
-												<Divider />
-												<CardBody>
-													<p>Helps users keep track of what they need to do.</p>
-												</CardBody>
-												<Divider />
-												<CardFooter>
-													<div className='flex flex-row flex-wrap gap-1'>
-														<Button
-															color='default'
-															variant='ghost'
-															startContent={<Github />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View repository
-														</Button>
-														<Button
-															color='secondary'
-															variant='ghost'
-															startContent={<Zap />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View live demo
-														</Button>
-													</div>
-												</CardFooter>
-											</Card>
+												);
+											})}
 										</div>
-										<div>
-											<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
-												<CardHeader className='flex gap-3'>
-													<div className='flex flex-col'>
-														<p className='text-md font-semibold pb-3'>
-															To-Do List
-														</p>
-														<div className='flex flex-row flex-wrap gap-1'>
-															<Chip color='default' variant='faded'>
-																Next.js
-															</Chip>
-															<Chip color='default' variant='faded'>
-																NextUI
-															</Chip>
-															<Chip color='default' variant='faded'>
-																Firebase
-															</Chip>
-														</div>
-													</div>
-												</CardHeader>
-												<Divider />
-												<CardBody>
-													<p>Helps users keep track of what they need to do.</p>
-												</CardBody>
-												<Divider />
-												<CardFooter>
-													<div className='flex flex-row flex-wrap gap-1'>
-														<Button
-															color='default'
-															variant='ghost'
-															startContent={<Github />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View repository
-														</Button>
-														<Button
-															color='secondary'
-															variant='ghost'
-															startContent={<Zap />}
-															endContent={<ExternalLink size={15} />}
-															size='sm'
-														>
-															View live demo
-														</Button>
-													</div>
-												</CardFooter>
-											</Card>
-										</div>
-									</div>
-								</CardBody>
-							</Card>
+									</CardBody>
+								</Card>
+							) : null}
 							<Card>
 								<CardHeader>
 									<div className='text-3xl font-medium'>Skills</div>
