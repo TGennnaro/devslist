@@ -62,22 +62,27 @@ export default async function Page({ params }: { params: { id: number } }) {
 											<Avatar
 												isBordered
 												color='default'
-												src={`https://i.pravatar.cc/150?u=${params.id}`}
+												src={userData.picture_url ?? ''}
+												showFallback
 												className='h-[125px] w-[125px] md:h-[200px] md:w-[200px]'
 											/>
 											<div className='md:text-3xl sm:text-2xl font-semibold'>
-												{userData.firstName + ' ' + userData.lastName}
+												{(userData.firstName ?? 'DevsList') +
+													' ' +
+													(userData.lastName ?? 'User')}
 											</div>
-											<div className='md:text-xl sm:text-medium font-semibold'>
-												<div className='flex items-center gap-1'>
-													<MapPin />{' '}
-													{userData.city +
-														', ' +
-														userData.state +
-														', ' +
-														userData.country}
+											{userData.city && userData.state && userData.country ? (
+												<div className='md:text-xl sm:text-medium font-semibold'>
+													<div className='flex items-center justify-center gap-1'>
+														<MapPin />{' '}
+														{userData.city +
+															', ' +
+															userData.state +
+															', ' +
+															userData.country}
+													</div>
 												</div>
-											</div>
+											) : null}
 											{userData.isEmployer ? (
 												// TODO: use companyID user attr to fetch company name
 												<Chip color='secondary'>Recruiter @ COMPANY_NAME</Chip>
