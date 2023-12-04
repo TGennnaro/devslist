@@ -11,7 +11,7 @@ interface DatePickerProps extends InputProps {
 	setSelected?: (date: Date | undefined) => void;
 }
 
-export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
+const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 	({ selected, setSelected, ...props }, ref) => {
 		const [isOpen, setIsOpen] = useState<boolean>(false);
 		return (
@@ -55,3 +55,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 		);
 	}
 );
+
+DatePicker.displayName = 'DatePicker';
+
+export default DatePicker;
