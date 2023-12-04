@@ -4,6 +4,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter.js';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Graphic from '@arcgis/core/Graphic';
@@ -13,6 +15,8 @@ import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
 import Legend from '@arcgis/core/widgets/Legend';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import Expand from '@arcgis/core/widgets/Expand.js';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils.js';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
@@ -265,6 +269,51 @@ export default function JobMap({
 
 			view.ui.add(legend, 'bottom-right');
 
+			let jobsLayerView: FeatureLayerView;
+
+			const jobTypesElement = document.getElementById('job-type-filter');
+
+			// Click event handler for job type choices
+			if (jobTypesElement) {
+				jobTypesElement.addEventListener('click', filterByJobType);
+			}
+
+			// User clicked on specific job type
+			// Set an attribute filter on jobs layer view
+			// to display jobs with the selected job type only
+			function filterByJobType(event: any) {
+				const selectedJobType = event.target.getAttribute('data-job');
+				jobsLayerView.filter = new FeatureFilter({
+					where: "jobType = '" + selectedJobType + "'",
+				});
+			}
+
+			view.whenLayerView(featureLayer).then((layerView) => {
+				// Jobs layer loaded
+				// Get a reference to the layer view
+				jobsLayerView = layerView;
+
+				if (jobTypesElement) {
+					// Set up UI items
+					jobTypesElement.style.visibility = 'visible';
+					const jobTypesExpand = new Expand({
+						view: view,
+						content: jobTypesElement,
+						expandIcon: 'filter',
+						group: 'top-left',
+					});
+					// Clear the filters when user closes the expand widget
+					reactiveUtils.when(
+						() => !jobTypesExpand.expanded,
+						() => {
+							// @ts-ignore
+							jobsLayerView.filter = null;
+						}
+					);
+					view.ui.add(jobTypesExpand, 'top-left');
+				}
+			});
+
 			const generateMapMarkers = async () => {
 				try {
 					jobs.map((listing: { jobs: Job; company: Company | null }) => {
@@ -365,6 +414,20 @@ export default function JobMap({
 				rel='stylesheet'
 				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
 			/>
+			<div id='job-type-filter' className='esri-widget'>
+				<div className={`${styles.jobTypeItem}`} data-job='Full-Time'>
+					Full-Time
+				</div>
+				<div className={`${styles.jobTypeItem}`} data-job='Part-Time'>
+					Part-Time
+				</div>
+				<div className={`${styles.jobTypeItem}`} data-job='Internship'>
+					Internship
+				</div>
+				<div className={`${styles.jobTypeItem}`} data-job='Freelance'>
+					Freelance
+				</div>
+			</div>
 			<div className={`${styles.mapDiv}`} ref={mapDiv} id='root'></div>
 		</>
 	);

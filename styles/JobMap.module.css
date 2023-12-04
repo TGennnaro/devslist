@@ -1,6 +1,31 @@
 .mapDiv {
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  width: 100%;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+#job-type-filter {
+	height: 160px;
+	width: 100%;
+	visibility: hidden;
+}
+
+.jobTypeItem {
+	width: 100%;
+	padding: 12px;
+	text-align: center;
+	vertical-align: baseline;
+	cursor: pointer;
+	height: 40px;
+}
+
+.jobTypeItem:focus {
+	background-color: dimgrey;
+	color: white;
+}
+
+.jobTypeItem:hover {
+	background-color: dimgrey;
+	color: white;
 }
