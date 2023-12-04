@@ -8,7 +8,7 @@ import { Input, Textarea } from '@nextui-org/input';
 import { Card, CardHeader, CardBody } from '@nextui-org/card';
 import { Chip } from '@nextui-org/chip';
 import { Select, SelectItem } from '@nextui-org/select';
-import { Check, Plus } from 'lucide-react';
+import { Check, Plus, X } from 'lucide-react';
 import { FormEvent } from 'react';
 import { useMutation } from 'react-query';
 import ImageUpload from './ImageUpload';
@@ -125,7 +125,19 @@ export default function ProfileForm({
 						<label className='block mb-2 text-sm font-medium'>
 							GitHub project showcase
 						</label>
-						<p>Display your GitHub projects on your DevsList profile!</p>
+						<p>
+							<div className='flex flex-row gap-1 items-center'>
+								Status:
+								<Chip
+									color={!session.data?.accessToken ? 'danger' : 'success'}
+									startContent={!session.data?.accessToken ? <X /> : <Check />}
+								>
+									{!session.data?.accessToken
+										? 'Not linked to GitHub'
+										: 'Linked to GitHub'}
+								</Chip>
+							</div>
+						</p>
 						{!session.data?.accessToken ? (
 							<Button
 								className='bg-[rgb(36,41,47)] hover:bg-[rgb(52,60,69)] text-white transition-background rounded-md flex gap-3 py-3 mt-6'
@@ -136,12 +148,6 @@ export default function ProfileForm({
 							</Button>
 						) : (
 							<>
-								<div className='flex flex-row gap-1 items-center'>
-									Status:
-									<Chip color='success' startContent={<Check />}>
-										Linked to GitHub
-									</Chip>
-								</div>
 								<GitHubProjects
 									displayedGitHubProjects={displayedGitHubProjects}
 									availableGitHubProjects={availableGitHubProjects}
