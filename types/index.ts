@@ -15,6 +15,7 @@ export type ProfileFormEntry = {
 	phoneNumber: string | undefined;
 	birthday: string | undefined;
 	isEmployer: boolean;
+	projects: string | undefined;
 	[key: string]: string | boolean | FormDataEntryValue | undefined;
 };
 
@@ -57,4 +58,16 @@ export type GeoSuggestion = {
 	text: string;
 	magicKey: string;
 	isCollection: boolean;
+};
+
+export type GitHubRepo = {
+	id: number;
+	name: string;
+	html_url: string | null;
+	description: string | null;
+	homepage: string | null;
+	language: string | null;
+	owner?: {
+		avatar_url: string;
+	} | null;
 };
