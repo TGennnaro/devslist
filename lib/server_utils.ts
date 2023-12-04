@@ -1,8 +1,17 @@
 import { authOptions } from './auth';
 import { db } from '@/db';
-import { Users, User, Jobs, Company } from '@/db/schema';
+import {
+	Users,
+	User,
+	Jobs,
+	Company,
+	GitHubProjects,
+	GitHubProject,
+} from '@/db/schema';
+import { GitHubRepo } from '@/types';
 import { eq, isNotNull, and } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
+import { Octokit } from 'octokit';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -17,6 +26,50 @@ export async function getUser() {
 	)?.[0];
 	delete user.password;
 	return user as Omit<User, 'password'>;
+}
+
+export async function getAvailableGitHubProjects() {
+	const session = await getServerSession(authOptions);
+	if (!session?.user.id || !session?.accessToken) {
+		return null;
+	} else {
+		const octokit = new Octokit({
+			auth: session.accessToken,
+		});
+
+		const repos = await octokit.request('GET /user/repos', {
+			headers: {
+				'X-GitHub-Api-Version': '2022-11-28',
+			},
+		});
+
+		const data: GitHubRepo[] = repos.data;
+
+		return data;
+	}
+}
+
+export async function getDisplayedGitHubProjects() {
+	const session = await getServerSession(authOptions);
+	if (!session?.user.id || !session?.accessToken) {
+		return null;
+	} else {
+		const projects = await db
+			.select()
+			.from(GitHubProjects)
+			.where(eq(GitHubProjects.userId, session?.user.id));
+
+		const data: GitHubRepo[] = projects.map((project: GitHubProject) => ({
+			id: project.repoId,
+			name: project.projectName,
+			html_url: project.githubUrl,
+			description: project.projectDescription,
+			homepage: project.homepageUrl,
+			language: project.language,
+		}));
+
+		return data;
+	}
 }
 
 export async function getMapEligibleJobs() {
