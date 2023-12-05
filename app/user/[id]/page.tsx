@@ -86,9 +86,9 @@ export default async function Page({ params }: { params: { id: number } }) {
 											{userData.users.city &&
 											userData.users.state &&
 											userData.users.country ? (
-												<div className='md:text-xl sm:text-medium font-semibold'>
-													<div className='flex items-center justify-center gap-1'>
-														<MapPin />{' '}
+												<div className='text-medium font-semibold'>
+													<div className='flex items-center justify-center text-center gap-1'>
+														<MapPin />
 														{userData.users.city +
 															', ' +
 															userData.users.state +
