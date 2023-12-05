@@ -125,19 +125,17 @@ export default function ProfileForm({
 						<label className='block mb-2 text-sm font-medium'>
 							GitHub project showcase
 						</label>
-						<p>
-							<div className='flex flex-row gap-1 items-center'>
-								Status:
-								<Chip
-									color={!session.data?.accessToken ? 'danger' : 'success'}
-									startContent={!session.data?.accessToken ? <X /> : <Check />}
-								>
-									{!session.data?.accessToken
-										? 'Not linked to GitHub'
-										: 'Linked to GitHub'}
-								</Chip>
-							</div>
-						</p>
+						<div className='flex flex-row gap-1 items-center'>
+							Status:
+							<Chip
+								color={!session.data?.accessToken ? 'danger' : 'success'}
+								startContent={!session.data?.accessToken ? <X /> : <Check />}
+							>
+								{!session.data?.accessToken
+									? 'Not linked to GitHub'
+									: 'Linked to GitHub'}
+							</Chip>
+						</div>
 						{!session.data?.accessToken ? (
 							<Button
 								className='bg-[rgb(36,41,47)] hover:bg-[rgb(52,60,69)] text-white transition-background rounded-md flex gap-3 py-3 mt-6'
