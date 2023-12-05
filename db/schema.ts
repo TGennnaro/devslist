@@ -234,6 +234,7 @@ export const githubProjectsRelations = relations(GitHubProjects, ({ one }) => ({
 export const Company = mysqlTable('company', {
 	id: serial('id').primaryKey(),
 	name: text('name').notNull(),
+	description: text('description').notNull(),
 	address: text('address').notNull(),
 	userId: int('user_id').notNull(),
 	logo: text('logo'),
