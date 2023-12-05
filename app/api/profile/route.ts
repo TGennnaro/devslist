@@ -165,6 +165,10 @@ export async function POST(req: NextRequest, res: Response) {
 			.from(GitHubProjects)
 			.where(eq(GitHubProjects.userId, session?.user.id));
 
+		const dbRepoIds: number[] = [];
+
+		dbProjects.forEach((project) => dbRepoIds.push(project.repoId));
+
 		dbProjects.forEach(async (project) => {
 			if (!githubProjects.some((p) => p.id === project.repoId))
 				await db
@@ -172,18 +176,30 @@ export async function POST(req: NextRequest, res: Response) {
 					.where(eq(GitHubProjects.repoId, project.repoId));
 		});
 
-		// Add each selected project to DB
+		// Add projects to DB only if they are not already in dbProjects
 		githubProjects.forEach(async (project) => {
-			await db.insert(GitHubProjects).values({
-				userId: session?.user.id,
-				projectName: project.name,
-				githubUrl: project.html_url,
-				projectDescription: project.description,
-				homepageUrl: project.homepage,
-				language: project.language,
-				repoId: project.id,
-			});
+			if (!dbRepoIds.includes(project.id)) {
+				await db.insert(GitHubProjects).values({
+					userId: session?.user.id,
+					projectName: project.name,
+					githubUrl: project.html_url,
+					projectDescription: project.description,
+					homepageUrl: project.homepage,
+					language: project.language,
+					repoId: project.id,
+				});
+			}
 		});
+
+		// const dbRepoIds: number[] = [];
+		// dbProjects.forEach((project) => dbRepoIds.push(project.repoId));
+
+		// const gitHubProjectIds: number[] = [];
+		// githubProjects.forEach((project) => gitHubProjectIds.push(project.id));
+
+		// const difference = dbRepoIds.filter(
+		// 	(repoId) => !gitHubProjectIds.includes(repoId)
+		// );
 	} catch (e) {
 		if (e instanceof z.ZodError) {
 			console.log(e.issues);
