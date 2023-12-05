@@ -34,6 +34,7 @@ export const Users = mysqlTable(
 		about: text('about'),
 		dob: date('dob'),
 		isEmployer: boolean('is_employer').default(false),
+		companyId: int('company_id'),
 		githubID: text('github_id'),
 		gender: boolean('gender'),
 		veteranStatus: boolean('veteran_status'),
