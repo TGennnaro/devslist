@@ -1,6 +1,6 @@
 import Text from '@/components/Text';
 import { db } from '@/db';
-import { Company, Jobs } from '@/db/schema';
+import { Company, Jobs, Users } from '@/db/schema';
 import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
 import { Divider } from '@nextui-org/divider';
@@ -42,7 +42,8 @@ export default async function Page({ params }: { params: { id: number } }) {
 				.from(Jobs)
 				.where(eq(Jobs.id, params.id))
 				.limit(1)
-				.leftJoin(Company, eq(Jobs.companyId, Company.id));
+				.leftJoin(Company, eq(Jobs.companyId, Company.id))
+				.leftJoin(Users, eq(Jobs.userId, Users.id));
 			return job[0];
 		}
 
@@ -145,10 +146,12 @@ export default async function Page({ params }: { params: { id: number } }) {
 							<div className='text-xl font-semibold'>Recruiter</div>
 							<div>
 								<User
-									name='D.B. Cooper'
-									description='Recruiter @ Apple, Inc.'
+									name={
+										jobData.users?.firstName + ' ' + jobData.users?.lastName
+									}
+									description={jobData.company?.name}
 									avatarProps={{
-										src: 'https://i.pravatar.cc/150?u=a04258114e29026702d',
+										src: jobData.users?.picture_url ?? '',
 									}}
 								/>
 							</div>
@@ -158,7 +161,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 						<div className='flex flex-col gap-6'>
 							<div>
 								<div className='mb-2 text-xl font-medium'>Company Overview</div>
-								<Text variant='body'>placeholder</Text>
+								<Text variant='body'>{jobData.company?.description}</Text>
 							</div>
 							<div>
 								<div className='mb-2 text-xl font-medium'>Description</div>
