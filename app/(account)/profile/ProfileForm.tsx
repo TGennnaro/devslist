@@ -218,14 +218,14 @@ export default function ProfileForm({
 							placeholder='State'
 							variant='bordered'
 							radius='sm'
-							// defaultSelectedKeys={[
-							// 	...(defaultValues?.state ? [defaultValues?.state] : []),
-							// ]}
+							defaultSelectedKeys={[
+								...(defaultValues?.state ? [defaultValues?.state] : []),
+							]}
 						>
-							<SelectItem key='pennsylvania' value='pennsylvania'>
+							<SelectItem key='Pennsylvania' value='Pennsylvania'>
 								Pennsylvania
 							</SelectItem>
-							<SelectItem key='new-jersey' value='new-jersey'>
+							<SelectItem key='New Jersey' value='New Jersey'>
 								New Jersey
 							</SelectItem>
 						</Select>
@@ -239,14 +239,14 @@ export default function ProfileForm({
 							variant='bordered'
 							radius='sm'
 							selectionMode='single'
-							// defaultSelectedKeys={[
-							// 	...(defaultValues?.country ? [defaultValues?.country] : []),
-							// ]}
+							defaultSelectedKeys={[
+								...(defaultValues?.country ? [defaultValues?.country] : []),
+							]}
 						>
-							<SelectItem key='united-states' value='united-states'>
+							<SelectItem key='United States' value='United States'>
 								United States
 							</SelectItem>
-							<SelectItem key='canada' value='canada'>
+							<SelectItem key='Canada' value='Canada'>
 								Canada
 							</SelectItem>
 						</Select>
