@@ -45,7 +45,8 @@ export default async function Page({ params }: { params: { id: number } }) {
 				.select()
 				.from(Users)
 				.where(eq(Users.id, params.id))
-				.limit(1);
+				.limit(1)
+				.leftJoin(Company, eq(Users.companyId, Company.id));
 			return user[0];
 		}
 
@@ -73,30 +74,33 @@ export default async function Page({ params }: { params: { id: number } }) {
 											<Avatar
 												isBordered
 												color='default'
-												src={userData.picture_url ?? ''}
+												src={userData.users.picture_url ?? ''}
 												showFallback
 												className='h-[125px] w-[125px] md:h-[200px] md:w-[200px]'
 											/>
 											<div className='md:text-3xl sm:text-2xl font-semibold'>
-												{(userData.firstName ?? 'DevsList') +
+												{(userData.users.firstName ?? 'DevsList') +
 													' ' +
-													(userData.lastName ?? 'User')}
+													(userData.users.lastName ?? 'User')}
 											</div>
-											{userData.city && userData.state && userData.country ? (
+											{userData.users.city &&
+											userData.users.state &&
+											userData.users.country ? (
 												<div className='md:text-xl sm:text-medium font-semibold'>
 													<div className='flex items-center justify-center gap-1'>
 														<MapPin />{' '}
-														{userData.city +
+														{userData.users.city +
 															', ' +
-															userData.state +
+															userData.users.state +
 															', ' +
-															userData.country}
+															userData.users.country}
 													</div>
 												</div>
 											) : null}
-											{userData.isEmployer ? (
-												// TODO: use companyID user attr to fetch company name
-												<Chip color='secondary'>Recruiter @ COMPANY_NAME</Chip>
+											{userData.users.isEmployer ? (
+												<Chip color='secondary'>
+													Recruiter @ {userData.company?.name}
+												</Chip>
 											) : (
 												<Chip color='primary'>Developer</Chip>
 											)}
@@ -173,7 +177,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 								<CardHeader>
 									<div className='text-3xl font-medium'>About Me</div>
 								</CardHeader>
-								<CardBody>{userData.about}</CardBody>
+								<CardBody>{userData.users.about}</CardBody>
 							</Card>
 							{projectsShowcase.length > 0 ? (
 								<Card>
@@ -256,13 +260,15 @@ export default async function Page({ params }: { params: { id: number } }) {
 								</CardHeader>
 								<CardBody>
 									<div className='flex flex-row flex-wrap gap-1'>
-										{(userData.skills as string[]).map((skill: string) => {
-											return (
-												<Chip key={skill} color='default' variant='faded'>
-													{skill}
-												</Chip>
-											);
-										})}
+										{(userData.users.skills as string[]).map(
+											(skill: string) => {
+												return (
+													<Chip key={skill} color='default' variant='faded'>
+														{skill}
+													</Chip>
+												);
+											}
+										)}
 									</div>
 								</CardBody>
 							</Card>
