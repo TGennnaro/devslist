@@ -7,6 +7,9 @@ import { Image } from '@nextui-org/image';
 import { Code2, LucideIcon, Search, Send } from 'lucide-react';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
+import { db } from '@/db';
+import { Company, Jobs } from '@/db/schema';
+import { sql } from 'drizzle-orm';
 
 function Feature({
 	Icon,
@@ -70,7 +73,13 @@ function Testimonial({
 	);
 }
 
-export default function Home() {
+export default async function Home() {
+	const totalJobs = await db.select({ count: sql`COUNT(*)` }).from(Jobs);
+
+	const totalCompanies = await db
+		.select({ count: sql`COUNT(*)` })
+		.from(Company);
+
 	return (
 		<div className='mb-32'>
 			<section className='grid grid-cols-1 mt-12 lg:grid-cols-2 lg:mt-36 gap-x-4'>
@@ -207,11 +216,14 @@ export default function Home() {
 								<p className='text-xl text-center text-gray-600 dark:text-gray-300'>
 									Let us help you discover over{' '}
 									<b>
-										<CountUp end={10000} scrollSpyOnce />
+										<CountUp end={Number(totalJobs[0].count)} scrollSpyOnce />
 									</b>{' '}
 									jobs from{' '}
 									<b>
-										<CountUp end={100} scrollSpyOnce />
+										<CountUp
+											end={Number(totalCompanies[0].count)}
+											scrollSpyOnce
+										/>
 									</b>{' '}
 									different companies{' '}
 								</p>
