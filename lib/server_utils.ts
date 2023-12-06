@@ -12,6 +12,8 @@ import { GitHubRepo } from '@/types';
 import { eq, isNotNull, and } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { Octokit } from 'octokit';
+import AES from 'crypto-js/aes';
+import CryptoJS from 'crypto-js';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -80,4 +82,22 @@ export async function getMapEligibleJobs() {
 		.leftJoin(Company, eq(Jobs.companyId, Company.id));
 
 	return jobs;
+}
+
+export function encrypt(plaintext: string) {
+	const ciphertext = AES.encrypt(
+		plaintext,
+		process.env.DEVSLIST_SECRET_KEY!
+	).toString();
+
+	return ciphertext;
+}
+
+export function decrypt(ciphertext: string) {
+	const plaintext = AES.decrypt(
+		ciphertext,
+		process.env.DEVSLIST_SECRET_KEY!
+	).toString(CryptoJS.enc.Utf8);
+
+	return plaintext;
 }
