@@ -13,6 +13,7 @@ declare module 'next-auth' {
 		email: string | null | undefined;
 		firstName: string | null | undefined;
 		lastName: string | null | undefined;
+		accessToken?: string | undefined;
 	}
 
 	interface Session {
