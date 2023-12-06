@@ -1,5 +1,5 @@
 import { debounce } from '@/lib/utils';
-import { Input } from '@nextui-org/input';
+import { Input } from '@/components/ui/input';
 import { FaSearch } from 'react-icons/fa';
 
 export default function JobSearchBar({
@@ -13,7 +13,9 @@ export default function JobSearchBar({
 			label='Search'
 			labelPlacement='outside'
 			placeholder='Job title, location, company, skills, ...'
-			startContent={<FaSearch />}
+			startContent={
+				<FaSearch size={16} className='mr-2 text-gray-400 dark:text-gray-600' />
+			}
 			onValueChange={debounce(setQuery, 500)}
 		/>
 	);
