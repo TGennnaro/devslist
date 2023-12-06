@@ -1,26 +1,21 @@
 'use client';
+import AddressSearch from '@/components/AddressSearch';
+import DatePicker from '@/components/DatePicker';
+import { Input, Select, Textarea } from '@/components/ui/input';
+import { Company } from '@/db/schema';
 import { Button } from '@nextui-org/button';
 import { Card, CardBody } from '@nextui-org/card';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Chip } from '@nextui-org/chip';
-import { Input, Textarea } from '@nextui-org/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
 import { Radio, RadioGroup } from '@nextui-org/radio';
-import { Calendar, Plus, Send } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import { SelectItem } from '@nextui-org/select';
+import { Plus, Send } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
-
-const AddressSearch = dynamic(
-	() => import('@/app/(jobs)/jobs/post/AddressSearch'),
-	{
-		ssr: false,
-	}
-);
 
 export default function JobPostingForm() {
 	const [payTypeSelectionHidden, setPayTypeSelectionHidden] = useState(false);
@@ -32,6 +27,10 @@ export default function JobPostingForm() {
 	const [skillValue, setSkillValue] = useState('');
 	const [selected, setSelected] = useState<Date | undefined>(new Date());
 	const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
+	const [companies, setCompanies] = useState<Company[]>([]);
+	const [isCompanyListLoading, setIsCompanyListLoading] = useState(false);
+	const [companyOpen, setCompanyOpen] = useState(false);
+	const session = useSession();
 	const router = useRouter();
 
 	const mutation = useMutation({
@@ -52,6 +51,22 @@ export default function JobPostingForm() {
 				console.error(json.message);
 				toast.error('Error: ' + json.message.message);
 			}
+		},
+	});
+
+	const companyQuery = useQuery({
+		queryKey: ['companies', session.data?.user.id],
+		queryFn: async () => {
+			setIsCompanyListLoading(true);
+			const res = await fetch(`/api/companies/users/${session.data?.user.id}`);
+			if (!res.ok) throw new Error('Network error occurred');
+			return res.json();
+		},
+		onSettled: () => {
+			setIsCompanyListLoading(false);
+		},
+		onSuccess: (data) => {
+			setCompanies(data);
 		},
 	});
 
@@ -91,13 +106,31 @@ export default function JobPostingForm() {
 			<div className='flex items-center justify-center mt-8 mb-20'>
 				<div className='basis-full'>
 					<div className='flex flex-col max-w-screen-md gap-6'>
+						<Select
+							name='companyId'
+							isLoading={isCompanyListLoading}
+							items={companies}
+							label='Company'
+							placeholder='Select the associated company'
+							labelPlacement='outside'
+							isRequired
+							isOpen={companyOpen}
+							onOpenChange={setCompanyOpen}
+						>
+							{(item) => (
+								<SelectItem
+									key={(item as Company).id}
+									value={(item as Company).id}
+								>
+									{(item as Company).name}
+								</SelectItem>
+							)}
+						</Select>
 						<Input
 							name='jobTitle'
-							label='Job Title'
+							label='Title'
 							labelPlacement='outside'
-							placeholder='Software Engineer'
-							variant='bordered'
-							radius='sm'
+							placeholder='Enter the job title'
 							isRequired
 						/>
 						<RadioGroup label='Job type' isRequired name='jobType'>
@@ -108,46 +141,41 @@ export default function JobPostingForm() {
 						</RadioGroup>
 						<Textarea
 							name='jobDescription'
-							label='Job description'
+							label='Description'
 							labelPlacement='outside'
-							placeholder='Join the team in developing game-changing software!'
-							variant='bordered'
-							radius='sm'
+							placeholder='Describe the job in detail'
 							isRequired
 							minRows={4}
 						/>
 						<Textarea
 							name='jobRequirements'
-							label='Job requirements'
+							label='Requirements'
 							labelPlacement='outside'
-							placeholder="Bachelor's degree in Computer Science or equivalent."
-							variant='bordered'
-							radius='sm'
+							placeholder="Describe a candidate's requirements"
 							isRequired
 							minRows={4}
 						/>
 						<Textarea
 							name='jobResponsibilities'
-							label='Job responsibilities'
+							label='Responsibilities'
 							labelPlacement='outside'
-							placeholder='Develop AI and machine learning algorithms.'
-							variant='bordered'
-							radius='sm'
+							placeholder='Describe the job responsibilities'
 							isRequired
 							minRows={4}
 						/>
 
 						<Input
-							label='Enter required skills (one at a time)'
+							label='Associated skills'
 							labelPlacement='outside'
-							placeholder='Python'
-							variant='bordered'
-							radius='sm'
+							placeholder='Enter a skill and press Enter'
 							value={skillValue}
 							onValueChange={setSkillValue}
 							endContent={
 								<button type='button'>
-									<Plus onClick={() => addToSkillsList()} />
+									<Plus
+										onClick={() => addToSkillsList()}
+										className='text-default-400 dark:text-default-500'
+									/>
 								</button>
 							}
 							onKeyDown={(e) => {
@@ -181,51 +209,25 @@ export default function JobPostingForm() {
 								</CardBody>
 							</Card>
 						) : null}
-						<Input
+
+						<DatePicker
 							name='expirationDate'
-							label='Job posting expiration date'
-							labelPlacement='outside-left'
-							isReadOnly
+							label='Posting expiration date'
+							labelPlacement='outside'
 							placeholder={selected?.toLocaleDateString()}
 							value={selected?.toLocaleDateString()}
-							variant='bordered'
-							radius='sm'
-							endContent={
-								<Popover
-									placement='bottom'
-									showArrow={true}
-									isOpen={isDateSelectorOpen}
-									onOpenChange={(open) => setIsDateSelectorOpen(open)}
-								>
-									<PopoverTrigger>
-										<button type='button'>
-											<Calendar />
-										</button>
-									</PopoverTrigger>
-									<PopoverContent>
-										<div className='px-1 py-2'>
-											<DayPicker
-												mode='single'
-												required
-												selected={selected}
-												onSelect={setSelected}
-												onDayClick={() => setIsDateSelectorOpen(false)}
-											/>
-										</div>
-									</PopoverContent>
-								</Popover>
-							}
+							selected={selected}
+							setSelected={setSelected}
+							className='max-w-xs'
 						/>
 
 						<AddressSearch
 							setLocation={setWorkLocation}
 							disabled={remotePosition}
 							name='jobLocation'
-							label='Job location'
+							label='Location'
 							labelPlacement='outside'
 							placeholder='Search address...'
-							variant='bordered'
-							radius='sm'
 							classNames={{
 								base: 'max-w-xl',
 							}}

@@ -10,6 +10,7 @@ import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
 
 const schema = z.object({
+	companyId: z.number(),
 	jobTitle: z
 		.string()
 		.min(5, 'Job title must be at least 5 characters long.')
@@ -22,9 +23,7 @@ const schema = z.object({
 	jobResponsibilities: z
 		.string()
 		.min(1, 'Job responsibilities need to be specified.'),
-	workAddress: z.string().optional(),
-	latitude: z.string().optional(),
-	longitude: z.string().optional(),
+	jobLocation: z.string().optional(),
 	skills: z.string(),
 	expirationDate: z.string(),
 	showPayRate: z.string().optional(),
@@ -33,37 +32,37 @@ const schema = z.object({
 	hourlyRate: z.string().optional(),
 });
 
-async function getCoords(fromAddress: string) {
+async function getCoords(fromAddress: string | undefined) {
+	if (!fromAddress) return { latitude: undefined, longitude: undefined };
 	try {
 		const response = await fetch(
-			`https://geocod.xyz/api/public/getCoords?apikey=${process.env.GEOCOD_API_KEY}&postaladdress=${fromAddress}`
+			`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=${fromAddress}&outFields=Match_addr,Addr_type&f=json`
 		);
 		if (response.ok) {
 			const data = await response.json();
-			const latitude = data.lat;
-			const longitude = data.lon;
-			return [latitude, longitude];
+			if (data.candidates.length > 0) {
+				const latitude = data.candidates[0].location.y;
+				const longitude = data.candidates[0].location.x;
+				return { latitude, longitude };
+			}
 		}
 	} catch (error) {
 		console.log(error);
 	}
 
-	return [null, null];
+	return { latitude: undefined, longitude: undefined };
 }
 
 export async function POST(req: Request, res: Response) {
-	const session = await getServerSession(authOptions);
 	const formData = await req.formData();
-	console.log(formData);
 	const data: Job = {
+		companyId: Number(formData.get('companyId')),
 		jobTitle: formData.get('jobTitle') as string,
 		jobType: formData.get('jobType') as string,
 		jobResponsibilities: formData.get('jobResponsibilities') as string,
 		jobDescription: formData.get('jobDescription') as string,
 		jobRequirements: formData.get('jobRequirements') as string,
-		workAddress: (formData.get('workAddress') as string) ?? undefined,
-		latitude: (formData.get('latitude') as string) ?? undefined,
-		longitude: (formData.get('longitude') as string) ?? undefined,
+		jobLocation: (formData.get('jobLocation') as string) ?? undefined,
 		skills: formData.get('skills') as string,
 		expirationDate: formData.get('expirationDate') as string,
 		showPayRate: (formData.get('showPayRate') as string) ?? undefined,
@@ -72,25 +71,18 @@ export async function POST(req: Request, res: Response) {
 		hourlyRate: (formData.get('hourlyRate') as string) ?? undefined,
 	};
 
-	// for (const [k, v] of Object.entries(data)) {
-	//   if (v === '') {
-	//     data[k] = undefined;
-	//   }
-	// }
-
 	const user = await getUser();
 	if (!user) throw new Error('Unauthorized');
 
 	try {
 		const {
+			companyId,
 			jobTitle,
 			jobType,
 			jobResponsibilities,
 			jobRequirements,
 			jobDescription,
-			workAddress,
-			latitude,
-			longitude,
+			jobLocation,
 			skills,
 			expirationDate,
 			showPayRate,
@@ -98,20 +90,19 @@ export async function POST(req: Request, res: Response) {
 			salary,
 			hourlyRate,
 		} = schema.parse(data);
-		console.log('Data passed');
 
 		try {
-			// const [latitude, longitude] = await getCoords(workAddress);
+			const { latitude, longitude } = await getCoords(jobLocation);
 
 			const job = await db.insert(Jobs).values({
 				jobTitle,
 				userId: user.id,
-				companyId: 1, // placeholder company ID
+				companyId,
 				salary: salary ? Number(salary) : undefined,
 				skills: JSON.parse(skills),
-				address: workAddress,
-				latitude: latitude ? Number(latitude) : undefined,
-				longitude: longitude ? Number(longitude) : undefined,
+				address: jobLocation,
+				latitude: latitude,
+				longitude: longitude,
 				jobDescription,
 				jobType,
 				endDate: new Date(expirationDate),
@@ -123,7 +114,7 @@ export async function POST(req: Request, res: Response) {
 			});
 
 			return NextResponse.json(
-				{ message: 'OK', id: Number(job.insertId) },
+				{ message: 'OK', id: Number(1) },
 				{ status: 200 }
 			);
 		} catch (err) {
