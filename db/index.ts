@@ -1,7 +1,5 @@
-import { sql } from '@vercel/postgres';
-import { drizzle } from 'drizzle-orm/planetscale-serverless';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { connect } from '@planetscale/database';
+import { drizzle } from 'drizzle-orm/planetscale-serverless';
 
 const connection = connect({
 	host: process.env.DATABASE_HOST,

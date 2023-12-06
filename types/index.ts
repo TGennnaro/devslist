@@ -20,14 +20,13 @@ export type ProfileFormEntry = {
 };
 
 export type Job = {
+	companyId: number;
 	jobTitle: string | undefined;
 	jobType: string | undefined;
 	jobDescription: string | undefined;
 	jobResponsibilities: string | undefined;
 	jobRequirements: string | undefined;
-	workAddress?: string | undefined;
-	latitude?: string | undefined;
-	longitude?: string | undefined;
+	jobLocation?: string | undefined;
 	skills: string | undefined;
 	expirationDate: string | undefined;
 	showPayRate: string | undefined;
