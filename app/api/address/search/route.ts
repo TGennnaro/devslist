@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request) {
 	const searchParams = new URLSearchParams(req.url.split('?')[1]);
 	const addressQuery = searchParams.get('query');
-	console.log(addressQuery);
 	if (!addressQuery)
 		return NextResponse.json({ suggestions: [] }, { status: 400 });
 	const res = await fetch(
