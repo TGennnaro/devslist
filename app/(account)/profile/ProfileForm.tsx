@@ -1,25 +1,22 @@
 'use client';
 
-import { useState } from 'react';
 import Text from '@/components/Text';
+import { User } from '@/db/schema';
+import { GitHubRepo } from '@/types';
 import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
-import { Input, Textarea } from '@nextui-org/input';
-import { Card, CardHeader, CardBody } from '@nextui-org/card';
 import { Chip } from '@nextui-org/chip';
-import { Select, SelectItem } from '@nextui-org/select';
-import { Check, Plus, X } from 'lucide-react';
-import { FormEvent } from 'react';
+import { Input, Textarea } from '@/components/ui/input';
+import { SelectItem } from '@nextui-org/select';
+import { Select } from '@/components/ui/input';
+import { Check, GithubIcon, Plus, X } from 'lucide-react';
+import { signIn, useSession } from 'next-auth/react';
+import { FormEvent, useState } from 'react';
 import { useMutation } from 'react-query';
-import ImageUpload from './ImageUpload';
-import { GitHubProject, User } from '@/db/schema';
-import React from 'react';
 import { toast } from 'sonner';
-import { signIn } from 'next-auth/react';
-import { GithubIcon } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { GitHubRepo } from '@/types';
 import GitHubProjects from './GitHubProjects';
+import ImageUpload from './ImageUpload';
+import { Switch } from '@nextui-org/switch';
 
 export default function ProfileForm({
 	defaultValues,
@@ -75,12 +72,13 @@ export default function ProfileForm({
 					</Text>
 				</div>
 				<div className='flex flex-col col-span-8 gap-8'>
-					<Checkbox
+					<Switch
 						name='employer'
-						defaultSelected={defaultValues?.isEmployer ?? undefined}
+						defaultSelected={defaultValues?.isEmployer ?? false}
+						size='sm'
 					>
 						I am an employer
-					</Checkbox>
+					</Switch>
 					<Textarea
 						name='about'
 						label='About'
@@ -126,7 +124,7 @@ export default function ProfileForm({
 							GitHub project showcase
 						</label>
 						<p>
-							<div className='flex flex-row gap-1 items-center'>
+							<div className='flex flex-row items-center gap-1'>
 								Status:
 								<Chip
 									color={!session.data?.accessToken ? 'danger' : 'success'}

@@ -1,6 +1,7 @@
 'use client';
 
-import { Input, InputProps } from '@nextui-org/input';
+import { InputProps } from '@nextui-org/input';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { Calendar } from 'lucide-react';
 import { forwardRef, useState } from 'react';
@@ -40,9 +41,8 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 									onDayClick={() => setIsOpen(false)}
 									classNames={{
 										button:
-											'hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer',
-										day_selected:
-											'!bg-primary-500 dark:!bg-primary-300 !text-white',
+											'hover:bg-primary-500/20 dark:hover:bg-primary-500/20 !cursor-pointer',
+										day_selected: '!bg-primary-500 !text-white',
 									}}
 								/>
 							</div>
