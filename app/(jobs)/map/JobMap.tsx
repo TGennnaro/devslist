@@ -248,6 +248,7 @@ export default function JobMap({
 			const search = new Search({
 				view: view,
 				includeDefaultSources: false,
+				minSuggestCharacters: 1,
 				sources: [
 					{
 						//@ts-ignore
