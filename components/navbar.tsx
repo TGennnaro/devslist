@@ -44,9 +44,9 @@ export const Navbar = () => {
 			maxWidth='xl'
 			position='sticky'
 			shouldHideOnScroll={false}
-			className={`border-b transition-all ${
+			className={`border-b transition-all bg-background ${
 				isScrolled
-					? 'border-gray-300 dark:border-gray-800 shadow-lg'
+					? 'border-slate-300 dark:border-slate-800 shadow-lg bg-background/70'
 					: 'border-background'
 			}`}
 		>
@@ -121,12 +121,15 @@ export const Navbar = () => {
 								</DropdownItem>
 								<DropdownItem
 									as={NextLink}
-									href={`/user/${session.data.user.id}`}
+									href={`/profile/${session.data.user.id}`}
 								>
 									Profile
 								</DropdownItem>
 								<DropdownItem as={NextLink} href='/applications'>
 									Applications
+								</DropdownItem>
+								<DropdownItem as={NextLink} href='/companies'>
+									Companies
 								</DropdownItem>
 								<DropdownItem as={NextLink} href='/reviews'>
 									Reviews
