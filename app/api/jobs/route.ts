@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { db } from '@/db';
 import { Jobs } from '@/db/schema';
 import { Company } from '@/db/schema';
-import { eq, desc, inArray, and, sql, ilike } from 'drizzle-orm';
+import { eq, desc, inArray, and, sql, like } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
@@ -148,7 +148,7 @@ export async function GET(req: Request) {
 			query.push(inArray(Jobs.jobType, filters.jobTypes));
 		}
 		if (filters.searchQuery !== undefined && filters.searchQuery.length > 0) {
-			query.push(ilike(Jobs.jobTitle, `%${filters.searchQuery}%`));
+			query.push(like(Jobs.jobTitle, `%${filters.searchQuery}%`));
 		}
 		try {
 			const perPage = Number(params.get('per_page')) ?? 20;
