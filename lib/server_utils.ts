@@ -15,6 +15,8 @@ import { Octokit } from 'octokit';
 import AES from 'crypto-js/aes';
 import CryptoJS from 'crypto-js';
 
+export const dynamic = 'force-dynamic';
+
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export async function getUser() {
