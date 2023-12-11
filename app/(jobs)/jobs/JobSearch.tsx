@@ -58,7 +58,7 @@ export default function JobSearch() {
 					)}
 					{isSuccess && (
 						<>
-							{data.jobs.length > 0 ? (
+							{data.jobs?.length > 0 ? (
 								data.jobs.map((listing: { jobs: Job; company: Company }) => {
 									return (
 										<JobCard
@@ -85,6 +85,7 @@ export default function JobSearch() {
 											}
 											jobType={listing.jobs.jobType}
 											description={listing.jobs.jobDescription}
+											skills={listing.jobs.skills as string[]}
 										/>
 									);
 								})

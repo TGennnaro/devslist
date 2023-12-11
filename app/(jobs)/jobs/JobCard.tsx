@@ -11,6 +11,7 @@ import {
 	Calendar,
 	CalendarClock,
 	ChevronRight,
+	Hammer,
 	List,
 	MapPin,
 } from 'lucide-react';
@@ -108,6 +109,7 @@ export default function JobCard({
 	pay,
 	jobType,
 	description,
+	skills,
 }: {
 	id: number;
 	userId: number;
@@ -121,6 +123,7 @@ export default function JobCard({
 	pay?: string | null;
 	jobType: string;
 	description: string;
+	skills: string[];
 }) {
 	const { data } = useSession();
 	return (
@@ -174,6 +177,27 @@ export default function JobCard({
 								(description.length > MAX_DESC_LENGTH ? '...' : '')}
 						</p>
 					</div>
+					{skills.length > 0 ? (
+						<div>
+							<div className='flex items-center gap-1 pt-3 font-semibold'>
+								<Hammer size={16} className='mr-2' /> Skills
+							</div>
+							<div className='flex flex-row items-center flex-wrap gap-1 py-2'>
+								{/* Only want to display 3 skills max */}
+								{(() => {
+									const elements = [];
+									for (let i = 0; i < skills.length && i < 3; i++) {
+										elements.push(
+											<Chip key={skills[i]} color='default' variant='flat'>
+												{skills[i]}
+											</Chip>
+										);
+									}
+									return elements;
+								})()}
+							</div>
+						</div>
+					) : null}
 				</div>
 			</CardBody>
 			<CardFooter className='flex items-center justify-between'>

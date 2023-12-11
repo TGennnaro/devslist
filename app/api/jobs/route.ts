@@ -1,5 +1,9 @@
 import { db } from '@/db';
-import { Company, Jobs } from '@/db/schema';
+import { Jobs } from '@/db/schema';
+import { Company } from '@/db/schema';
+import { eq, desc, inArray, and, sql, like, or } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
 import { Job, JobFilters } from '@/types';
 import { and, desc, eq, inArray, like, sql } from 'drizzle-orm';
@@ -145,7 +149,13 @@ export async function GET(req: Request) {
 			query.push(inArray(Jobs.jobType, filters.jobTypes));
 		}
 		if (filters.searchQuery !== undefined && filters.searchQuery.length > 0) {
-			query.push(like(Jobs.jobTitle, `%${filters.searchQuery}%`));
+			query.push(
+				or(
+					like(Jobs.jobTitle, `%${filters.searchQuery}%`),
+					like(Jobs.jobDescription, `%${filters.searchQuery}%`),
+					like(Jobs.address, `%${filters.searchQuery}%`)
+				)
+			);
 		}
 		try {
 			const perPage = Number(params.get('per_page')) ?? 20;
