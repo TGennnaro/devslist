@@ -1,13 +1,10 @@
-import { NextResponse } from 'next/server';
-import { Job, JobFilters } from '@/types';
-import { z } from 'zod';
 import { db } from '@/db';
-import { Jobs } from '@/db/schema';
-import { Company } from '@/db/schema';
-import { eq, desc, inArray, and, sql, like } from 'drizzle-orm';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { Company, Jobs } from '@/db/schema';
 import { getUser } from '@/lib/server_utils';
+import { Job, JobFilters } from '@/types';
+import { and, desc, eq, inArray, like, sql } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
 const schema = z.object({
 	companyId: z.number(),
@@ -114,7 +111,7 @@ export async function POST(req: Request, res: Response) {
 			});
 
 			return NextResponse.json(
-				{ message: 'OK', id: Number(1) },
+				{ message: 'OK', id: Number(job.insertId) },
 				{ status: 200 }
 			);
 		} catch (err) {
