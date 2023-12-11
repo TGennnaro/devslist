@@ -23,15 +23,13 @@ import { createRoot } from 'react-dom/client';
 import { currency } from '@/lib/utils';
 import { JobPopup } from './JobPopup';
 import { Job, Company } from '@/db/schema';
+import { Progress } from '@nextui-org/progress';
 
-export default function JobMap({
-	jobs,
-}: {
-	jobs: { jobs: Job; company: Company | null }[];
-}) {
+export default function JobMap() {
 	const mapDiv = useRef(null);
 	const { theme } = useTheme();
 	const [map, setMap] = useState<Map | null>(null);
+	const [loading, setLoading] = useState(true);
 
 	const lightModeBasemap = Basemap.fromId('gray-vector');
 	const darkModeBasemap = Basemap.fromId('dark-gray-vector');
@@ -199,26 +197,6 @@ export default function JobMap({
 						alias: 'Salary',
 						type: 'string',
 					},
-					{
-						name: 'skills',
-						alias: 'Skills',
-						type: 'string',
-					},
-					{
-						name: 'jobDescription',
-						alias: 'Job Description',
-						type: 'string',
-					},
-					{
-						name: 'jobResponsibilities',
-						alias: 'Job Responsibilities',
-						type: 'string',
-					},
-					{
-						name: 'jobRequirements',
-						alias: 'Job Requirements',
-						type: 'string',
-					},
 				],
 				outFields: ['*'],
 				objectIdField: 'ObjectID',
@@ -317,44 +295,43 @@ export default function JobMap({
 
 			const generateMapMarkers = async () => {
 				try {
-					jobs.map((listing: { jobs: Job; company: Company | null }) => {
-						if (listing.jobs.latitude && listing.jobs.longitude) {
-							const point = new Point({
-								longitude: listing.jobs.longitude,
-								latitude: listing.jobs.latitude,
-							});
+					const response = await fetch('/api/map');
+					const jobs = await response.json();
 
-							const pointGraphic = new Graphic({
-								geometry: point,
-								attributes: {
-									id: listing.jobs.id,
-									jobTitle: listing.jobs.jobTitle,
-									company: listing.company?.name,
-									companyLogo: listing.company?.logo,
-									location: listing.jobs.address,
-									jobType: listing.jobs.jobType,
-									showPayRate: listing.jobs.showPayRate,
-									payType: listing.jobs.payType,
-									hourlyRate: listing.jobs.hourlyRate,
-									salary: listing.jobs.salary,
-									skills: listing.jobs.skills,
-									jobDescription: listing.jobs.jobDescription,
-									jobResponsibilities: listing.jobs.jobResponsibilities,
-									jobRequirements: listing.jobs.jobRequirements,
-								},
-							});
+					if (response.ok) {
+						jobs.map((job: Job & Company) => {
+							if (job.latitude && job.longitude) {
+								const point = new Point({
+									longitude: job.longitude,
+									latitude: job.latitude,
+								});
 
-							featureLayer.applyEdits({ addFeatures: [pointGraphic] });
-						}
-					});
+								const pointGraphic = new Graphic({
+									geometry: point,
+									attributes: {
+										id: job.id,
+										jobTitle: job.jobTitle,
+										company: job.name,
+										companyLogo: job.logo,
+										location: job.address,
+										jobType: job.jobType,
+										showPayRate: job.showPayRate,
+										payType: job.payType,
+										hourlyRate: job.hourlyRate,
+										salary: job.salary,
+									},
+								});
+
+								featureLayer.applyEdits({ addFeatures: [pointGraphic] });
+							}
+						});
+					}
 				} catch (error) {
 					console.log(error);
 				}
 			};
 
 			generateMapMarkers();
-
-			setMap(map);
 
 			// When map is done loading, zoom to extent of all features
 			const handle = view.watch('updating', function (value) {
@@ -368,8 +345,12 @@ export default function JobMap({
 							view.goTo(extent);
 							handle.remove();
 						});
+
+					setLoading(false);
 				}
 			});
+
+			setMap(map);
 		}
 	}, []);
 
@@ -429,6 +410,17 @@ export default function JobMap({
 					Freelance
 				</div>
 			</div>
+			{loading ? (
+				<div className='flex items-center justify-center mb-5'>
+					<Progress
+						size='sm'
+						isIndeterminate
+						aria-label='Loading map...'
+						className='max-w-md'
+						label='Loading map...'
+					/>
+				</div>
+			) : null}
 			<div className={`${styles.mapDiv}`} ref={mapDiv} id='root'></div>
 		</>
 	);
