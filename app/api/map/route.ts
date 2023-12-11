@@ -3,7 +3,9 @@ import { db } from '@/db';
 import { Jobs } from '@/db/schema';
 import { Company } from '@/db/schema';
 import { eq, and, isNotNull } from 'drizzle-orm';
-import { sql } from 'drizzle-orm';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = false;
 
 export async function GET(req: Request) {
 	try {
