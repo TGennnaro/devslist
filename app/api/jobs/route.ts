@@ -1,12 +1,8 @@
 import { db } from '@/db';
-import { Jobs } from '@/db/schema';
-import { Company } from '@/db/schema';
-import { eq, desc, inArray, and, sql, like, or } from 'drizzle-orm';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { Company, Jobs } from '@/db/schema';
 import { getUser } from '@/lib/server_utils';
 import { Job, JobFilters } from '@/types';
-import { and, desc, eq, inArray, like, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, like, or, sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
