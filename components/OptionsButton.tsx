@@ -40,6 +40,7 @@ export default function OptionsButton({
 						color={option.color || 'default'}
 						variant='flat'
 						className={option.className}
+						onPress={option.onClick}
 					>
 						{option.label}
 					</DropdownItem>

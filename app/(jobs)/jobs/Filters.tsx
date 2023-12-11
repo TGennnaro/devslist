@@ -1,10 +1,7 @@
+import { JobFilters } from '@/types';
 import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox';
 import { Radio, RadioGroup } from '@nextui-org/radio';
 import JobSearchBar from './JobSearchBar';
-import { JobFilters } from '@/types';
-import { Button } from '@nextui-org/button';
-import { Send } from 'lucide-react';
-import NextLink from 'next/link';
 
 export default function Filters({
 	filters,
