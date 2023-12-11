@@ -9,7 +9,6 @@ export default function JobSearchBar({
 }) {
 	return (
 		<Input
-			type='email'
 			label='Search'
 			labelPlacement='outside'
 			placeholder='Job title, location, company, skills, ...'
