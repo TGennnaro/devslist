@@ -5,8 +5,9 @@ export async function GET(
 	req: Request,
 	{ params }: { params: { id: number } }
 ) {
-	const userID = params.id;
-	const companies = await getCompaniesByUser(userID, true, 10);
+	const userId = params.id;
+	if (!userId) return NextResponse.json([], { status: 200 });
+	const companies = await getCompaniesByUser(userId, true, 10);
 	if (!companies) {
 		return NextResponse.json(
 			{ error: 'No companies found for user' },
