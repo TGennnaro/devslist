@@ -66,6 +66,7 @@ export default function AddressSearch({
 					? `Selected address: ${fieldState.selectedKey}`
 					: ''
 			}
+			value={fieldState.selectedKey}
 		>
 			{(item) => (
 				// @ts-ignore
