@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import GitHubProjects from './GitHubProjects';
 import ImageUpload from './ImageUpload';
 import { Switch } from '@nextui-org/switch';
+import DocumentUpload from './DocumentUpload';
 
 export default function ProfileForm({
 	defaultValues,
@@ -118,6 +119,14 @@ export default function ProfileForm({
 							Profile picture
 						</label>
 						<ImageUpload />
+					</div>
+					<div>
+						<label className='block mb-2 text-sm font-medium'>Resume/CV</label>
+						<DocumentUpload
+							name='resume'
+							fileType='.pdf'
+							subText='PDF up to 10MB'
+						/>
 					</div>
 					<div>
 						<label className='block mb-2 text-sm font-medium'>
