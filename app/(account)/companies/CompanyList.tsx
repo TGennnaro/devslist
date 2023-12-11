@@ -24,7 +24,7 @@ export default function CompanyList() {
 	return (
 		<ul className='flex flex-col w-full gap-4'>
 			{data?.map((company: Company) => (
-				<CompanyCard company={company} />
+				<CompanyCard key={company.id} company={company} />
 			))}
 		</ul>
 	);
