@@ -64,6 +64,7 @@ export default function JobSearch() {
 										<JobCard
 											key={listing.jobs.id}
 											id={listing.jobs.id}
+											userId={listing.jobs.userId}
 											position={listing.jobs.jobTitle}
 											company={listing.company.name}
 											companyLogo={listing.company.logo ?? null}

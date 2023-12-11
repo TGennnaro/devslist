@@ -1,3 +1,5 @@
+import OptionsButton from '@/components/OptionsButton';
+import { getUser } from '@/lib/server_utils';
 import { dateSince } from '@/lib/utils';
 import { Button } from '@nextui-org/button';
 import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
@@ -14,6 +16,7 @@ import {
 } from 'lucide-react';
 import NextLink from 'next/link';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
+import { useSession } from 'next-auth/react';
 
 const MAX_DESC_LENGTH = 200;
 
@@ -94,6 +97,7 @@ export function JobCardSkeleton() {
 
 export default function JobCard({
 	id,
+	userId,
 	position,
 	company,
 	companyLogo,
@@ -106,6 +110,7 @@ export default function JobCard({
 	description,
 }: {
 	id: number;
+	userId: number;
 	position: string;
 	company: string;
 	companyLogo: string | null;
@@ -117,6 +122,7 @@ export default function JobCard({
 	jobType: string;
 	description: string;
 }) {
+	const { data } = useSession();
 	return (
 		<Card className='hover:bg-slate-100 dark:hover:bg-slate-800'>
 			<CardHeader className='flex gap-3'>
@@ -183,6 +189,21 @@ export default function JobCard({
 				<div className='flex items-center text-sm text-light'>
 					<Calendar size={16} className='mr-1' />
 					{dateSince(postedDate)}
+					{userId === data?.user?.id && (
+						<OptionsButton
+							className='ml-4'
+							options={[
+								{
+									label: 'Edit',
+								},
+								{
+									label: 'Delete',
+									color: 'danger',
+									className: 'text-danger',
+								},
+							]}
+						/>
+					)}
 				</div>
 			</CardFooter>
 		</Card>
