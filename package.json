@@ -28,6 +28,7 @@
 		"@nextui-org/modal": "^2.0.28",
 		"@nextui-org/navbar": "^2.0.23",
 		"@nextui-org/pagination": "^2.0.23",
+		"@nextui-org/progress": "^2.0.24",
 		"@nextui-org/radio": "^2.0.23",
 		"@nextui-org/react": "^2.2.1",
 		"@nextui-org/select": "^2.1.13",
