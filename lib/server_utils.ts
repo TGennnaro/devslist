@@ -75,6 +75,10 @@ export async function getDisplayedGitHubProjects() {
 }
 
 export async function getMapEligibleJobs() {
+	// Calling getServerSession() forces route calling this function to render at request time (ensuring up-to-date job data for map)
+	// https://nextjs.org/docs/app/building-your-application/rendering/server-components
+	const session = await getServerSession(authOptions);
+
 	const jobs = await db
 		.select()
 		.from(Jobs)
