@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { Company } from '@/db/schema';
+import { Company, Jobs } from '@/db/schema';
 import { getUser } from '@/lib/server_utils';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
@@ -63,6 +63,7 @@ export async function DELETE(req: Request) {
 	const id = parseInt(searchId);
 	if (Number.isNaN(id))
 		return NextResponse.json({ message: 'Invalid id' }, { status: 400 });
-	await db.delete(Company).where(eq(Company.id, id));
+	await db.delete(Jobs).where(eq(Jobs.companyId, id)); // Delete all jobs
+	await db.delete(Company).where(eq(Company.id, id)); // Delete company
 	return NextResponse.json({}, { status: 200 });
 }
