@@ -177,7 +177,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 							</div>
 							<div>
 								<div className='mb-2 text-xl font-medium'>Skills</div>
-								<div className='flex flex-row items-center gap-1 py-2'>
+								<div className='flex flex-row items-center gap-1 py-2 flex-wrap'>
 									{(jobData.jobs.skills as string[]).map((skill: string) => {
 										return (
 											<Chip key={skill} color='default' variant='flat'>
