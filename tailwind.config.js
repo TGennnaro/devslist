@@ -77,7 +77,7 @@ module.exports = {
 			light: {
 				colors: {
 					background: {
-						DEFAULT: "#f3f4f6",
+						DEFAULT: "#fff",
 						foreground: "#030712"
 					},
 					border: {
