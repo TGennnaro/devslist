@@ -5,10 +5,16 @@ export async function GET(
 	req: Request,
 	{ params }: { params: { id: number } }
 ) {
+	const url = new URL(req.url);
+	const searchParams = url.searchParams;
 	const userId = params.id;
 	if (!userId) return NextResponse.json([], { status: 200 });
-	const companies = await getCompaniesByUser(userId, true, 10);
-	if (!companies) {
+	const companies = await getCompaniesByUser(
+		userId,
+		true,
+		parseInt(searchParams.get('page') ?? '1')
+	);
+	if (!companies.results) {
 		return NextResponse.json(
 			{ error: 'No companies found for user' },
 			{ status: 404 }
