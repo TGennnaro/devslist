@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Metadata } from 'next';
 
-const metadata: Metadata = {
+export const metadata: Metadata = {
 	title: 'Job Posting',
 	description: 'Find your next job',
 };
