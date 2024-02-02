@@ -6,7 +6,7 @@ import { GithubIcon } from 'lucide-react';
 export default function GitHubOAuthButton() {
 	return (
 		<Button
-			className='flex gap-3 py-3 mt-6 text-white rounded-md bg-white/5 hover:bg-white/10 transition-background'
+			className='flex gap-3 py-3 mt-6 text-white rounded-md bg-gray-700 hover:bg-gray-500 transition-background'
 			onClick={() => signIn('github', { callbackUrl: '/' })}
 			startContent={<GithubIcon />}
 		>
