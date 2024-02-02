@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@nextui-org/button';
-import { Input } from '@nextui-org/input';
+import { Input } from '@/components/ui/input';
 import { signIn } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
@@ -34,11 +34,22 @@ export default function LoginForm() {
 		<form onSubmit={submit}>
 			<div className='mt-6'>
 				<label className='font-medium'>Email address</label>
-				<Input className='mt-2' name='email' />
+				<Input
+					className='mt-2'
+					name='email'
+					labelPlacement='outside'
+					isRequired
+				/>
 			</div>
 			<div className='mt-6'>
 				<label className='font-medium'>Password</label>
-				<Input className='mt-2' name='password' type='password' />
+				<Input
+					className='mt-2'
+					name='password'
+					type='password'
+					labelPlacement='outside'
+					isRequired
+				/>
 			</div>
 			<Button
 				color='primary'

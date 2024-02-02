@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@nextui-org/input';
+import { Input } from '@/components/ui/input';
 import { Button } from '@nextui-org/button';
 import { useMutation } from 'react-query';
 import { FormEvent, useState } from 'react';
@@ -55,20 +55,41 @@ export default function RegisterForm() {
 			<div className='flex gap-4'>
 				<div className='grow'>
 					<label className='font-medium'>First name</label>
-					<Input className='mt-2' name='first-name' />
+					<Input
+						className='mt-2'
+						name='first-name'
+						labelPlacement='outside'
+						isRequired
+					/>
 				</div>
 				<div className='grow'>
 					<label className='font-medium'>Last name</label>
-					<Input className='mt-2' name='last-name' />
+					<Input
+						className='mt-2'
+						name='last-name'
+						labelPlacement='outside'
+						isRequired
+					/>
 				</div>
 			</div>
 			<div className='mt-6'>
 				<label className='font-medium'>Email address</label>
-				<Input className='mt-2' name='email' />
+				<Input
+					className='mt-2'
+					name='email'
+					labelPlacement='outside'
+					isRequired
+				/>
 			</div>
 			<div className='mt-6'>
 				<label className='font-medium'>Password</label>
-				<Input className='mt-2' name='password' type='password' />
+				<Input
+					className='mt-2'
+					name='password'
+					type='password'
+					labelPlacement='outside'
+					isRequired
+				/>
 			</div>
 			<Button
 				color='primary'
