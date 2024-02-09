@@ -10,7 +10,7 @@
 		"generate": "drizzle-kit generate:pg"
 	},
 	"dependencies": {
-		"@arcgis/core": "^4.27.6",
+		"@arcgis/core": "^4.28.10",
 		"@nextui-org/avatar": "^2.0.24",
 		"@nextui-org/badge": "^2.0.20",
 		"@nextui-org/breadcrumbs": "^2.0.1",
@@ -88,6 +88,6 @@
 	},
 	"devDependencies": {
 		"@types/crypto-js": "^4.2.1",
-		"drizzle-kit": "^0.19.13"
+		"drizzle-kit": "^0.20.14"
 	}
 }
