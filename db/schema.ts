@@ -13,8 +13,10 @@ import {
 	real,
 	customType,
 	double,
+	tinyint,
+	primaryKey,
 } from 'drizzle-orm/mysql-core';
-import { eq, relations } from 'drizzle-orm';
+import { eq, relations, sql } from 'drizzle-orm';
 
 export const Users = mysqlTable(
 	'users',
@@ -272,3 +274,26 @@ export const companyRelations = relations(Company, ({ one }) => ({
 // 		};
 // 	}
 // );
+
+export const Messages = mysqlTable(
+	'messages',
+	{
+		id: int('id').autoincrement().notNull(),
+		fromId: int('from_id'),
+		toId: int('to_id'),
+		subject: varchar('subject', { length: 100 }),
+		body: text('body'),
+		isOpened: tinyint('is_opened'),
+		timeSent: timestamp('time_sent', { mode: 'string' })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		parentMessageId: int('parent_message_id'),
+	},
+	(table) => {
+		return {
+			messagesId: primaryKey({ columns: [table.id], name: 'messages_id' }),
+		};
+	}
+);
+
+export type Message = typeof Messages.$inferSelect;
