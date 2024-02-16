@@ -17,7 +17,6 @@ import {
 	Scroll,
 	TextQuote,
 	Twitter,
-	UserPlus,
 	Youtube,
 	Zap,
 } from 'lucide-react';
@@ -26,8 +25,12 @@ import { db } from '@/db';
 import { Users, Company, GitHubProjects, GitHubProject } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import NextLink from 'next/link';
+import MessageButton from './MessageButton';
+import { getUser } from '@/lib/server_utils';
 
 export default async function Page({ params }: { params: { id: number } }) {
+	const user = await getUser();
+
 	// Check if user exists
 	async function checkExists() {
 		const result = await db
@@ -79,7 +82,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 												showFallback
 												className='h-[125px] w-[125px] md:h-[200px] md:w-[200px]'
 											/>
-											<div className='font-semibold md:text-3xl sm:text-2xl'>
+											<div className='font-semibold md:text-3xl sm:text-2xl capitalize'>
 												{(userData.users.firstName ?? 'DevsList') +
 													' ' +
 													(userData.users.lastName ?? 'User')}
@@ -105,14 +108,10 @@ export default async function Page({ params }: { params: { id: number } }) {
 											) : (
 												<Chip color='primary'>Developer</Chip>
 											)}
-											<Button
-												color='default'
-												variant='solid'
-												startContent={<UserPlus />}
-												size='sm'
-											>
-												Connect
-											</Button>
+
+											{user && userData.users.id !== user.id && (
+												<MessageButton user={userData.users} />
+											)}
 										</div>
 									</CardBody>
 								</Card>
@@ -174,13 +173,15 @@ export default async function Page({ params }: { params: { id: number } }) {
 					</div>
 					<div className='basis-3/4'>
 						<div className='flex flex-col gap-3'>
-							<Card>
-								<CardHeader>
-									<div className='text-3xl font-medium'>About Me</div>
-								</CardHeader>
-								<CardBody>{userData.users.about}</CardBody>
-							</Card>
-							{projectsShowcase.length > 0 ? (
+							{userData.users.about && (
+								<Card>
+									<CardHeader>
+										<div className='text-3xl font-medium'>About Me</div>
+									</CardHeader>
+									<CardBody>{userData.users.about}</CardBody>
+								</Card>
+							)}
+							{projectsShowcase.length > 0 && (
 								<Card>
 									<CardHeader>
 										<div className='text-3xl font-medium'>
@@ -198,11 +199,11 @@ export default async function Page({ params }: { params: { id: number } }) {
 																	<p className='pb-3 font-semibold text-md'>
 																		{project.projectName}
 																	</p>
-																	{project.language ? (
+																	{project.language && (
 																		<Chip color='default' variant='faded'>
 																			{project.language}
 																		</Chip>
-																	) : null}
+																	)}
 																</div>
 															</CardHeader>
 															<Divider />
@@ -214,7 +215,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 															</CardBody>
 															<Divider />
 															<CardFooter>
-																{project.githubUrl ? (
+																{project.githubUrl && (
 																	<NextLink
 																		href={project.githubUrl}
 																		target='_BLANK'
@@ -229,8 +230,8 @@ export default async function Page({ params }: { params: { id: number } }) {
 																			View repository
 																		</Button>
 																	</NextLink>
-																) : null}
-																{project.homepageUrl ? (
+																)}
+																{project.homepageUrl && (
 																	<NextLink
 																		href={project.homepageUrl}
 																		target='_BLANK'
@@ -245,7 +246,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 																			View live demo
 																		</Button>
 																	</NextLink>
-																) : null}
+																)}
 															</CardFooter>
 														</Card>
 													</div>
@@ -254,25 +255,29 @@ export default async function Page({ params }: { params: { id: number } }) {
 										</div>
 									</CardBody>
 								</Card>
-							) : null}
-							<Card>
-								<CardHeader>
-									<div className='text-3xl font-medium'>Skills</div>
-								</CardHeader>
-								<CardBody>
-									<div className='flex flex-row flex-wrap gap-1'>
-										{(userData.users.skills as string[]).map(
-											(skill: string) => {
-												return (
-													<Chip key={skill} color='default' variant='faded'>
-														{skill}
-													</Chip>
-												);
-											}
-										)}
-									</div>
-								</CardBody>
-							</Card>
+							)}
+							{(userData.users.skills as string[]).length > 0 && (
+								<>
+									<Card>
+										<CardHeader>
+											<div className='text-3xl font-medium'>Skills</div>
+										</CardHeader>
+										<CardBody>
+											<div className='flex flex-row flex-wrap gap-1'>
+												{(userData.users.skills as string[]).map(
+													(skill: string) => {
+														return (
+															<Chip key={skill} color='default' variant='faded'>
+																{skill}
+															</Chip>
+														);
+													}
+												)}
+											</div>
+										</CardBody>
+									</Card>
+								</>
+							)}
 							<Card>
 								<CardHeader>
 									<div className='text-3xl font-medium'>Education</div>
