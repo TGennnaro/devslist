@@ -27,10 +27,10 @@ import { Skeleton } from '@nextui-org/skeleton';
 import { Mail } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import NextLink from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export const Navbar = () => {
+export const Navbar = ({ unread }: { unread: number }) => {
 	const session = useSession();
 	const [isScrolled, setIsScrolled] = useState(false);
 	useEffect(() => {
@@ -92,9 +92,14 @@ export const Navbar = () => {
 				)}
 				{session.status === 'authenticated' && (
 					<>
-						<Badge color='danger' shape='circle' size='sm'>
+						<Badge
+							color='danger'
+							shape='circle'
+							size='sm'
+							content={unread > 0 ? unread : null}
+						>
 							{/*if there are notifications, add content={num notifications} attribute */}
-							<NextLink href='#'>
+							<NextLink href='/inbox'>
 								<Mail size={25} />
 							</NextLink>
 						</Badge>
