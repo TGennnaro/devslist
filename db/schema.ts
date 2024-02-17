@@ -15,8 +15,11 @@ import {
 	double,
 	tinyint,
 	primaryKey,
+	mysqlEnum,
+	smallint,
 } from 'drizzle-orm/mysql-core';
 import { eq, relations, sql } from 'drizzle-orm';
+import { ApplicationStatus } from '@/types';
 
 export const Users = mysqlTable(
 	'users',
@@ -63,6 +66,7 @@ export const employerView = mysqlView('employer_view').as((qb) =>
 export const usersRelations = relations(Users, ({ many }) => ({
 	jobs: many(Jobs),
 	companies: many(Company),
+	applications: many(Application),
 }));
 
 export const Jobs = mysqlTable('jobs', {
@@ -88,7 +92,7 @@ export const Jobs = mysqlTable('jobs', {
 
 export type Job = typeof Jobs.$inferSelect;
 
-export const jobsRelations = relations(Jobs, ({ one }) => ({
+export const jobsRelations = relations(Jobs, ({ one, many }) => ({
 	user: one(Users, {
 		fields: [Jobs.userId],
 		references: [Users.id],
@@ -97,6 +101,7 @@ export const jobsRelations = relations(Jobs, ({ one }) => ({
 		fields: [Jobs.companyId],
 		references: [Company.id],
 	}),
+	applications: many(Application),
 }));
 
 export const GitHubProjects = mysqlTable('githubProjects', {
@@ -119,25 +124,35 @@ export const githubProjectsRelations = relations(GitHubProjects, ({ one }) => ({
 	}),
 }));
 
-// export const Application = pgTable(
-// 	'application',
-// 	{
-// 		appid: serial('appid').primaryKey(),
-// 		userid: text('userid')
-// 			.notNull()
-// 			.references() => Users.userid, { onDelete: 'CASCADE' },
-// 		jobid: text('jobid')
-// 			.notNull()
-// 			.references(() => Jobs.jobid),
-// 		applicationTimeStamp: timestamp('tim').notNull(),
-// 		status: integer('status').notNull(),
-// 	},
-// 	(application) => {
-// 		return {
-// 			uniqueIdx: uniqueIndex('unique_idx').on(application.applicationTimeStamp),
-// 		};
-// 	}
-// );
+export const Application = mysqlTable(
+	'application',
+	{
+		id: serial('id').primaryKey(),
+		userId: int('user_id').notNull(),
+		jobId: int('job_id').notNull(),
+		created: timestamp('created').defaultNow(),
+		lastModified: timestamp('last_modified').defaultNow(),
+		status: smallint('status').$type<ApplicationStatus>(),
+	},
+	(application) => {
+		return {
+			uniqueIdx: uniqueIndex('unique_idx').on(application.created),
+		};
+	}
+);
+
+export type Application = typeof Application.$inferSelect;
+
+export const applicationRelations = relations(Application, ({ one }) => ({
+	user: one(Users, {
+		fields: [Application.userId],
+		references: [Users.id],
+	}),
+	job: one(Jobs, {
+		fields: [Application.jobId],
+		references: [Jobs.id],
+	}),
+}));
 
 // export const link = pgTable(
 // 	'link',

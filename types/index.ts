@@ -70,3 +70,10 @@ export type GitHubRepo = {
 		avatar_url: string;
 	} | null;
 };
+
+export enum ApplicationStatus {
+	PENDING,
+	ACCEPTED,
+	REJECTED,
+	WITHDRAWN,
+}

@@ -16,6 +16,8 @@ import {
 	Send,
 } from 'lucide-react';
 import { Metadata } from 'next';
+import { toast } from 'sonner';
+import ApplyButton from './ApplyButton';
 
 export const metadata: Metadata = {
 	title: 'Job Posting',
@@ -75,13 +77,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 							</div>
 						</div>
 					</div>
-					<Button
-						startContent={<Send size={16} />}
-						variant='solid'
-						color='primary'
-					>
-						Apply
-					</Button>
+					<ApplyButton id={jobData.jobs.id} />
 				</div>
 
 				<div className='flex flex-col gap-5 md:flex-row'>
@@ -177,7 +173,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 							</div>
 							<div>
 								<div className='mb-2 text-xl font-medium'>Skills</div>
-								<div className='flex flex-row items-center gap-1 py-2 flex-wrap'>
+								<div className='flex flex-row flex-wrap items-center gap-1 py-2'>
 									{(jobData.jobs.skills as string[]).map((skill: string) => {
 										return (
 											<Chip key={skill} color='default' variant='flat'>
