@@ -1,3 +1,4 @@
+import { FormEvent } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...args: (string | undefined)[]) {
@@ -49,4 +50,15 @@ export function dateSince(date: Date) {
 
 export function currency(amount: number) {
 	return `$${Math.round(amount).toLocaleString()}`;
+}
+
+export function parseFormData(e: FormEvent<HTMLFormElement>) {
+	e.preventDefault();
+	const target = e.target as HTMLFormElement;
+	const formData = new FormData(target);
+	for (const checkbox of target.querySelectorAll('input[type=checkbox]')) {
+		const checkboxInput = checkbox as HTMLInputElement;
+		formData.set(checkboxInput.name, checkboxInput.checked.toString());
+	}
+	return formData;
 }
