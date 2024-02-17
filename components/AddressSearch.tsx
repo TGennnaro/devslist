@@ -11,6 +11,7 @@ export default function AddressSearch({
 	disabled = false,
 	defaultItems,
 	items,
+	defaultInputValue,
 	...props
 }: {
 	setLocation: (address: string) => void;
@@ -18,7 +19,7 @@ export default function AddressSearch({
 } & Omit<AutocompleteProps, 'children'>) {
 	const [fieldState, setFieldState] = useState({
 		selectedKey: '',
-		inputValue: '',
+		inputValue: defaultInputValue ?? '',
 		isLoading: false,
 	});
 	const debouncedAddress = useDebounce(fieldState.inputValue, 500);
