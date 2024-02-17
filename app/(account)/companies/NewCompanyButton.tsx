@@ -15,21 +15,16 @@ import { Plus } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
+import CompanyForm from './CompanyForm';
+import { parseFormData } from '@/lib/utils';
 
 export default function NewCompanyButton() {
 	const [isOpen, setIsOpen] = useState(false);
-	const [location, setLocation] = useState('');
 
 	const queryClient = useQueryClient();
 	const mutation = useMutation({
 		mutationFn: (e: FormEvent<HTMLFormElement>) => {
-			e.preventDefault();
-			const target = e.target as HTMLFormElement;
-			const formData = new FormData(target as HTMLFormElement);
-			for (const checkbox of target.querySelectorAll('input[type=checkbox]')) {
-				const checkboxInput = checkbox as HTMLInputElement;
-				formData.set(checkboxInput.name, checkboxInput.checked.toString());
-			}
+			const formData = parseFormData(e);
 			return fetch('/api/companies', {
 				method: 'POST',
 				body: formData,
@@ -66,33 +61,7 @@ export default function NewCompanyButton() {
 						<form onSubmit={mutation.mutate}>
 							<ModalHeader>New Company</ModalHeader>
 							<ModalBody className='gap-4'>
-								<Input
-									name='companyName'
-									label='Name'
-									labelPlacement='outside'
-									placeholder='Enter the company name'
-								/>
-								<Textarea
-									name='companyDescription'
-									label='Description'
-									labelPlacement='outside'
-									placeholder='Describe your company'
-									minRows={5}
-									rows={5}
-								/>
-								<AddressSearch
-									setLocation={setLocation}
-									placeholder='Search an address...'
-									label='Address'
-									labelPlacement='outside'
-									name='companyAddress'
-								/>
-								<Input
-									name='companyUrl'
-									label='Website'
-									placeholder="Enter the company's website"
-									labelPlacement='outside'
-								/>
+								<CompanyForm />
 								<Switch
 									name='companyTerms'
 									classNames={{

@@ -13,13 +13,39 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from '@nextui-org/modal';
-import { Building2 } from 'lucide-react';
-import { useState } from 'react';
+import { Building2, Save } from 'lucide-react';
+import { FormEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
+import CompanyForm from './CompanyForm';
+import { parseFormData } from '@/lib/utils';
 
 export default function CompanyCard({ company }: { company: Company }) {
 	const queryClient = useQueryClient();
+	const editMutation = useMutation({
+		mutationFn: (e: FormEvent<HTMLFormElement>) => {
+			const formData = parseFormData(e);
+			return fetch(`/api/companies?id=${company.id}`, {
+				method: 'PATCH',
+				body: formData,
+			});
+		},
+		onSuccess: async (res) => {
+			if (res.status === 200) {
+				setIsEditOpen(false);
+				queryClient.invalidateQueries('list_companies');
+				toast.success('Company updated');
+			} else {
+				const json = await res.json();
+				if (res.status === 500) {
+					toast.error('Something went wrong, try again');
+				} else {
+					toast.error('Error: ' + json.message);
+				}
+				console.error(json.message);
+			}
+		},
+	});
 	const deleteMutation = useMutation({
 		mutationFn: (id: number) => {
 			return fetch(`/api/companies?id=${id}`, {
@@ -33,6 +59,7 @@ export default function CompanyCard({ company }: { company: Company }) {
 		},
 	});
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	const [isEditOpen, setIsEditOpen] = useState(false);
 	return (
 		<li key={company.id}>
 			<Card>
@@ -61,6 +88,7 @@ export default function CompanyCard({ company }: { company: Company }) {
 							},
 							{
 								label: 'Edit',
+								onClick: () => setIsEditOpen(true),
 							},
 							{
 								label: 'Delete',
@@ -70,6 +98,33 @@ export default function CompanyCard({ company }: { company: Company }) {
 							},
 						]}
 					/>
+					<Modal isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
+						<ModalContent>
+							{(onClose) => (
+								<form onSubmit={editMutation.mutate}>
+									<ModalHeader>Edit {company.name}</ModalHeader>
+									<ModalBody>
+										<ModalBody className='gap-4'>
+											<CompanyForm defaultValues={company} />
+										</ModalBody>
+									</ModalBody>
+									<ModalFooter>
+										<Button variant='light' onPress={onClose}>
+											Cancel
+										</Button>
+										<Button
+											isLoading={editMutation.isLoading}
+											color='primary'
+											type='submit'
+											startContent={<Save size={16} />}
+										>
+											Save
+										</Button>
+									</ModalFooter>
+								</form>
+							)}
+						</ModalContent>
+					</Modal>
 					<Modal isOpen={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
 						<ModalContent>
 							{(onClose) => (
