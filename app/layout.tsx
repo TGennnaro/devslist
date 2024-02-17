@@ -7,6 +7,10 @@ import { Navbar } from '@/components/navbar';
 import { Link } from '@nextui-org/link';
 import clsx from 'clsx';
 import { Toaster } from 'sonner';
+import { db } from '@/db';
+import { Messages } from '@/db/schema';
+import { getUser } from '@/lib/server_utils';
+import { and, eq } from 'drizzle-orm';
 
 export const metadata: Metadata = {
 	title: {
@@ -28,11 +32,13 @@ export const metadata: Metadata = {
 // 	],
 // };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const user = await getUser();
+
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<head />
@@ -44,7 +50,23 @@ export default function RootLayout({
 			>
 				<Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>
 					<div className='relative flex flex-col min-h-screen'>
-						<Navbar />
+						<Navbar
+							unread={
+								user
+									? (
+											await db
+												.select()
+												.from(Messages)
+												.where(
+													and(
+														eq(Messages.toId, user.id),
+														eq(Messages.isOpened, 0)
+													)
+												)
+									  ).length
+									: 0
+							}
+						/>
 						<main className='container flex-grow px-6 pt-16 mx-auto mb-16 max-w-7xl'>
 							{children}
 						</main>
