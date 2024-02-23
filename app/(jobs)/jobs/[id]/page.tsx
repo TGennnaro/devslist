@@ -133,8 +133,14 @@ export default async function Page({ params }: { params: { id: number } }) {
 								<span className='text-light'>
 									{jobData.jobs.showPayRate
 										? jobData.jobs.salary
-											? '$' + jobData.jobs.salary + '/year'
-											: '$' + jobData.jobs.hourlyRate + '/hour'
+											? Intl.NumberFormat('en-US', {
+													style: 'currency',
+													currency: 'USD',
+											  }).format(jobData.jobs.salary) + ' a year'
+											: Intl.NumberFormat('en-US', {
+													style: 'currency',
+													currency: 'USD',
+											  }).format(jobData.jobs.hourlyRate ?? 0) + ' an hour'
 										: null}
 								</span>
 							</div>

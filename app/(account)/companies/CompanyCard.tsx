@@ -19,9 +19,11 @@ import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 import CompanyForm from './CompanyForm';
 import { parseFormData } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export default function CompanyCard({ company }: { company: Company }) {
 	const queryClient = useQueryClient();
+	const router = useRouter();
 	const editMutation = useMutation({
 		mutationFn: (e: FormEvent<HTMLFormElement>) => {
 			const formData = parseFormData(e);
@@ -85,6 +87,7 @@ export default function CompanyCard({ company }: { company: Company }) {
 						options={[
 							{
 								label: 'View applications',
+								onClick: () => router.push(`/companies/${company.id}`),
 							},
 							{
 								label: 'Edit',
