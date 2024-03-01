@@ -1,5 +1,6 @@
 import { connect } from '@planetscale/database';
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
+import { migrate } from 'drizzle-orm/planetscale-serverless/migrator';
 
 const connection = connect({
 	host: process.env.DATABASE_HOST,
@@ -10,7 +11,6 @@ const connection = connect({
 export const db = drizzle(connection);
 
 // async function run() {
-// 	// @ts-ignore
 // 	await migrate(db, { migrationsFolder: 'drizzle' }).catch((err) => {
 // 		console.error('Migration error: ', err);
 // 	});
