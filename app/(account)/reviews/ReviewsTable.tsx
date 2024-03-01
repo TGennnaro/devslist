@@ -75,69 +75,69 @@ export default function ReviewsTable() {
 								<p>
 									You are updating your review for:{' '}
 									<span className='font-bold'>Apple, Inc.</span>.
-									<div className='mt-5'>
-										<Slider
-											label={
-												<div className='flex flex-row items-center gap-1'>
-													Select a rating <Star color='gold' />
-												</div>
-											}
-											color='warning'
-											showTooltip={true}
-											step={0.5}
-											maxValue={5}
-											minValue={0}
-											marks={[
-												{
-													value: 0,
-													label: '0',
-												},
-												{
-													value: 0.5,
-													label: '0.5',
-												},
-												{
-													value: 1,
-													label: '1',
-												},
-												{
-													value: 1.5,
-													label: '1.5',
-												},
-												{
-													value: 2.0,
-													label: '2',
-												},
-												{
-													value: 2.5,
-													label: '2.5',
-												},
-												{
-													value: 3.0,
-													label: '3',
-												},
-												{
-													value: 3.5,
-													label: '3.5',
-												},
-												{
-													value: 4.0,
-													label: '4',
-												},
-												{
-													value: 4.5,
-													label: '4.5',
-												},
-												{
-													value: 5.0,
-													label: '5',
-												},
-											]}
-											defaultValue={0}
-											className='max-w-md'
-										/>
-									</div>
 								</p>
+								<div className='mt-5'>
+									<Slider
+										label={
+											<div className='flex flex-row items-center gap-1'>
+												Select a rating <Star color='gold' />
+											</div>
+										}
+										color='warning'
+										showTooltip={true}
+										step={0.5}
+										maxValue={5}
+										minValue={0}
+										marks={[
+											{
+												value: 0,
+												label: '0',
+											},
+											{
+												value: 0.5,
+												label: '0.5',
+											},
+											{
+												value: 1,
+												label: '1',
+											},
+											{
+												value: 1.5,
+												label: '1.5',
+											},
+											{
+												value: 2.0,
+												label: '2',
+											},
+											{
+												value: 2.5,
+												label: '2.5',
+											},
+											{
+												value: 3.0,
+												label: '3',
+											},
+											{
+												value: 3.5,
+												label: '3.5',
+											},
+											{
+												value: 4.0,
+												label: '4',
+											},
+											{
+												value: 4.5,
+												label: '4.5',
+											},
+											{
+												value: 5.0,
+												label: '5',
+											},
+										]}
+										defaultValue={0}
+										className='max-w-md'
+									/>
+								</div>
 							</ModalBody>
 							<ModalFooter>
 								<Button color='danger' variant='light' onPress={onClose}>
