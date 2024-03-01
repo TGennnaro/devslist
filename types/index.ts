@@ -19,6 +19,17 @@ export type ProfileFormEntry = {
 	[key: string]: string | boolean | FormDataEntryValue | undefined;
 };
 
+export type ExperienceEntry = {
+	jobTitle: string | undefined;
+	company: string | undefined;
+	workLocation: string | undefined;
+	description: string | undefined;
+	startMonth: string | undefined;
+	startYear: string | undefined;
+	endMonth: string | undefined;
+	endYear: string | undefined;
+};
+
 export type Job = {
 	companyId: number;
 	jobTitle: string | undefined;
