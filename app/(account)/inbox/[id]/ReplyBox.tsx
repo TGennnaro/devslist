@@ -2,8 +2,7 @@
 import { Message, User } from '@/db/schema';
 import { Button } from '@nextui-org/button';
 import { Send } from 'lucide-react';
-import { Input } from '@nextui-org/input';
-import { Textarea } from '@nextui-org/react';
+import { Input, Textarea } from '@/components/ui/input';
 import { useMutation } from 'react-query';
 import { toast } from 'sonner';
 import { FormEvent } from 'react';
@@ -26,6 +25,7 @@ export default function ReplyBox({
 			const json = await res.json();
 			if (res.status === 200) {
 				toast.success('Reply sent!');
+				window.location.reload();
 			} else {
 				console.error(json.message);
 				toast.error('Error: ' + json.message.message);
@@ -63,6 +63,7 @@ export default function ReplyBox({
 				/>
 
 				<Button
+					className='ml-auto mr-0 w-fit'
 					color='primary'
 					type='submit'
 					endContent={<Send />}
