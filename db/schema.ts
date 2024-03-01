@@ -1,25 +1,22 @@
+import { ApplicationStatus } from '@/types';
+import { eq, relations, sql } from 'drizzle-orm';
 import {
-	mysqlTable,
-	mysqlView,
-	serial,
-	text,
-	uniqueIndex,
+	boolean,
+	date,
+	double,
 	int,
 	json,
-	date,
-	varchar,
-	boolean,
-	timestamp,
-	real,
-	customType,
-	double,
-	tinyint,
+	mysqlTable,
+	mysqlView,
 	primaryKey,
-	mysqlEnum,
+	serial,
 	smallint,
+	text,
+	timestamp,
+	tinyint,
+	uniqueIndex,
+	varchar,
 } from 'drizzle-orm/mysql-core';
-import { eq, relations, sql } from 'drizzle-orm';
-import { ApplicationStatus } from '@/types';
 
 export const Users = mysqlTable(
 	'users',
@@ -39,7 +36,6 @@ export const Users = mysqlTable(
 		about: text('about'),
 		dob: date('dob'),
 		isEmployer: boolean('is_employer').default(false),
-		companyId: int('company_id'),
 		githubID: text('github_id'),
 		githubAccessToken: text('github_access_token'),
 		gender: boolean('gender'),
