@@ -7,6 +7,8 @@ import { Users, Messages } from '@/db/schema';
 import { and, desc, eq, lte, or } from 'drizzle-orm';
 import { getUser } from '@/lib/server_utils';
 import ReplyBox from './ReplyBox';
+import { Link } from '@nextui-org/link';
+import NextLink from 'next/link';
 
 export default async function Page({ params }: { params: { id: number } }) {
 	const user = await getUser();
@@ -87,20 +89,25 @@ export default async function Page({ params }: { params: { id: number } }) {
 									<Card>
 										<CardBody>
 											<div className='flex flex-row gap-5'>
-												<div>
-													<Avatar
-														isBordered
-														color='default'
-														src={message?.users?.picture_url ?? ''}
-														showFallback
-														className='h-[75px] w-[75px]'
-													/>
-													<div className='text-center font-semibold'>
-														{message.users?.firstName +
-															' ' +
-															message.users?.lastName}
+												<Link
+													href={`/profile/${message.users?.id}`}
+													as={NextLink}
+												>
+													<div className='flex flex-col gap-1 items-center justify-center'>
+														<Avatar
+															isBordered
+															color='default'
+															src={message?.users?.picture_url ?? ''}
+															showFallback
+															className='h-[75px] w-[75px]'
+														/>
+														<div className='text-center font-semibold'>
+															{message.users?.firstName +
+																' ' +
+																message.users?.lastName}
+														</div>
 													</div>
-												</div>
+												</Link>
 												<div>
 													<div className='font-bold'>
 														{new Date(
@@ -128,20 +135,25 @@ export default async function Page({ params }: { params: { id: number } }) {
 							<Card>
 								<CardBody>
 									<div className='flex flex-row gap-5'>
-										<div>
-											<Avatar
-												isBordered
-												color='default'
-												src={messageData?.users?.picture_url ?? ''}
-												showFallback
-												className='h-[75px] w-[75px]'
-											/>
-											<div className='text-center font-semibold'>
-												{messageData.users?.firstName +
-													' ' +
-													messageData.users?.lastName}
+										<Link
+											href={`/profile/${messageData.users?.id}`}
+											as={NextLink}
+										>
+											<div className='flex flex-col gap-1 items-center justify-center'>
+												<Avatar
+													isBordered
+													color='default'
+													src={messageData?.users?.picture_url ?? ''}
+													showFallback
+													className='h-[75px] w-[75px]'
+												/>
+												<div className='text-center font-semibold'>
+													{messageData.users?.firstName +
+														' ' +
+														messageData.users?.lastName}
+												</div>
 											</div>
-										</div>
+										</Link>
 										<div>
 											<div className='font-bold'>
 												{new Date(
