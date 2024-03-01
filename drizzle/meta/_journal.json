@@ -15,6 +15,13 @@
       "when": 1709266530931,
       "tag": "0001_brainy_stellaris",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709312113369,
+      "tag": "0002_high_madripoor",
+      "breakpoints": true
     }
   ]
 }

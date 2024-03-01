@@ -315,12 +315,12 @@ export type Message = typeof Messages.$inferSelect;
 export const Experience = mysqlTable('experience', {
 	id: int('id').autoincrement().notNull().primaryKey(),
 	userId: int('user_id').notNull(),
-	position: varchar('position', { length: 100 }),
-	company: varchar('company', { length: 100 }),
+	position: varchar('position', { length: 100 }).notNull(),
+	company: varchar('company', { length: 100 }).notNull(),
 	location: varchar('location', { length: 100 }),
-	description: varchar('description', { length: 255 }),
-	startMonth: smallint('start_month'),
-	startYear: smallint('start_year'),
+	description: varchar('description', { length: 255 }).notNull(),
+	startMonth: smallint('start_month').notNull(),
+	startYear: smallint('start_year').notNull(),
 	endMonth: smallint('end_month'),
 	endYear: smallint('end_year'),
 });
