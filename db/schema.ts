@@ -130,9 +130,12 @@ export const Application = mysqlTable(
 		id: serial('id').primaryKey(),
 		userId: int('user_id').notNull(),
 		jobId: int('job_id').notNull(),
-		created: timestamp('created').defaultNow(),
-		lastModified: timestamp('last_modified').defaultNow(),
-		status: smallint('status').$type<ApplicationStatus>(),
+		created: timestamp('created').defaultNow().notNull(),
+		lastModified: timestamp('last_modified').defaultNow().notNull(),
+		status: smallint('status')
+			.$type<ApplicationStatus>()
+			.default(ApplicationStatus.PENDING)
+			.notNull(),
 	},
 	(application) => {
 		return {
