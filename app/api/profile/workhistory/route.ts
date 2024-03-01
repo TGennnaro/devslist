@@ -9,16 +9,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const schema = z.object({
-	jobTitle: z.string().max(100, 'Job title cannot exceed 100 characters.'),
-	company: z.string().max(100, 'Company name cannot exceed 100 characters.'),
+	jobTitle: z
+		.string()
+		.min(3, 'Job title must be at least 3 characters.')
+		.max(100, 'Job title cannot exceed 100 characters.'),
+	company: z
+		.string()
+		.min(2, 'Company name must be at least 2 characters.')
+		.max(100, 'Company name cannot exceed 100 characters.'),
 	workLocation: z
 		.string()
+		.min(2, 'Work location must be at least 2 characters.')
 		.max(100, 'Work location cannot exceed 100 characters.'),
 	description: z.string().max(255, 'Description cannot exceed 255 characters.'),
-	startMonth: z.string().max(2, 'Month cannot exceed 2 characters.'),
-	startYear: z.string().max(4, 'Year cannot exceed 4 characters.'),
-	endMonth: z.string().max(2, 'Month cannot exceed 2 characters.').nullable(),
-	endYear: z.string().max(4, 'Year cannot exceed 4 characters.').nullable(),
+	startMonth: z.string().max(2),
+	startYear: z.string().max(4),
+	endMonth: z.string().max(2).nullable(),
+	endYear: z.string().max(4).nullable(),
 });
 
 export async function POST(req: NextRequest, res: Response) {
@@ -54,7 +61,7 @@ export async function POST(req: NextRequest, res: Response) {
 			return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 		}
 
-		await db.insert(Experience).values({
+		const experienceEntry = await db.insert(Experience).values({
 			userId: user.id,
 			position: jobTitle,
 			company: company,
@@ -65,6 +72,25 @@ export async function POST(req: NextRequest, res: Response) {
 			endMonth: endMonth ? parseInt(endMonth) : null,
 			endYear: endYear ? parseInt(endYear) : null,
 		});
+
+		return NextResponse.json(
+			{
+				message: 'OK',
+				id: Number(experienceEntry.insertId),
+				data: {
+					userId: user.id,
+					position: jobTitle,
+					company: company,
+					location: workLocation,
+					description: description,
+					startMonth: parseInt(startMonth),
+					startYear: parseInt(startYear),
+					endMonth: endMonth ? parseInt(endMonth) : null,
+					endYear: endYear ? parseInt(endYear) : null,
+				},
+			},
+			{ status: 200 }
+		);
 	} catch (e) {
 		if (e instanceof z.ZodError) {
 			console.log(e.issues);
@@ -86,5 +112,4 @@ export async function POST(req: NextRequest, res: Response) {
 			{ status: 500 }
 		);
 	}
-	return NextResponse.json({ message: 'OK' }, { status: 200 });
 }
