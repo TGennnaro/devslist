@@ -7,9 +7,10 @@ import {
 	Company,
 	GitHubProjects,
 	GitHubProject,
+	Experience,
 } from '@/db/schema';
 import { GitHubRepo } from '@/types';
-import { eq, isNotNull, and } from 'drizzle-orm';
+import { eq, isNotNull, and, desc } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { Octokit } from 'octokit';
 import AES from 'crypto-js/aes';
@@ -28,6 +29,20 @@ export async function getUser() {
 	)?.[0];
 	delete user.password;
 	return user as Omit<User, 'password'>;
+}
+
+export async function getWorkHistory() {
+	const session = await getServerSession(authOptions);
+	if (!session?.user.id) {
+		return null;
+	} else {
+		const data = await db
+			.select()
+			.from(Experience)
+			.where(eq(Experience.userId, session?.user.id))
+			.orderBy(desc(Experience.startMonth), desc(Experience.startYear));
+		return data;
+	}
 }
 
 export async function getAvailableGitHubProjects() {

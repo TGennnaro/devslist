@@ -22,11 +22,18 @@ import {
 } from 'lucide-react';
 import { Button } from '@nextui-org/button';
 import { db } from '@/db';
-import { Users, Company, GitHubProjects, GitHubProject } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import {
+	Users,
+	Company,
+	GitHubProjects,
+	GitHubProject,
+	Experience,
+} from '@/db/schema';
+import { desc, eq } from 'drizzle-orm';
 import NextLink from 'next/link';
 import MessageButton from './MessageButton';
 import { getUser } from '@/lib/server_utils';
+import { getMonthNameFromNumber } from '@/lib/utils';
 
 export default async function Page({ params }: { params: { id: number } }) {
 	const user = await getUser();
@@ -64,7 +71,17 @@ export default async function Page({ params }: { params: { id: number } }) {
 			return showcase;
 		}
 
+		async function fetchWorkHistory() {
+			const history = await db
+				.select()
+				.from(Experience)
+				.where(eq(Experience.userId, params.id))
+				.orderBy(desc(Experience.startMonth), desc(Experience.startYear));
+			return history;
+		}
+
 		const projectsShowcase = await fetchProjectsShowcase();
+		const workHistory = await fetchWorkHistory();
 
 		return (
 			<>
@@ -348,41 +365,55 @@ export default async function Page({ params }: { params: { id: number } }) {
 									</div>
 								</CardBody>
 							</Card>
-							<Card>
-								<CardHeader>
-									<div className='text-3xl font-medium'>Work History</div>
-								</CardHeader>
-								<CardBody>
-									<div className='flex flex-col gap-3'>
-										<div className='flex flex-row items-center gap-3'>
-											<Briefcase size={75} />
-											<div className='flex flex-col gap-1'>
-												<div>
-													<div className='font-bold'>
-														Search Engineer @ Google
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<MapPin /> Mountain View, CA
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<TextQuote /> Developed AI-enhanced algorithms to
-															improve search engine results
-														</div>
-														<div className='text-small'>
-															<div className='flex items-center gap-1'>
-																<Calendar /> September 2022 - May 2023
+							{workHistory.length > 0 && (
+								<Card>
+									<CardHeader>
+										<div className='text-3xl font-medium'>Work History</div>
+									</CardHeader>
+									<CardBody>
+										{workHistory.map((job: Experience) => (
+											<div className='flex flex-col gap-3 mb-5' key={job.id}>
+												<div className='flex flex-row items-center gap-3'>
+													<Briefcase size={75} />
+													<div className='flex flex-col gap-1'>
+														<div>
+															<div className='font-bold'>
+																{job.position} @ {job.company}
+															</div>
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<MapPin /> {job.location}
+																</div>
+															</div>
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<TextQuote /> {job.description}
+																</div>
+																{job.startMonth && job.startYear && (
+																	<div className='text-small'>
+																		<div className='flex items-center gap-1'>
+																			<Calendar />{' '}
+																			{getMonthNameFromNumber(job.startMonth) +
+																				' ' +
+																				job.startYear}{' '}
+																			-{' '}
+																			{job.endMonth && job.endYear
+																				? getMonthNameFromNumber(job.endMonth) +
+																				  ' ' +
+																				  job.endYear
+																				: 'Present'}
+																		</div>
+																	</div>
+																)}
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>
-								</CardBody>
-							</Card>
+										))}
+									</CardBody>
+								</Card>
+							)}
 						</div>
 					</div>
 				</div>
