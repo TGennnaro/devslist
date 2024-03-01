@@ -62,3 +62,21 @@ export function parseFormData(e: FormEvent<HTMLFormElement>) {
 	}
 	return formData;
 }
+
+export function getMonthNameFromNumber(month: number) {
+	const monthNames: string[] = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
+	return monthNames[month - 1];
+}
