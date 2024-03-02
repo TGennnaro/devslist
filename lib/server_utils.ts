@@ -10,7 +10,7 @@ import {
 	Experience,
 } from '@/db/schema';
 import { GitHubRepo } from '@/types';
-import { eq, isNotNull, and, desc } from 'drizzle-orm';
+import { eq, isNotNull, and, desc, asc } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { Octokit } from 'octokit';
 import AES from 'crypto-js/aes';
@@ -40,7 +40,7 @@ export async function getWorkHistory() {
 			.select()
 			.from(Experience)
 			.where(eq(Experience.userId, session?.user.id))
-			.orderBy(desc(Experience.startMonth), desc(Experience.startYear));
+			.orderBy(asc(Experience.startMonth), desc(Experience.startYear));
 		return data;
 	}
 }
@@ -87,20 +87,6 @@ export async function getDisplayedGitHubProjects() {
 
 		return data;
 	}
-}
-
-export async function getMapEligibleJobs() {
-	// Calling getServerSession() forces route calling this function to render at request time (ensuring up-to-date job data for map)
-	// https://nextjs.org/docs/app/building-your-application/rendering/server-components
-	const session = await getServerSession(authOptions);
-
-	const jobs = await db
-		.select()
-		.from(Jobs)
-		.where(isNotNull(Jobs.address))
-		.leftJoin(Company, eq(Jobs.companyId, Company.id));
-
-	return jobs;
 }
 
 export function encrypt(plaintext: string) {
