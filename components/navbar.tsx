@@ -186,7 +186,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link
 									color='foreground'
-									href={`/user/${session.data.user.id}`}
+									href={`/profile/${session.data.user.id}`}
 									size='lg'
 								>
 									Profile
@@ -195,6 +195,11 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link color='foreground' href='/applications' size='lg'>
 									Applications
+								</Link>
+							</NavbarMenuItem>
+							<NavbarMenuItem>
+								<Link color='foreground' href='/companies' size='lg'>
+									Companies
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>
