@@ -29,6 +29,7 @@ import {
 } from '@nextui-org/modal';
 import { getMonthNameFromNumber } from '@/lib/utils';
 import { countries, usStates } from '@/lib/constants';
+import { useRouter } from 'next/navigation';
 
 export default function ProfileForm({
 	defaultValues,
@@ -48,6 +49,7 @@ export default function ProfileForm({
 		displayedGitHubProjects
 	);
 	const session = useSession();
+	const router = useRouter();
 
 	const mutation = useMutation({
 		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
@@ -67,48 +69,6 @@ export default function ProfileForm({
 		onSuccess: async (res) => {
 			if (res.status === 200) {
 				toast.success('Profile updated.');
-			} else {
-				const json = await res.json();
-				if (res.status === 500) {
-					toast.error('Something went wrong, try again');
-				} else {
-					toast.error('Error: ' + json.message);
-				}
-				console.error(json.message);
-			}
-		},
-	});
-
-	const workHistoryMutation = useMutation({
-		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
-			e.preventDefault();
-			const target = e.target as HTMLFormElement;
-			const formData = new FormData(target as HTMLFormElement);
-			return fetch('/api/profile/workhistory', {
-				method: 'POST',
-				body: formData,
-			});
-		},
-		onSuccess: async (res) => {
-			if (res.status === 200) {
-				const json = await res.json();
-				toast.success('Work experience added!');
-				setHasEndDate(false);
-				console.log(json);
-				setIsOpen(false);
-				const newHistoryItem: Experience = {
-					userId: 0,
-					position: json.data.position,
-					company: json.data.company,
-					location: json.data.location,
-					description: json.data.description,
-					startMonth: json.data.startMonth,
-					startYear: json.data.startYear,
-					endMonth: json.data.endMonth,
-					endYear: json.data.endYear,
-					id: json.id,
-				};
-				setHistory([...history, newHistoryItem]);
 			} else {
 				const json = await res.json();
 				if (res.status === 500) {
@@ -194,77 +154,76 @@ export default function ProfileForm({
 						<div>
 							<div className='flex flex-row items-center gap-3 mb-5'>
 								<label className='block text-sm font-medium'>
-									Work history
+									Work experience
 								</label>
 								<Button
 									size='sm'
-									startContent={<Plus size={16} />}
-									onPress={() => setIsOpen(true)}
-								>
-									Add new
-								</Button>
+									startContent={<Pencil size={16} />}
+									onPress={() => router.push('/profile/experience')}
+								></Button>
 							</div>
 
-							{history
-								.sort(
-									(a, b) =>
-										b.startYear - a.startYear || b.startMonth - a.startMonth
-								)
-								.map((job: Experience) => (
-									<div className='flex flex-col gap-3 mb-5' key={job.id}>
-										<div className='flex flex-row items-center gap-3'>
-											<Briefcase size={50} />
-											<div className='flex flex-col gap-1'>
-												<div>
-													<div className='font-bold'>
-														{job.position} @ {job.company}
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<MapPin /> {job.location}
+							{history.length > 0 ? (
+								history
+									.sort((a, b) => {
+										if (b.startYear !== a.startYear) {
+											return b.startYear - a.startYear;
+										} else {
+											return b.startMonth - a.startMonth;
+										}
+									})
+									.map((job: Experience) => (
+										<div className='flex flex-col gap-3 mb-5' key={job.id}>
+											<div className='flex flex-row items-center gap-3'>
+												<Briefcase size={50} />
+												<div className='flex flex-col gap-1'>
+													<div>
+														<div className='font-bold'>
+															{job.position} at {job.company}
 														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<TextQuote /> {job.description}
-														</div>
-														{job.startMonth && job.startYear && (
-															<div className='text-small'>
-																<div className='flex items-center gap-1'>
-																	<Calendar />{' '}
-																	{getMonthNameFromNumber(job.startMonth) +
-																		' ' +
-																		job.startYear}{' '}
-																	-{' '}
-																	{job.endMonth && job.endYear
-																		? getMonthNameFromNumber(job.endMonth) +
-																		  ' ' +
-																		  job.endYear
-																		: 'Present'}
-																</div>
+														<div className='text-small'>
+															<div className='flex items-center gap-1'>
+																<MapPin /> {job.location}
 															</div>
-														)}
-														<div className='flex items-center mt-3 gap-1'>
-															<Button
-																size='sm'
-																startContent={<Pencil size={16} />}
-															>
-																Modify
-															</Button>
-															<Button
-																size='sm'
-																color='danger'
-																startContent={<Trash size={16} />}
-															>
-																Remove
-															</Button>
+														</div>
+														<div className='text-small'>
+															<div className='flex items-center gap-1'>
+																<TextQuote /> {job.description}
+															</div>
+															{job.startMonth && job.startYear && (
+																<div className='text-small'>
+																	<div className='flex items-center gap-1'>
+																		<Calendar />{' '}
+																		{getMonthNameFromNumber(job.startMonth) +
+																			' ' +
+																			job.startYear}{' '}
+																		-{' '}
+																		{job.endMonth && job.endYear
+																			? getMonthNameFromNumber(job.endMonth) +
+																			  ' ' +
+																			  job.endYear
+																			: 'Present'}
+																	</div>
+																</div>
+															)}
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								))}
+									))
+							) : (
+								<>
+									<label className='block mb-2 text-sm'>
+										Hey there 👋. It looks like you haven&apos;t added any work
+										experience yet.
+									</label>
+									<label className='block mb-2 text-sm font-medium'>
+										Listing your work experience is so important in helping
+										potential employers get to know you better.
+									</label>
+								</>
+							)}
 						</div>
 						<div>
 							<label className='block mb-2 text-sm font-medium'>
@@ -539,212 +498,6 @@ export default function ProfileForm({
 					</Button>
 				</section>
 			</form>
-
-			<Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader>Add work history</ModalHeader>
-							<form onSubmit={workHistoryMutation.mutate}>
-								<ModalBody>
-									<div className='flex flex-col gap-1'>
-										<Input
-											type='text'
-											name='jobTitle'
-											label='Job title'
-											size='sm'
-											isRequired
-										/>
-										<Input
-											type='text'
-											name='company'
-											label='Company'
-											size='sm'
-											isRequired
-										/>
-										<Input
-											name='workLocation'
-											label='Location'
-											variant='bordered'
-											radius='sm'
-											size='sm'
-											isRequired
-										/>
-										<Input
-											name='description'
-											label='Description'
-											placeholder='Please give a brief description'
-											variant='bordered'
-											radius='sm'
-											size='sm'
-											isRequired
-										/>
-										<div className='flex gap-1 items-center'>
-											<Select
-												name='startMonth'
-												label='Start Month'
-												variant='bordered'
-												radius='sm'
-												isRequired
-												size='sm'
-											>
-												<SelectItem key='1' value='1'>
-													January
-												</SelectItem>
-												<SelectItem key='2' value='2'>
-													February
-												</SelectItem>
-												<SelectItem key='3' value='3'>
-													March
-												</SelectItem>
-												<SelectItem key='4' value='4'>
-													April
-												</SelectItem>
-												<SelectItem key='5' value='5'>
-													May
-												</SelectItem>
-												<SelectItem key='6' value='6'>
-													June
-												</SelectItem>
-												<SelectItem key='7' value='7'>
-													July
-												</SelectItem>
-												<SelectItem key='8' value='8'>
-													August
-												</SelectItem>
-												<SelectItem key='9' value='9'>
-													September
-												</SelectItem>
-												<SelectItem key='10' value='10'>
-													October
-												</SelectItem>
-												<SelectItem key='11' value='11'>
-													November
-												</SelectItem>
-												<SelectItem key='12' value='12'>
-													December
-												</SelectItem>
-											</Select>
-
-											<Select
-												name='startYear'
-												label='Start Year'
-												variant='bordered'
-												radius='sm'
-												size='sm'
-												isRequired
-											>
-												{Array.from(
-													{ length: 100 },
-													(_, index) => new Date().getFullYear() - index
-												).map((year) => (
-													<SelectItem
-														key={year.toString()}
-														value={year.toString()}
-													>
-														{year.toString()}
-													</SelectItem>
-												))}
-											</Select>
-										</div>
-
-										{!hasEndDate && (
-											<div className='flex gap-1 items-center'>
-												<Select
-													name='endMonth'
-													label='End Month'
-													variant='bordered'
-													radius='sm'
-													size='sm'
-													isRequired
-												>
-													<SelectItem key='1' value='1'>
-														January
-													</SelectItem>
-													<SelectItem key='2' value='2'>
-														February
-													</SelectItem>
-													<SelectItem key='3' value='3'>
-														March
-													</SelectItem>
-													<SelectItem key='4' value='4'>
-														April
-													</SelectItem>
-													<SelectItem key='5' value='5'>
-														May
-													</SelectItem>
-													<SelectItem key='6' value='6'>
-														June
-													</SelectItem>
-													<SelectItem key='7' value='7'>
-														July
-													</SelectItem>
-													<SelectItem key='8' value='8'>
-														August
-													</SelectItem>
-													<SelectItem key='9' value='9'>
-														September
-													</SelectItem>
-													<SelectItem key='10' value='10'>
-														October
-													</SelectItem>
-													<SelectItem key='11' value='11'>
-														November
-													</SelectItem>
-													<SelectItem key='12' value='12'>
-														December
-													</SelectItem>
-												</Select>
-												<Select
-													name='endYear'
-													label='End Year'
-													variant='bordered'
-													radius='sm'
-													size='sm'
-													isRequired
-												>
-													{Array.from(
-														{ length: 100 },
-														(_, index) => new Date().getFullYear() - index
-													).map((year) => (
-														<SelectItem
-															key={year.toString()}
-															value={year.toString()}
-														>
-															{year.toString()}
-														</SelectItem>
-													))}
-												</Select>
-											</div>
-										)}
-
-										<Checkbox
-											name='present'
-											value='false'
-											onValueChange={(value) => setHasEndDate(value)}
-										>
-											I am presently working here
-										</Checkbox>
-									</div>
-								</ModalBody>
-								<ModalFooter>
-									<Button color='danger' variant='light' onPress={onClose}>
-										Cancel
-									</Button>
-									<Button
-										color='primary'
-										type='submit'
-										isDisabled={workHistoryMutation.isLoading}
-										isLoading={workHistoryMutation.isLoading}
-									>
-										Add
-									</Button>
-								</ModalFooter>
-							</form>
-						</>
-					)}
-				</ModalContent>
-			</Modal>
 		</>
 	);
 }

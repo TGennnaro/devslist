@@ -29,7 +29,7 @@ import {
 	GitHubProject,
 	Experience,
 } from '@/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import NextLink from 'next/link';
 import MessageButton from './MessageButton';
 import { getUser } from '@/lib/server_utils';
@@ -75,7 +75,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 				.select()
 				.from(Experience)
 				.where(eq(Experience.userId, params.id))
-				.orderBy(desc(Experience.startMonth), desc(Experience.startYear));
+				.orderBy(asc(Experience.startMonth), desc(Experience.startYear));
 			return history;
 		}
 
@@ -371,7 +371,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 													<div className='flex flex-col gap-1'>
 														<div>
 															<div className='font-bold'>
-																{job.position} @ {job.company}
+																{job.position} at {job.company}
 															</div>
 															<div className='text-small'>
 																<div className='flex items-center gap-1'>
