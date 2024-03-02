@@ -14,7 +14,7 @@ export default async function Page() {
 	const workHistory = await getWorkHistory();
 	return (
 		<div>
-			<h1 className={cn(title(), 'mb-16 block')}>Profile information</h1>
+			<h1 className={cn(title(), 'mb-16 block')}>Profile Settings</h1>
 			<hr className='mb-16 border-divider' />
 			<ProfileForm
 				defaultValues={await getUser()}
