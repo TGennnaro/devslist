@@ -53,7 +53,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 			<NavbarContent justify='start'>
 				<NavbarBrand as='li' className='gap-3 max-w-fit'>
 					<NextLink className='flex items-center justify-start gap-1' href='/'>
-						<Logo />
+						<Logo height={39.72} width={150} />
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
