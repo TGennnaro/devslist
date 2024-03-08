@@ -53,7 +53,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 			<NavbarContent justify='start'>
 				<NavbarBrand as='li' className='gap-3 max-w-fit'>
 					<NextLink className='flex items-center justify-start gap-1' href='/'>
-						<Logo />
+						<Logo height={39.72} width={150} />
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
@@ -186,7 +186,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link
 									color='foreground'
-									href={`/user/${session.data.user.id}`}
+									href={`/profile/${session.data.user.id}`}
 									size='lg'
 								>
 									Profile
@@ -195,6 +195,11 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link color='foreground' href='/applications' size='lg'>
 									Applications
+								</Link>
+							</NavbarMenuItem>
+							<NavbarMenuItem>
+								<Link color='foreground' href='/companies' size='lg'>
+									Companies
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>

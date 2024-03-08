@@ -56,7 +56,7 @@ export default function MessageButton({ user }: { user: User }) {
 				<ModalContent>
 					{(onClose) => (
 						<>
-							<ModalHeader>New message</ModalHeader>
+							<ModalHeader>New Message</ModalHeader>
 							<form onSubmit={mutation.mutate}>
 								<ModalBody>
 									<div className='flex flex-col gap-1'>
