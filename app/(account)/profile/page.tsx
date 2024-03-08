@@ -6,12 +6,14 @@ import {
 	getDisplayedGitHubProjects,
 	getUser,
 	getWorkHistory,
+	getEducationHistory,
 } from '@/lib/server_utils';
 
 export default async function Page() {
 	const displayedProjects = await getDisplayedGitHubProjects();
 	const availableProjects = await getAvailableGitHubProjects();
 	const workHistory = await getWorkHistory();
+	const educationHistory = await getEducationHistory();
 	return (
 		<div>
 			<h1 className={cn(title(), 'mb-16 block')}>Profile Settings</h1>
@@ -21,6 +23,7 @@ export default async function Page() {
 				displayedGitHubProjects={displayedProjects || []}
 				availableGitHubProjects={availableProjects || []}
 				workHistory={workHistory || []}
+				educationHistory={educationHistory || []}
 			/>
 		</div>
 	);

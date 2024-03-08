@@ -28,6 +28,7 @@ import {
 	GitHubProjects,
 	GitHubProject,
 	Experience,
+	Education,
 } from '@/db/schema';
 import { asc, desc, eq } from 'drizzle-orm';
 import NextLink from 'next/link';
@@ -79,8 +80,18 @@ export default async function Page({ params }: { params: { id: number } }) {
 			return history;
 		}
 
+		async function fetchEducationHistory() {
+			const history = await db
+				.select()
+				.from(Education)
+				.where(eq(Education.userId, params.id))
+				.orderBy(asc(Education.startMonth), desc(Education.startYear));
+			return history;
+		}
+
 		const projectsShowcase = await fetchProjectsShowcase();
 		const workHistory = await fetchWorkHistory();
+		const educationHistory = await fetchEducationHistory();
 
 		return (
 			<>
@@ -288,80 +299,76 @@ export default async function Page({ params }: { params: { id: number } }) {
 									</Card>
 								</>
 							)}
-							<Card>
-								<CardHeader>
-									<div className='text-3xl font-medium'>Education</div>
-								</CardHeader>
-								<CardBody>
-									<div className='flex flex-col gap-3'>
-										<div className='flex flex-row items-center gap-3'>
-											<GraduationCap size={75} />
-											<div className='flex flex-col gap-1'>
-												<div>
-													<div className='font-bold'>
-														West Bumble University
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<MapPin /> Westbumble, CA
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Scroll /> Master of Science in Computer Science
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Calculator /> 3.75/4.0 GPA
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Calendar /> September 2024 - January 2025
+							{educationHistory.length > 0 && (
+								<Card>
+									<CardHeader>
+										<div className='text-3xl font-medium'>
+											Education History
+										</div>
+									</CardHeader>
+									<CardBody>
+										{educationHistory.map((education: Education) => (
+											<div
+												className='flex flex-col gap-3 mb-5'
+												key={education.id}
+											>
+												<div className='flex flex-row items-center gap-3'>
+													<GraduationCap size={75} />
+													<div className='flex flex-col gap-1'>
+														<div>
+															<div className='font-bold'>
+																{education.schoolName}
+															</div>
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<MapPin /> {education.location}
+																</div>
+															</div>
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<Scroll /> {education.degree}
+																</div>
+															</div>
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<Calculator /> {education.gpa} GPA
+																</div>
+															</div>
+															<div className='text-small'>
+																{education.startMonth &&
+																	education.startYear && (
+																		<div className='text-small'>
+																			<div className='flex items-center gap-1'>
+																				<Calendar />{' '}
+																				{getMonthNameFromNumber(
+																					education.startMonth
+																				) +
+																					' ' +
+																					education.startYear}{' '}
+																				-{' '}
+																				{education.endMonth && education.endYear
+																					? getMonthNameFromNumber(
+																							education.endMonth
+																					  ) +
+																					  ' ' +
+																					  education.endYear
+																					: 'Present'}
+																			</div>
+																		</div>
+																	)}
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-
-										<div className='flex flex-row items-center gap-3'>
-											<GraduationCap size={75} />
-											<div className='flex flex-col gap-1'>
-												<div>
-													<div className='font-bold'>
-														East Bumble University
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<MapPin /> Eastbumble, CA
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Scroll /> Bachelor of Science in Computer Science
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Calculator /> 3.5/4.0 GPA
-														</div>
-													</div>
-													<div className='text-small'>
-														<div className='flex items-center gap-1'>
-															<Calendar /> September 2020 - May 2024
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</CardBody>
-							</Card>
+										))}
+									</CardBody>
+								</Card>
+							)}
 							{workHistory.length > 0 && (
 								<Card>
 									<CardHeader>
-										<div className='text-3xl font-medium'>Work History</div>
+										<div className='text-3xl font-medium'>Work Experience</div>
 									</CardHeader>
 									<CardBody>
 										{workHistory.map((job: Experience) => (

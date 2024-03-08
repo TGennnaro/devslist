@@ -326,3 +326,18 @@ export const Experience = mysqlTable('experience', {
 });
 
 export type Experience = typeof Experience.$inferSelect;
+
+export const Education = mysqlTable('education', {
+	id: int('id').autoincrement().notNull().primaryKey(),
+	userId: int('user_id').notNull(),
+	schoolName: varchar('school_name', { length: 100 }).notNull(),
+	location: varchar('location', { length: 100 }),
+	degree: varchar('degree', { length: 255 }).notNull(),
+	gpa: double('gpa'),
+	startMonth: smallint('start_month').notNull(),
+	startYear: smallint('start_year').notNull(),
+	endMonth: smallint('end_month'),
+	endYear: smallint('end_year'),
+});
+
+export type Education = typeof Education.$inferSelect;

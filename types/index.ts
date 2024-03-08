@@ -30,6 +30,17 @@ export type ExperienceEntry = {
 	endYear: string | undefined;
 };
 
+export type EducationEntry = {
+	schoolName: string | undefined;
+	location: string | undefined;
+	degree: string | undefined;
+	gpa: string | undefined;
+	startMonth: string | undefined;
+	startYear: string | undefined;
+	endMonth: string | undefined;
+	endYear: string | undefined;
+};
+
 export type Job = {
 	companyId: number;
 	jobTitle: string | undefined;

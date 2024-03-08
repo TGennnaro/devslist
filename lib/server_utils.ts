@@ -8,6 +8,7 @@ import {
 	GitHubProjects,
 	GitHubProject,
 	Experience,
+	Education,
 } from '@/db/schema';
 import { GitHubRepo } from '@/types';
 import { eq, isNotNull, and, desc, asc } from 'drizzle-orm';
@@ -41,6 +42,20 @@ export async function getWorkHistory() {
 			.from(Experience)
 			.where(eq(Experience.userId, session?.user.id))
 			.orderBy(asc(Experience.startMonth), desc(Experience.startYear));
+		return data;
+	}
+}
+
+export async function getEducationHistory() {
+	const session = await getServerSession(authOptions);
+	if (!session?.user.id) {
+		return null;
+	} else {
+		const data = await db
+			.select()
+			.from(Education)
+			.where(eq(Education.userId, session?.user.id))
+			.orderBy(asc(Education.startMonth), desc(Education.startYear));
 		return data;
 	}
 }

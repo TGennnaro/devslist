@@ -1,7 +1,7 @@
 'use client';
 
 import Text from '@/components/Text';
-import { Experience, User } from '@/db/schema';
+import { Education, Experience, User } from '@/db/schema';
 import { ExperienceEntry, GitHubRepo } from '@/types';
 import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
@@ -9,7 +9,15 @@ import { Chip } from '@nextui-org/chip';
 import { Input, Textarea } from '@/components/ui/input';
 import { SelectItem } from '@nextui-org/select';
 import { Select } from '@/components/ui/input';
-import { Check, GithubIcon, Pencil, Plus, Trash, X } from 'lucide-react';
+import {
+	Check,
+	GithubIcon,
+	GraduationCap,
+	Pencil,
+	Plus,
+	Trash,
+	X,
+} from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
 import { FormEvent, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -36,11 +44,13 @@ export default function ProfileForm({
 	availableGitHubProjects,
 	displayedGitHubProjects,
 	workHistory,
+	educationHistory,
 }: {
 	defaultValues: Omit<User, 'password'> | null;
 	availableGitHubProjects: GitHubRepo[];
 	displayedGitHubProjects: GitHubRepo[];
 	workHistory: Experience[];
+	educationHistory: Education[];
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [hasEndDate, setHasEndDate] = useState(false);
@@ -221,6 +231,85 @@ export default function ProfileForm({
 									<label className='block mb-2 text-sm font-medium'>
 										Listing your work experience is so important in helping
 										potential employers get to know you better.
+									</label>
+								</>
+							)}
+						</div>
+						<div>
+							<div className='flex flex-row items-center gap-3 mb-5'>
+								<label className='block text-sm font-medium'>
+									Education history
+								</label>
+								<Button
+									size='sm'
+									startContent={<Pencil size={16} />}
+									onPress={() => router.push('/profile/education')}
+								></Button>
+							</div>
+
+							{educationHistory.length > 0 ? (
+								educationHistory
+									.sort((a, b) => {
+										if (b.startYear !== a.startYear) {
+											return b.startYear - a.startYear;
+										} else {
+											return b.startMonth - a.startMonth;
+										}
+									})
+									.map((education: Education) => (
+										<div
+											className='flex flex-col gap-3 mb-5'
+											key={education.id}
+										>
+											<div className='flex flex-row items-center gap-3'>
+												<GraduationCap size={50} />
+												<div className='flex flex-col gap-1'>
+													<div>
+														<div className='font-bold'>{education.degree}</div>
+														<div className='text-small'>
+															<div className='flex items-center gap-1'>
+																<MapPin /> {education.location}
+															</div>
+														</div>
+														<div className='text-small'>
+															<div className='flex items-center gap-1'>
+																<TextQuote /> {education.location}
+															</div>
+															{education.startMonth && education.startYear && (
+																<div className='text-small'>
+																	<div className='flex items-center gap-1'>
+																		<Calendar />{' '}
+																		{getMonthNameFromNumber(
+																			education.startMonth
+																		) +
+																			' ' +
+																			education.startYear}{' '}
+																		-{' '}
+																		{education.endMonth && education.endYear
+																			? getMonthNameFromNumber(
+																					education.endMonth
+																			  ) +
+																			  ' ' +
+																			  education.endYear
+																			: 'Present'}
+																	</div>
+																</div>
+															)}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									))
+							) : (
+								<>
+									<label className='block mb-2 text-sm'>
+										Hey there 👋. It looks like you haven&apos;t added any
+										education history yet.
+									</label>
+									<label className='block mb-2 text-sm font-medium'>
+										Listing your education is so important in helping potential
+										employers get to know you better.
 									</label>
 								</>
 							)}
