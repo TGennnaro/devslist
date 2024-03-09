@@ -36,35 +36,43 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 			if (message[0].messages.toId === user?.id) {
 				return message[0];
-			} else {
-				return null;
 			}
+
+			return null;
 		}
 
 		const messageData = await fetchMessage();
 
 		async function fetchMessageThread() {
-			if (messageData && messageData.messages.parentMessageId) {
-				// get message thread
-				const messageThread = await db
-					.select()
-					.from(Messages)
-					.where(
-						and(
-							or(
-								eq(Messages.id, params.id),
-								eq(
-									Messages.parentMessageId,
-									messageData.messages.parentMessageId
-								),
-								eq(Messages.id, messageData.messages.parentMessageId)
+			if (messageData) {
+				if (!messageData.messages.parentMessageId) {
+					messageData.messages.parentMessageId = params.id;
+				}
+
+				if (messageData.messages.parentMessageId) {
+					// Get message thread
+					const messageThread = await db
+						.select()
+						.from(Messages)
+						.where(
+							and(
+								or(
+									eq(Messages.id, params.id),
+									eq(
+										Messages.parentMessageId,
+										messageData.messages.parentMessageId
+									),
+									eq(Messages.id, messageData.messages.parentMessageId)
+								)
 							)
 						)
-					)
-					.orderBy(asc(Messages.timeSent))
-					.leftJoin(Users, eq(Users.id, Messages.fromId));
+						.orderBy(asc(Messages.timeSent))
+						.leftJoin(Users, eq(Users.id, Messages.fromId));
 
-				return messageThread;
+					return messageThread;
+				}
+
+				return null;
 			}
 		}
 
