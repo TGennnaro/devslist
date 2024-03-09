@@ -178,7 +178,7 @@ export default function ProfileForm({
 										}
 									})
 									.map((job: Experience) => (
-										<Card className='mb-3'>
+										<Card className='mb-3' key={job.id}>
 											<CardBody>
 												<div className='flex flex-col gap-3 mb-5' key={job.id}>
 													<div className='flex flex-row items-center gap-3'>
@@ -260,7 +260,7 @@ export default function ProfileForm({
 										}
 									})
 									.map((education: Education) => (
-										<Card className='mb-3'>
+										<Card className='mb-3' key={education.id}>
 											<CardBody>
 												<div
 													className='flex flex-col gap-3 mb-5'
