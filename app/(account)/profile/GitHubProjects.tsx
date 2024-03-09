@@ -1,4 +1,5 @@
-import { Card, CardHeader, CardBody, CardFooter } from '@nextui-org/card';
+import { Card } from '@/components/ui/card';
+import { CardHeader, CardBody, CardFooter } from '@nextui-org/card';
 import { Chip } from '@nextui-org/chip';
 import { Divider } from '@nextui-org/divider';
 import { Button } from '@nextui-org/button';
