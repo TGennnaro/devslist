@@ -22,7 +22,7 @@ export default function MyProjects({
 	displayedGitHubProjects: GitHubRepo[];
 	availableGitHubProjects: GitHubRepo[];
 	selectedProjects: GitHubRepo[];
-	setSelectedProjects: React.Dispatch<React.SetStateAction<any>>;
+	setSelectedProjects: React.Dispatch<React.SetStateAction<GitHubRepo[]>>;
 }) {
 	return (
 		<>
