@@ -1,5 +1,6 @@
 'use client';
 
+import { UnreadMessagesContext } from '@/app/providers';
 import { Logo } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { siteConfig } from '@/config/site';
@@ -28,9 +29,9 @@ import { Mail } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-export const Navbar = ({ unread }: { unread: number }) => {
+export const Navbar = () => {
 	const session = useSession();
 	const [isScrolled, setIsScrolled] = useState(false);
 	useEffect(() => {
@@ -39,6 +40,9 @@ export const Navbar = ({ unread }: { unread: number }) => {
 		});
 	});
 	const pathname = usePathname();
+
+	const { unreadMessages } = useContext(UnreadMessagesContext);
+
 	return (
 		<NextUINavbar
 			maxWidth='xl'
@@ -92,17 +96,23 @@ export const Navbar = ({ unread }: { unread: number }) => {
 				)}
 				{session.status === 'authenticated' && (
 					<>
-						<Badge
-							color='danger'
-							shape='circle'
-							size='sm'
-							content={unread > 0 ? unread : null}
-						>
-							{/*if there are notifications, add content={num notifications} attribute */}
+						{unreadMessages > 0 ? (
+							<Badge
+								color='danger'
+								shape='circle'
+								size='sm'
+								content={unreadMessages}
+							>
+								{/*if there are notifications, add content={num notifications} attribute */}
+								<NextLink href='/inbox'>
+									<Mail size={25} />
+								</NextLink>
+							</Badge>
+						) : (
 							<NextLink href='/inbox'>
 								<Mail size={25} />
 							</NextLink>
-						</Badge>
+						)}
 
 						<Dropdown placement='bottom-end'>
 							<DropdownTrigger>
