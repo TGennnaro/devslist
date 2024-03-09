@@ -106,7 +106,6 @@ export default function NewEducationHistoryButton({
 											name='location'
 											label='Location'
 											size='sm'
-											isRequired
 										/>
 										<Input
 											name='gpa'

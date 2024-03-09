@@ -16,12 +16,13 @@ const schema = z.object({
 	location: z
 		.string()
 		.min(2, 'Location must be at least 2 characters.')
-		.max(100, 'Location cannot exceed 100 characters.'),
+		.max(100, 'Location cannot exceed 100 characters.')
+		.optional(),
 	degree: z
 		.string()
 		.min(2, 'Degree must be at least 2 characters.')
 		.max(100, 'Degree cannot exceed 100 characters.'),
-	gpa: z.string(),
+	gpa: z.string().optional(),
 	startMonth: z.string().max(2),
 	startYear: z.string().max(4),
 	endMonth: z.string().max(2).nullable(),
@@ -64,9 +65,9 @@ export async function POST(req: NextRequest, res: Response) {
 		const experienceEntry = await db.insert(Education).values({
 			userId: user.id,
 			schoolName: schoolName,
-			location: location,
+			location: location ? location : null,
 			degree: degree,
-			gpa: parseFloat(gpa),
+			gpa: gpa ? parseFloat(gpa) : null,
 			startMonth: parseInt(startMonth),
 			startYear: parseInt(startYear),
 			endMonth: endMonth ? parseInt(endMonth) : null,
@@ -80,9 +81,9 @@ export async function POST(req: NextRequest, res: Response) {
 				data: {
 					userId: user.id,
 					schoolName: schoolName,
-					location: location,
+					location: location ? location : null,
 					degree: degree,
-					gpa: parseFloat(gpa),
+					gpa: gpa ? parseFloat(gpa) : null,
 					startMonth: parseInt(startMonth),
 					startYear: parseInt(startYear),
 					endMonth: endMonth ? parseInt(endMonth) : null,
@@ -161,8 +162,8 @@ export async function PATCH(req: Request) {
 				userId: user.id,
 				schoolName: schoolName,
 				degree: degree,
-				gpa: parseFloat(gpa),
-				location: location,
+				gpa: gpa ? parseFloat(gpa) : null,
+				location: location ? location : null,
 				startMonth: parseInt(startMonth),
 				startYear: parseInt(startYear),
 				endMonth: endMonth ? parseInt(endMonth) : null,
@@ -178,8 +179,8 @@ export async function PATCH(req: Request) {
 					userId: user.id,
 					schoolName: schoolName,
 					degree: degree,
-					gpa: gpa,
-					location: location,
+					gpa: gpa ? parseFloat(gpa) : null,
+					location: location ? location : null,
 					startMonth: parseInt(startMonth),
 					startYear: parseInt(startYear),
 					endMonth: endMonth ? parseInt(endMonth) : null,

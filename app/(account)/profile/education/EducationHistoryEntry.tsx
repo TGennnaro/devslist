@@ -157,38 +157,34 @@ export default function EducationHistoryEntry({
 									<div className='flex flex-col gap-1'>
 										<Input
 											type='text'
-											name='jobTitle'
-											label='Job title'
+											name='schoolName'
+											label='School Name'
+											size='sm'
+											defaultValue={education.schoolName}
+											isRequired
+										/>
+										<Input
+											type='text'
+											name='degree'
+											label='Degree'
 											size='sm'
 											defaultValue={education.degree}
 											isRequired
 										/>
 										<Input
 											type='text'
-											name='company'
-											label='Company'
-											size='sm'
-											defaultValue={education.schoolName}
-											isRequired
-										/>
-										<Input
-											name='workLocation'
+											name='location'
 											label='Location'
-											variant='bordered'
-											radius='sm'
-											size='sm'
 											defaultValue={education.location ?? ''}
-											isRequired
+											size='sm'
 										/>
 										<Input
-											name='description'
-											label='Description'
-											placeholder='Please give a brief description'
+											name='gpa'
+											label='GPA'
 											variant='bordered'
 											radius='sm'
+											defaultValue={education.gpa?.toString() ?? ''}
 											size='sm'
-											defaultValue={education.degree}
-											isRequired
 										/>
 										<div className='flex gap-1 items-center'>
 											<Select
@@ -197,8 +193,8 @@ export default function EducationHistoryEntry({
 												variant='bordered'
 												radius='sm'
 												isRequired
-												size='sm'
 												defaultSelectedKeys={[`${education.startMonth}`]}
+												size='sm'
 											>
 												<SelectItem key='1' value='1'>
 													January
@@ -338,7 +334,7 @@ export default function EducationHistoryEntry({
 											isSelected={!hasEndDate}
 											onChange={() => setHasEndDate(!hasEndDate)}
 										>
-											I am presently working here
+											I am still going here
 										</Checkbox>
 									</div>
 								</ModalBody>
