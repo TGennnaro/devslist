@@ -363,7 +363,7 @@ export default function EducationHistoryEntry({
 						<>
 							<ModalHeader>Delete {education.degree}</ModalHeader>
 							<ModalBody>
-								Are you sure you want to delete this work experience entry?
+								Are you sure you want to delete this education history entry?
 							</ModalBody>
 							<ModalFooter>
 								<Button variant='light' onPress={onClose}>
