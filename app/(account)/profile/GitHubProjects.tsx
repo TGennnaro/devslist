@@ -27,11 +27,11 @@ export default function MyProjects({
 		<>
 			<div className='flex flex-col gap-3 flex-wrap mt-8'>
 				{selectedProjects.length > 0 ? (
-					<p className='font-semibold text-xl'>
-						Showcase on your DevsList public profile:
-					</p>
+					<label className='block mb-2 text-sm font-medium'>
+						Project showcase
+					</label>
 				) : null}
-				<div className='flex flex-row gap-3 items-center flex-wrap'>
+				<div className='flex flex-row gap-3 items-center flex-wrap mb-5'>
 					{selectedProjects.map((project: GitHubRepo) => (
 						<Card
 							className='hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -39,6 +39,15 @@ export default function MyProjects({
 						>
 							<CardHeader className='flex gap-3 items-center'>
 								<div className='flex flex-row gap-3'>
+									{project.owner?.avatar_url ? (
+										<Image
+											alt='GitHub avatar'
+											height={35}
+											radius='sm'
+											src={project.owner.avatar_url}
+											width={35}
+										/>
+									) : null}
 									<p className='text-md font-semibold pb-3'>{project.name}</p>
 									{project.language ? (
 										<Chip color='default' variant='faded'>
@@ -103,7 +112,9 @@ export default function MyProjects({
 						</Card>
 					))}
 				</div>
-				<p className='font-semibold text-xl'>Your projects:</p>
+				<label className='block mb-2 text-sm font-medium'>
+					Your latest GitHub projects:
+				</label>
 				<div className='flex flex-row gap-3 items-center flex-wrap'>
 					{availableGitHubProjects.map((project: GitHubRepo) => (
 						<Card

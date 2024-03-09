@@ -10,12 +10,13 @@ import { Input, Textarea } from '@/components/ui/input';
 import { SelectItem } from '@nextui-org/select';
 import { Select } from '@/components/ui/input';
 import {
+	Calculator,
 	Check,
 	GithubIcon,
 	GraduationCap,
 	Pencil,
 	Plus,
-	Trash,
+	Scroll,
 	X,
 } from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
@@ -27,17 +28,11 @@ import ImageUpload from './ImageUpload';
 import { Switch } from '@nextui-org/switch';
 import DocumentUpload from './DocumentUpload';
 import { Briefcase, Calendar, MapPin, TextQuote } from 'lucide-react';
-import {
-	Modal,
-	ModalContent,
-	ModalHeader,
-	ModalBody,
-	ModalFooter,
-	useDisclosure,
-} from '@nextui-org/modal';
 import { getMonthNameFromNumber } from '@/lib/utils';
 import { countries, usStates } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { CardBody } from '@nextui-org/card';
 
 export default function ProfileForm({
 	defaultValues,
@@ -183,44 +178,52 @@ export default function ProfileForm({
 										}
 									})
 									.map((job: Experience) => (
-										<div className='flex flex-col gap-3 mb-5' key={job.id}>
-											<div className='flex flex-row items-center gap-3'>
-												<Briefcase size={50} />
-												<div className='flex flex-col gap-1'>
-													<div>
-														<div className='font-bold'>
-															{job.position} at {job.company}
-														</div>
-														<div className='text-small'>
-															<div className='flex items-center gap-1'>
-																<MapPin /> {job.location}
-															</div>
-														</div>
-														<div className='text-small'>
-															<div className='flex items-center gap-1'>
-																<TextQuote /> {job.description}
-															</div>
-															{job.startMonth && job.startYear && (
+										<Card className='mb-3'>
+											<CardBody>
+												<div className='flex flex-col gap-3 mb-5' key={job.id}>
+													<div className='flex flex-row items-center gap-3'>
+														<Briefcase size={75} />
+														<div className='flex flex-col gap-1'>
+															<div>
+																<div className='font-bold'>
+																	{job.position} at {job.company}
+																</div>
 																<div className='text-small'>
 																	<div className='flex items-center gap-1'>
-																		<Calendar />{' '}
-																		{getMonthNameFromNumber(job.startMonth) +
-																			' ' +
-																			job.startYear}{' '}
-																		-{' '}
-																		{job.endMonth && job.endYear
-																			? getMonthNameFromNumber(job.endMonth) +
-																			  ' ' +
-																			  job.endYear
-																			: 'Present'}
+																		<MapPin /> {job.location}
 																	</div>
 																</div>
-															)}
+																<div className='text-small'>
+																	<div className='flex items-center gap-1'>
+																		<TextQuote /> {job.description}
+																	</div>
+																	{job.startMonth && job.startYear && (
+																		<div className='text-small'>
+																			<div className='flex items-center gap-1'>
+																				<Calendar />{' '}
+																				{getMonthNameFromNumber(
+																					job.startMonth
+																				) +
+																					' ' +
+																					job.startYear}{' '}
+																				-{' '}
+																				{job.endMonth && job.endYear
+																					? getMonthNameFromNumber(
+																							job.endMonth
+																					  ) +
+																					  ' ' +
+																					  job.endYear
+																					: 'Present'}
+																			</div>
+																		</div>
+																	)}
+																</div>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
+											</CardBody>
+										</Card>
 									))
 							) : (
 								<>
@@ -257,49 +260,68 @@ export default function ProfileForm({
 										}
 									})
 									.map((education: Education) => (
-										<div
-											className='flex flex-col gap-3 mb-5'
-											key={education.id}
-										>
-											<div className='flex flex-row items-center gap-3'>
-												<GraduationCap size={50} />
-												<div className='flex flex-col gap-1'>
-													<div>
-														<div className='font-bold'>{education.degree}</div>
-														<div className='text-small'>
-															<div className='flex items-center gap-1'>
-																<MapPin /> {education.location}
-															</div>
-														</div>
-														<div className='text-small'>
-															<div className='flex items-center gap-1'>
-																<TextQuote /> {education.location}
-															</div>
-															{education.startMonth && education.startYear && (
+										<Card className='mb-3'>
+											<CardBody>
+												<div
+													className='flex flex-col gap-3 mb-5'
+													key={education.id}
+												>
+													<div className='flex flex-row items-center gap-3'>
+														<GraduationCap size={75} />
+														<div className='flex flex-col gap-1'>
+															<div>
+																<div className='font-bold'>
+																	{education.degree}
+																</div>
+																{education.location && (
+																	<div className='text-small'>
+																		<div className='flex items-center gap-1'>
+																			<MapPin /> {education.location}
+																		</div>
+																	</div>
+																)}
 																<div className='text-small'>
 																	<div className='flex items-center gap-1'>
-																		<Calendar />{' '}
-																		{getMonthNameFromNumber(
-																			education.startMonth
-																		) +
-																			' ' +
-																			education.startYear}{' '}
-																		-{' '}
-																		{education.endMonth && education.endYear
-																			? getMonthNameFromNumber(
-																					education.endMonth
-																			  ) +
-																			  ' ' +
-																			  education.endYear
-																			: 'Present'}
+																		<Scroll /> {education.degree}
 																	</div>
 																</div>
-															)}
+																{education.gpa && (
+																	<div className='text-small'>
+																		<div className='flex items-center gap-1'>
+																			<Calculator /> {education.gpa} GPA
+																		</div>
+																	</div>
+																)}
+																<div className='text-small'>
+																	{education.startMonth &&
+																		education.startYear && (
+																			<div className='text-small'>
+																				<div className='flex items-center gap-1'>
+																					<Calendar />{' '}
+																					{getMonthNameFromNumber(
+																						education.startMonth
+																					) +
+																						' ' +
+																						education.startYear}{' '}
+																					-{' '}
+																					{education.endMonth &&
+																					education.endYear
+																						? getMonthNameFromNumber(
+																								education.endMonth
+																						  ) +
+																						  ' ' +
+																						  education.endYear
+																						: 'Present'}
+																				</div>
+																			</div>
+																		)}
+																</div>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
+											</CardBody>
+										</Card>
 									))
 							) : (
 								<>
