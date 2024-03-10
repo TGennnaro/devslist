@@ -93,21 +93,25 @@ export default function EducationHistoryEntry({
 						<div className='flex flex-col gap-1'>
 							<div>
 								<div className='font-bold'>{education.schoolName}</div>
-								<div className='text-small'>
-									<div className='flex items-center gap-1'>
-										<MapPin /> {education.location}
+								{education.location && (
+									<div className='text-small'>
+										<div className='flex items-center gap-1'>
+											<MapPin /> {education.location}
+										</div>
 									</div>
-								</div>
+								)}
 								<div className='text-small'>
 									<div className='flex items-center gap-1'>
 										<Scroll /> {education.degree}
 									</div>
 								</div>
-								<div className='text-small'>
-									<div className='flex items-center gap-1'>
-										<Calculator /> {education.gpa} GPA
+								{education.gpa && (
+									<div className='text-small'>
+										<div className='flex items-center gap-1'>
+											<Calculator /> {education.gpa} GPA
+										</div>
 									</div>
-								</div>
+								)}
 								{education.startMonth && education.startYear && (
 									<div className='text-small'>
 										<div className='flex items-center gap-1'>

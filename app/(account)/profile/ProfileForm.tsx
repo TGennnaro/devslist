@@ -271,7 +271,7 @@ export default function ProfileForm({
 														<div className='flex flex-col gap-1'>
 															<div>
 																<div className='font-bold'>
-																	{education.degree}
+																	{education.schoolName}
 																</div>
 																{education.location && (
 																	<div className='text-small'>
