@@ -114,7 +114,7 @@ export default function MyProjects({
 					))}
 				</div>
 				<label className='block mb-2 text-sm font-medium'>
-					Your latest GitHub projects:
+					Your public GitHub projects:
 				</label>
 				<div className='flex flex-row gap-3 items-center flex-wrap'>
 					{availableGitHubProjects.map((project: GitHubRepo) => (
