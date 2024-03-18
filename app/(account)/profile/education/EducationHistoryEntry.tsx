@@ -155,7 +155,7 @@ export default function EducationHistoryEntry({
 				<ModalContent>
 					{(onClose) => (
 						<>
-							<ModalHeader>Edit {education.degree}</ModalHeader>
+							<ModalHeader>Edit {education.schoolName}</ModalHeader>
 							<form onSubmit={editMutation.mutate}>
 								<ModalBody>
 									<div className='flex flex-col gap-1'>
