@@ -1,7 +1,10 @@
 import { db } from '@/db';
 import { Application, Jobs, Users } from '@/db/schema';
+import { getUTCDate } from '@/lib/utils';
 import { eq, sql } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
+
+// TODO: Add apply cooldown (1min)
 
 export async function GET(req: NextRequest) {
 	const searchParams = req.nextUrl.searchParams;
@@ -58,11 +61,12 @@ export async function PATCH(req: Request) {
 			{ status: 404 }
 		);
 
+	const updated = getUTCDate();
 	try {
 		if (newVal === null) throw new Error('Invalid status');
 		await db
 			.update(Application)
-			.set({ status: newVal })
+			.set({ status: newVal, lastModified: updated })
 			.where(eq(Application.id, id));
 	} catch (e) {
 		return NextResponse.json(
@@ -71,5 +75,8 @@ export async function PATCH(req: Request) {
 		);
 	}
 
-	return NextResponse.json({ value: newVal }, { status: 200 });
+	return NextResponse.json(
+		{ value: newVal, lastModified: updated },
+		{ status: 200 }
+	);
 }
