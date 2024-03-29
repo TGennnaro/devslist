@@ -1,5 +1,6 @@
 import { title } from '@/components/primitives';
-import { Card, CardBody } from '@nextui-org/card';
+import { Card } from '@/components/ui/card';
+import { CardBody } from '@nextui-org/card';
 import RegisterForm from './RegisterForm';
 import Link from 'next/link';
 import GlowCircle from '@/components/GlowCircle';

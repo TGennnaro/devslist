@@ -4,7 +4,7 @@ import { CardBody } from '@nextui-org/card';
 import { Card } from '@/components/ui/card';
 import { db } from '@/db';
 import { Users, Messages } from '@/db/schema';
-import { and, desc, eq, lte, or } from 'drizzle-orm';
+import { and, asc, desc, eq, lte, or } from 'drizzle-orm';
 import { getUser } from '@/lib/server_utils';
 import ReplyBox from './ReplyBox';
 import { Link } from '@nextui-org/link';
@@ -36,36 +36,43 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 			if (message[0].messages.toId === user?.id) {
 				return message[0];
-			} else {
-				return null;
 			}
+
+			return null;
 		}
 
 		const messageData = await fetchMessage();
 
 		async function fetchMessageThread() {
-			if (messageData && messageData.messages.parentMessageId) {
-				// get message thread
-				const messageThread = await db
-					.select()
-					.from(Messages)
-					.where(
-						and(
-							or(
-								eq(Messages.id, params.id),
-								eq(
-									Messages.parentMessageId,
-									messageData.messages.parentMessageId
-								),
-								eq(Messages.id, messageData.messages.parentMessageId)
-							),
-							lte(Messages.id, params.id)
-						)
-					)
-					.orderBy(desc(Messages.timeSent))
-					.leftJoin(Users, eq(Users.id, Messages.fromId));
+			if (messageData) {
+				if (!messageData.messages.parentMessageId) {
+					messageData.messages.parentMessageId = params.id;
+				}
 
-				return messageThread;
+				if (messageData.messages.parentMessageId) {
+					// Get message thread
+					const messageThread = await db
+						.select()
+						.from(Messages)
+						.where(
+							and(
+								or(
+									eq(Messages.id, params.id),
+									eq(
+										Messages.parentMessageId,
+										messageData.messages.parentMessageId
+									),
+									eq(Messages.id, messageData.messages.parentMessageId)
+								)
+							)
+						)
+						.orderBy(asc(Messages.timeSent))
+						.leftJoin(Users, eq(Users.id, Messages.fromId));
+
+					return messageThread;
+				}
+
+				return null;
 			}
 		}
 
@@ -93,7 +100,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 													href={`/profile/${message.users?.id}`}
 													as={NextLink}
 												>
-													<div className='flex flex-col gap-1 items-center justify-center'>
+													<div className='flex flex-col gap-1 items-center justify-center w-[100px]'>
 														<Avatar
 															isBordered
 															color='default'
@@ -112,7 +119,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 													<div className='font-bold'>
 														{new Date(
 															message.messages.timeSent
-														).toLocaleDateString()}
+														).toLocaleString()}
 													</div>
 													<div>{message.messages.body}</div>
 												</div>
@@ -139,7 +146,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 											href={`/profile/${messageData.users?.id}`}
 											as={NextLink}
 										>
-											<div className='flex flex-col gap-1 items-center justify-center'>
+											<div className='flex flex-col gap-1 items-center justify-center w-[100px]'>
 												<Avatar
 													isBordered
 													color='default'
@@ -158,7 +165,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 											<div className='font-bold'>
 												{new Date(
 													messageData.messages.timeSent
-												).toLocaleDateString()}
+												).toLocaleString()}
 											</div>
 											<div>{messageData.messages.body}</div>
 										</div>

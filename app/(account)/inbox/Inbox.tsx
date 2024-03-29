@@ -1,4 +1,5 @@
 'use client';
+import { UnreadMessagesContext } from '@/app/providers';
 import { Message, User } from '@/db/schema';
 import { Link } from '@nextui-org/link';
 import {
@@ -9,15 +10,24 @@ import {
 	TableRow,
 	TableCell,
 } from '@nextui-org/table';
+import Text from '@/components/Text';
 import NextLink from 'next/link';
+import { useContext } from 'react';
 
 export default function Inbox({
 	messages,
 }: {
 	messages: { messages: Message; users: User | null }[];
 }) {
+	const { unreadMessages, setUnreadMessages } = useContext(
+		UnreadMessagesContext
+	);
+
 	return (
 		<>
+			<Text variant='body' className='my-5'>
+				{messages.length} total messages ({unreadMessages} unread)
+			</Text>
 			<Table aria-label='Inbox'>
 				<TableHeader>
 					<TableColumn>SUBJECT</TableColumn>
@@ -36,6 +46,12 @@ export default function Inbox({
 										className={
 											message.messages.isOpened === 0 ? 'font-bold' : ''
 										}
+										onClick={() => {
+											unreadMessages > 0 &&
+												setUnreadMessages(unreadMessages - 1);
+
+											message.messages.isOpened = 1;
+										}}
 									>
 										{message.messages.subject}
 									</Link>

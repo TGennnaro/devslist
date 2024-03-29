@@ -10,15 +10,14 @@ import {
 	useDisclosure,
 } from '@nextui-org/modal';
 import { Send } from 'lucide-react';
-import { Input } from '@nextui-org/input';
-import { Textarea } from '@nextui-org/react';
+import { Input, Textarea } from '@/components/ui/input';
 import { useMutation } from 'react-query';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 export default function MessageButton({ user }: { user: User }) {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 
 	const mutation = useMutation({
@@ -34,6 +33,7 @@ export default function MessageButton({ user }: { user: User }) {
 			const json = await res.json();
 			if (res.status === 200) {
 				toast.success('Message sent!');
+				setIsOpen(false);
 			} else {
 				console.error(json.message);
 				toast.error('Error: ' + json.message.message);
@@ -48,15 +48,15 @@ export default function MessageButton({ user }: { user: User }) {
 				variant='solid'
 				startContent={<Send />}
 				size='sm'
-				onPress={onOpen}
+				onPress={() => setIsOpen(true)}
 			>
 				Message
 			</Button>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+			<Modal isOpen={isOpen} onOpenChange={setIsOpen}>
 				<ModalContent>
 					{(onClose) => (
 						<>
-							<ModalHeader>New message</ModalHeader>
+							<ModalHeader>New Message</ModalHeader>
 							<form onSubmit={mutation.mutate}>
 								<ModalBody>
 									<div className='flex flex-col gap-1'>
@@ -84,7 +84,6 @@ export default function MessageButton({ user }: { user: User }) {
 										color='primary'
 										type='submit'
 										endContent={<Send />}
-										onPress={onClose}
 										isDisabled={mutation.isLoading}
 										isLoading={mutation.isLoading}
 									>

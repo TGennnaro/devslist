@@ -1,6 +1,7 @@
 import GlowCircle from '@/components/GlowCircle';
 import { title } from '@/components/primitives';
-import { Card, CardBody } from '@nextui-org/card';
+import { Card } from '@/components/ui/card';
+import { CardBody } from '@nextui-org/card';
 import Link from 'next/link';
 import LoginForm from './LoginForm';
 import GitHubOAuthButton from '@/components/GitHubOAuthButton';

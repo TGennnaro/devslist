@@ -1,5 +1,6 @@
 'use client';
 
+import { UnreadMessagesContext } from '@/app/providers';
 import { Logo } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { siteConfig } from '@/config/site';
@@ -28,9 +29,9 @@ import { Mail } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-export const Navbar = ({ unread }: { unread: number }) => {
+export const Navbar = () => {
 	const session = useSession();
 	const [isScrolled, setIsScrolled] = useState(false);
 	useEffect(() => {
@@ -39,6 +40,9 @@ export const Navbar = ({ unread }: { unread: number }) => {
 		});
 	});
 	const pathname = usePathname();
+
+	const { unreadMessages } = useContext(UnreadMessagesContext);
+
 	return (
 		<NextUINavbar
 			maxWidth='xl'
@@ -53,7 +57,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 			<NavbarContent justify='start'>
 				<NavbarBrand as='li' className='gap-3 max-w-fit'>
 					<NextLink className='flex items-center justify-start gap-1' href='/'>
-						<Logo />
+						<Logo height={39.72} width={150} />
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
@@ -92,17 +96,23 @@ export const Navbar = ({ unread }: { unread: number }) => {
 				)}
 				{session.status === 'authenticated' && (
 					<>
-						<Badge
-							color='danger'
-							shape='circle'
-							size='sm'
-							content={unread > 0 ? unread : null}
-						>
-							{/*if there are notifications, add content={num notifications} attribute */}
+						{unreadMessages > 0 ? (
+							<Badge
+								color='danger'
+								shape='circle'
+								size='sm'
+								content={unreadMessages}
+							>
+								{/*if there are notifications, add content={num notifications} attribute */}
+								<NextLink href='/inbox'>
+									<Mail size={25} />
+								</NextLink>
+							</Badge>
+						) : (
 							<NextLink href='/inbox'>
 								<Mail size={25} />
 							</NextLink>
-						</Badge>
+						)}
 
 						<Dropdown placement='bottom-end'>
 							<DropdownTrigger>
@@ -186,7 +196,7 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link
 									color='foreground'
-									href={`/user/${session.data.user.id}`}
+									href={`/profile/${session.data.user.id}`}
 									size='lg'
 								>
 									Profile
@@ -195,6 +205,11 @@ export const Navbar = ({ unread }: { unread: number }) => {
 							<NavbarMenuItem>
 								<Link color='foreground' href='/applications' size='lg'>
 									Applications
+								</Link>
+							</NavbarMenuItem>
+							<NavbarMenuItem>
+								<Link color='foreground' href='/companies' size='lg'>
+									Companies
 								</Link>
 							</NavbarMenuItem>
 							<NavbarMenuItem>

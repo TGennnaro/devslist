@@ -1,27 +1,28 @@
 import { db } from '@/db';
-import { Experience } from '@/db/schema';
+import { Education, Experience } from '@/db/schema';
 import { authOptions } from '@/lib/auth';
 import { getUser } from '@/lib/server_utils';
-import { ExperienceEntry } from '@/types';
+import { EducationEntry, ExperienceEntry } from '@/types';
 import { and, eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const schema = z.object({
-	jobTitle: z
+	schoolName: z
 		.string()
-		.min(3, 'Job title must be at least 3 characters.')
-		.max(100, 'Job title cannot exceed 100 characters.'),
-	company: z
+		.min(3, 'School name must be at least 3 characters.')
+		.max(100, 'School name cannot exceed 100 characters.'),
+	location: z
 		.string()
-		.min(2, 'Company name must be at least 2 characters.')
-		.max(100, 'Company name cannot exceed 100 characters.'),
-	workLocation: z
+		.min(2, 'Location must be at least 2 characters.')
+		.max(100, 'Location cannot exceed 100 characters.')
+		.optional(),
+	degree: z
 		.string()
-		.min(2, 'Work location must be at least 2 characters.')
-		.max(100, 'Work location cannot exceed 100 characters.'),
-	description: z.string().max(255, 'Description cannot exceed 255 characters.'),
+		.min(2, 'Degree must be at least 2 characters.')
+		.max(100, 'Degree cannot exceed 100 characters.'),
+	gpa: z.string().optional(),
 	startMonth: z.string().max(2),
 	startYear: z.string().max(4),
 	endMonth: z.string().max(2).nullable(),
@@ -30,11 +31,11 @@ const schema = z.object({
 
 export async function POST(req: NextRequest, res: Response) {
 	const formData = await req.formData();
-	const data: ExperienceEntry = {
-		jobTitle: formData.get('jobTitle') as string,
-		company: formData.get('company') as string,
-		workLocation: formData.get('workLocation') as string,
-		description: formData.get('description') as string,
+	const data: EducationEntry = {
+		schoolName: formData.get('schoolName') as string,
+		location: formData.get('location') as string,
+		degree: formData.get('degree') as string,
+		gpa: formData.get('gpa') as string,
 		startMonth: formData.get('startMonth') as string,
 		startYear: formData.get('startYear') as string,
 		endMonth: formData.get('endMonth') as string,
@@ -42,10 +43,10 @@ export async function POST(req: NextRequest, res: Response) {
 	};
 	try {
 		const {
-			jobTitle,
-			company,
-			workLocation,
-			description,
+			schoolName,
+			location,
+			degree,
+			gpa,
 			startMonth,
 			startYear,
 			endMonth,
@@ -61,12 +62,12 @@ export async function POST(req: NextRequest, res: Response) {
 			return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 		}
 
-		const experienceEntry = await db.insert(Experience).values({
+		const experienceEntry = await db.insert(Education).values({
 			userId: user.id,
-			position: jobTitle,
-			company: company,
-			location: workLocation,
-			description: description,
+			schoolName: schoolName,
+			location: location ? location : null,
+			degree: degree,
+			gpa: gpa ? parseFloat(gpa) : null,
 			startMonth: parseInt(startMonth),
 			startYear: parseInt(startYear),
 			endMonth: endMonth ? parseInt(endMonth) : null,
@@ -79,10 +80,10 @@ export async function POST(req: NextRequest, res: Response) {
 				id: Number(experienceEntry.insertId),
 				data: {
 					userId: user.id,
-					position: jobTitle,
-					company: company,
-					location: workLocation,
-					description: description,
+					schoolName: schoolName,
+					location: location ? location : null,
+					degree: degree,
+					gpa: gpa ? parseFloat(gpa) : null,
 					startMonth: parseInt(startMonth),
 					startYear: parseInt(startYear),
 					endMonth: endMonth ? parseInt(endMonth) : null,
@@ -124,11 +125,11 @@ export async function PATCH(req: Request) {
 		return NextResponse.json({ message: 'Invalid id' }, { status: 400 });
 
 	const formData = await req.formData();
-	const data: ExperienceEntry = {
-		jobTitle: formData.get('jobTitle') as string,
-		company: formData.get('company') as string,
-		workLocation: formData.get('workLocation') as string,
-		description: formData.get('description') as string,
+	const data: EducationEntry = {
+		schoolName: formData.get('schoolName') as string,
+		location: formData.get('location') as string,
+		degree: formData.get('degree') as string,
+		gpa: formData.get('gpa') as string,
 		startMonth: formData.get('startMonth') as string,
 		startYear: formData.get('startYear') as string,
 		endMonth: formData.get('endMonth') as string,
@@ -136,10 +137,10 @@ export async function PATCH(req: Request) {
 	};
 	try {
 		const {
-			jobTitle,
-			company,
-			workLocation,
-			description,
+			schoolName,
+			location,
+			degree,
+			gpa,
 			startMonth,
 			startYear,
 			endMonth,
@@ -156,19 +157,19 @@ export async function PATCH(req: Request) {
 		}
 
 		const experienceEntry = await db
-			.update(Experience)
+			.update(Education)
 			.set({
 				userId: user.id,
-				position: jobTitle,
-				company: company,
-				location: workLocation,
-				description: description,
+				schoolName: schoolName,
+				degree: degree,
+				gpa: gpa ? parseFloat(gpa) : null,
+				location: location ? location : null,
 				startMonth: parseInt(startMonth),
 				startYear: parseInt(startYear),
 				endMonth: endMonth ? parseInt(endMonth) : null,
 				endYear: endYear ? parseInt(endYear) : null,
 			})
-			.where(and(eq(Experience.id, id), eq(Experience.userId, user.id)));
+			.where(and(eq(Education.id, id), eq(Education.userId, user.id)));
 
 		return NextResponse.json(
 			{
@@ -176,10 +177,10 @@ export async function PATCH(req: Request) {
 				id: Number(experienceEntry.insertId),
 				data: {
 					userId: user.id,
-					position: jobTitle,
-					company: company,
-					location: workLocation,
-					description: description,
+					schoolName: schoolName,
+					degree: degree,
+					gpa: gpa ? parseFloat(gpa) : null,
+					location: location ? location : null,
 					startMonth: parseInt(startMonth),
 					startYear: parseInt(startYear),
 					endMonth: endMonth ? parseInt(endMonth) : null,
@@ -229,8 +230,8 @@ export async function DELETE(req: Request) {
 	}
 
 	await db
-		.delete(Experience)
-		.where(and(eq(Experience.id, id), eq(Experience.userId, user.id)));
+		.delete(Education)
+		.where(and(eq(Education.id, id), eq(Education.userId, user.id)));
 
 	return NextResponse.json({ message: 'OK' }, { status: 200 });
 }

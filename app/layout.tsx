@@ -39,6 +39,15 @@ export default async function RootLayout({
 }) {
 	const user = await getUser();
 
+	const numUnread = user
+		? (
+				await db
+					.select()
+					.from(Messages)
+					.where(and(eq(Messages.toId, user.id), eq(Messages.isOpened, 0)))
+		  ).length
+		: 0;
+
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<head />
@@ -48,25 +57,12 @@ export default async function RootLayout({
 					fontSans.variable
 				)}
 			>
-				<Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>
+				<Providers
+					themeProps={{ attribute: 'class', defaultTheme: 'dark' }}
+					unread={numUnread}
+				>
 					<div className='relative flex flex-col min-h-screen'>
-						<Navbar
-							unread={
-								user
-									? (
-											await db
-												.select()
-												.from(Messages)
-												.where(
-													and(
-														eq(Messages.toId, user.id),
-														eq(Messages.isOpened, 0)
-													)
-												)
-									  ).length
-									: 0
-							}
-						/>
+						<Navbar />
 						<main className='container flex-grow px-6 pt-16 mx-auto mb-16 max-w-7xl'>
 							{children}
 						</main>
