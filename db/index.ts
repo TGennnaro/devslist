@@ -1,19 +1,20 @@
-import { connect } from '@planetscale/database';
-import { drizzle } from 'drizzle-orm/planetscale-serverless';
-import { migrate } from 'drizzle-orm/planetscale-serverless/migrator';
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
+import { migrate } from 'drizzle-orm/mysql2/migrator';
 
-const connection = connect({
+const connection = await mysql.createConnection({
 	host: process.env.DATABASE_HOST,
-	username: process.env.DATABASE_USERNAME,
+	user: process.env.DATABASE_USERNAME,
+	database: process.env.DATABASE_NAME,
 	password: process.env.DATABASE_PASSWORD,
 });
 
 export const db = drizzle(connection);
 
 // async function run() {
-// 	await migrate(db, { migrationsFolder: 'drizzle' }).catch((err) => {
-// 		console.error('Migration error: ', err);
-// 	});
+//  await migrate(db, { migrationsFolder: 'drizzle' }).catch((err) => {
+//      console.error('Migration error: ', err);
+//  });
 // }
 
 // run();
