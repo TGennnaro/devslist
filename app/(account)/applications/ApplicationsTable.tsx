@@ -1,37 +1,42 @@
 'use client';
-import {
-	Table,
-	TableHeader,
-	TableColumn,
-	TableBody,
-	TableRow,
-	TableCell,
-} from '@nextui-org/table';
-import { Chip } from '@nextui-org/chip';
-import { Check, Hourglass, MoreVertical, Undo2, X } from 'lucide-react';
-import { Button, ButtonProps } from '@nextui-org/button';
+import { ApplicationStatus } from '@/types';
+import { Button } from '@nextui-org/button';
 import {
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
 } from '@nextui-org/dropdown';
+import { Chip, Spinner } from '@nextui-org/react';
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableColumn,
+	TableHeader,
+	TableRow,
+} from '@nextui-org/table';
+import { format } from 'date-fns';
+import { MoreVertical, Undo2, Link as LinkIcon } from 'lucide-react';
+import { useQuery } from 'react-query';
+import Link from 'next/link';
+import { statusInfo } from '../companies/[id]/StatusSelect';
+import { cn } from '@/lib/utils';
 
-enum Status {
-	PENDING_REVIEW = 'Pending Review',
-	ACCEPTED = 'Accepted',
-	DISCONTINUED = 'Discontinued',
-	WITHDRAWN = 'Withdrawn',
-}
+type Application = {
+	id: number;
+	company: string;
+	position: string;
+	dateApplied: string;
+	lastUpdated: string;
+	status: ApplicationStatus;
+};
 
 const columns = [
+	{ key: 'company', name: 'Company' },
 	{
 		key: 'position',
 		name: 'Position',
-	},
-	{
-		key: 'company',
-		name: 'Company',
 	},
 	{
 		key: 'dateApplied',
@@ -51,52 +56,16 @@ const columns = [
 	},
 ];
 
-const rows = [
-	{
-		position: 'Software Engineer',
-		company: 'Apple, Inc.',
-		dateApplied: new Date().toLocaleDateString(),
-		lastUpdated: new Date().toLocaleDateString(),
-		status: Status.PENDING_REVIEW,
-	},
-	{
-		position: 'Intern',
-		company: 'Microsoft Corporation',
-		dateApplied: new Date().toLocaleDateString(),
-		lastUpdated: new Date().toLocaleDateString(),
-		status: Status.ACCEPTED,
-	},
-	{
-		position: 'Software Developer',
-		company: 'Microsoft Corporation',
-		dateApplied: new Date().toLocaleDateString(),
-		lastUpdated: new Date().toLocaleDateString(),
-		status: Status.DISCONTINUED,
-	},
-	{
-		position: 'Software Engineer',
-		company: 'Apple, Inc.',
-		dateApplied: new Date().toLocaleDateString(),
-		lastUpdated: new Date().toLocaleDateString(),
-		status: Status.WITHDRAWN,
-	},
-];
-
-const statusColors = {
-	[Status.PENDING_REVIEW]: 'primary',
-	[Status.ACCEPTED]: 'success',
-	[Status.DISCONTINUED]: 'danger',
-	[Status.WITHDRAWN]: 'warning',
-};
-
-const statusIcons = {
-	[Status.PENDING_REVIEW]: <Hourglass size={16} />,
-	[Status.ACCEPTED]: <Check size={16} />,
-	[Status.DISCONTINUED]: <X size={16} />,
-	[Status.WITHDRAWN]: <Undo2 size={16} />,
-};
-
 export default function ApplicationsTable() {
+	const { data, isLoading, isError } = useQuery({
+		queryKey: 'self_applications',
+		queryFn: async () => {
+			const res = await fetch('/api/applications');
+			if (!res.ok) throw new Error('Network error occurred');
+			return (await res.json()) as Application[];
+		},
+	});
+
 	return (
 		<Table className='mt-8' aria-label='My applications'>
 			<TableHeader columns={columns}>
@@ -106,21 +75,31 @@ export default function ApplicationsTable() {
 					</TableColumn>
 				))}
 			</TableHeader>
-			<TableBody items={rows}>
+			<TableBody
+				items={data ?? []}
+				loadingState={isLoading ? 'loading' : 'idle'}
+				loadingContent={<Spinner />}
+			>
 				{(item) => (
-					<TableRow key={item.position} className='my-2'>
-						<TableCell>{item.position}</TableCell>
+					<TableRow key={item.id} className='my-2'>
 						<TableCell>{item.company}</TableCell>
-						<TableCell>{item.dateApplied}</TableCell>
-						<TableCell>{item.lastUpdated}</TableCell>
+						<TableCell>{item.position}</TableCell>
 						<TableCell>
-							<Chip
-								color={statusColors[item.status] as ButtonProps['color']}
-								variant='light'
-								startContent={statusIcons[item.status]}
+							{format(new Date(item.dateApplied), 'MM-dd-yyyy h:mmaaa')}
+						</TableCell>
+						<TableCell>
+							{format(new Date(item.lastUpdated), 'MM-dd-yyyy h:mmaaa')}
+						</TableCell>
+						<TableCell>
+							<p
+								className={cn(
+									'flex items-center gap-2',
+									statusInfo[item.status].color
+								)}
 							>
-								{item.status}
-							</Chip>
+								{statusInfo[item.status].icon}
+								{statusInfo[item.status].text}
+							</p>
 						</TableCell>
 						<TableCell>
 							<Dropdown>

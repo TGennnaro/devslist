@@ -4,12 +4,12 @@ import { Select } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ApplicationStatus } from '@/types';
 import { SelectItem } from '@nextui-org/react';
-import { Check, Hourglass, Undo2, X } from 'lucide-react';
+import { Check, Hourglass, MessagesSquare, Undo2, X } from 'lucide-react';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
-const statusInfo: {
+export const statusInfo: {
 	[key: number]: {
 		color: string;
 		icon: JSX.Element;
@@ -21,6 +21,11 @@ const statusInfo: {
 		color: '!text-primary',
 		icon: <Hourglass size={16} />,
 		text: 'Pending Review',
+	},
+	[ApplicationStatus.CONSIDERATION]: {
+		color: '!text-purple-400',
+		icon: <MessagesSquare size={16} />,
+		text: 'Under Consideration',
 	},
 	[ApplicationStatus.ACCEPTED]: {
 		color: '!text-success',
@@ -47,6 +52,7 @@ export default function StatusSelect({
 	id: number;
 	status: ApplicationStatus;
 }) {
+	const queryClient = useQueryClient();
 	const { isLoading, mutate } = useMutation({
 		mutationFn: ({
 			prevVal,
@@ -65,7 +71,7 @@ export default function StatusSelect({
 				setSelected(json.value);
 				toast.error('Error updating application status: ' + json.error);
 				console.error('Error updating application status: ', json.error);
-			}
+			} else queryClient.invalidateQueries('applications');
 		},
 	});
 	const [selected, setSelected] = useState<ApplicationStatus>(status);

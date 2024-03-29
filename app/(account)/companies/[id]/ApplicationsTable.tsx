@@ -17,13 +17,15 @@ import {
 	TableRow,
 } from '@nextui-org/table';
 import { format } from 'date-fns';
-import { MoreVertical, Undo2 } from 'lucide-react';
+import { MoreVertical, Undo2, Link as LinkIcon } from 'lucide-react';
 import { useQuery } from 'react-query';
 import StatusSelect from './StatusSelect';
+import Link from 'next/link';
 
 type Application = {
 	id: number;
 	name: string;
+	userId: number;
 	position: string;
 	dateApplied: string;
 	lastUpdated: string;
@@ -56,7 +58,7 @@ const columns = [
 
 export default function ApplicationsTable({ id }: { id: number }) {
 	const { data, isLoading, isError } = useQuery({
-		queryKey: 'applications',
+		queryKey: ['applications', id],
 		queryFn: async () => {
 			const res = await fetch('/api/companies/applications?id=' + id);
 			if (!res.ok) throw new Error('Network error occurred');
@@ -80,7 +82,14 @@ export default function ApplicationsTable({ id }: { id: number }) {
 			>
 				{(item) => (
 					<TableRow key={item.id} className='my-2'>
-						<TableCell>{item.name}</TableCell>
+						<TableCell>
+							<Link
+								className='hover:underline'
+								href={`/profile/${item.userId}`}
+							>
+								{item.name}
+							</Link>
+						</TableCell>
 						<TableCell>{item.position}</TableCell>
 						<TableCell>
 							{format(new Date(item.dateApplied), 'MM-dd-yyyy h:mmaaa')}
