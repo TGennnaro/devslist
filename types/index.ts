@@ -84,6 +84,7 @@ export type GitHubRepo = {
 
 export enum ApplicationStatus {
 	PENDING,
+	CONSIDERATION,
 	ACCEPTED,
 	REJECTED,
 	WITHDRAWN,
