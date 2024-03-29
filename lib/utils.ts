@@ -48,6 +48,20 @@ export function dateSince(date: Date) {
 	if (interval === 0) return 'Today';
 }
 
+export function getUTCDate(date?: Date) {
+	date = date ?? new Date();
+	return new Date(
+		Date.UTC(
+			date.getUTCFullYear(),
+			date.getUTCMonth(),
+			date.getUTCDate(),
+			date.getUTCHours(),
+			date.getUTCMinutes(),
+			date.getUTCSeconds()
+		)
+	);
+}
+
 export function currency(amount: number) {
 	return `$${Math.round(amount).toLocaleString()}`;
 }

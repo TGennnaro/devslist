@@ -28,8 +28,6 @@ export default function JobPostingForm() {
 	const [skillValue, setSkillValue] = useState('');
 	const [selected, setSelected] = useState<Date | undefined>(new Date());
 	const [isDateSelectorOpen, setIsDateSelectorOpen] = useState(false);
-	const [companies, setCompanies] = useState<Company[]>([]);
-	const [isCompanyListLoading, setIsCompanyListLoading] = useState(false);
 	const [companyOpen, setCompanyOpen] = useState(false);
 	const session = useSession();
 	const router = useRouter();
@@ -55,19 +53,12 @@ export default function JobPostingForm() {
 		},
 	});
 
-	const companyQuery = useQuery({
+	const { data: companyList, isLoading: companyListLoading } = useQuery({
 		queryKey: ['companies', session.data?.user.id],
 		queryFn: async () => {
-			setIsCompanyListLoading(true);
 			const res = await fetch(`/api/companies/users/${session.data?.user.id}`);
 			if (!res.ok) throw new Error('Network error occurred');
-			return res.json();
-		},
-		onSettled: () => {
-			setIsCompanyListLoading(false);
-		},
-		onSuccess: (data) => {
-			setCompanies(data);
+			return (await res.json()).results;
 		},
 	});
 
@@ -101,6 +92,7 @@ export default function JobPostingForm() {
 			setSkillValue('');
 		}
 	}
+	console.log(companyList);
 
 	return (
 		<form onSubmit={mutation.mutate}>
@@ -109,8 +101,8 @@ export default function JobPostingForm() {
 					<div className='flex flex-col max-w-screen-md gap-6'>
 						<Select
 							name='companyId'
-							isLoading={isCompanyListLoading}
-							items={companies}
+							isLoading={companyListLoading}
+							items={(companyList as Company[]) ?? []}
 							label='Company'
 							placeholder='Select the associated company'
 							labelPlacement='outside'
