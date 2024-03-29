@@ -8,10 +8,12 @@ export async function GET(
 	const url = new URL(req.url);
 	const searchParams = url.searchParams;
 	const userId = params.id;
+	const isPaginated = searchParams.get('page') ? true : false;
 	if (!userId) return NextResponse.json([], { status: 200 });
 	const companies = await getCompaniesByUser(
 		userId,
 		true,
+		isPaginated,
 		parseInt(searchParams.get('page') ?? '1')
 	);
 	if (!companies.results) {
