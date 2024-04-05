@@ -47,8 +47,6 @@ export default function ProfileForm({
 	workHistory: Experience[];
 	educationHistory: Education[];
 }) {
-	const [isOpen, setIsOpen] = useState(false);
-	const [hasEndDate, setHasEndDate] = useState(false);
 	const [history, setHistory] = useState(workHistory);
 	const [selectedProjects, setSelectedProjects] = useState<GitHubRepo[]>(
 		displayedGitHubProjects
