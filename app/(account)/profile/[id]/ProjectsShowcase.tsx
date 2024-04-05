@@ -6,6 +6,7 @@ import { ExternalLink, Github, Zap } from 'lucide-react';
 import { Button } from '@nextui-org/button';
 import { GitHubProject } from '@/db/schema';
 import NextLink from 'next/link';
+import { Link } from '@nextui-org/link';
 
 export default function ProjectsShowcase({
 	projects,
@@ -37,7 +38,7 @@ export default function ProjectsShowcase({
 							<Divider />
 							<CardFooter className='flex gap-1 bg-gray-200/30 dark:bg-gray-600/30'>
 								{project.githubUrl && (
-									<NextLink href={project.githubUrl} target='_BLANK'>
+									<Link as={NextLink} href={project.githubUrl} target='_BLANK'>
 										<Button
 											color='default'
 											variant='ghost'
@@ -47,10 +48,14 @@ export default function ProjectsShowcase({
 										>
 											View repository
 										</Button>
-									</NextLink>
+									</Link>
 								)}
 								{project.homepageUrl && (
-									<NextLink href={project.homepageUrl} target='_BLANK'>
+									<Link
+										as={NextLink}
+										href={project.homepageUrl}
+										target='_BLANK'
+									>
 										<Button
 											color='secondary'
 											variant='ghost'
@@ -60,7 +65,7 @@ export default function ProjectsShowcase({
 										>
 											View live demo
 										</Button>
-									</NextLink>
+									</Link>
 								)}
 							</CardFooter>
 						</Card>
