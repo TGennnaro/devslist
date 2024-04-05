@@ -33,10 +33,6 @@ export async function getUser() {
 }
 
 export async function getUserById(id: number) {
-	const session = await getServerSession(authOptions);
-	if (!session?.user.id) {
-		return null;
-	}
 	// make the password field optional so it can be deleted.
 	const user: PartialBy<User, 'password'> = (
 		await db.select().from(Users).where(eq(Users.id, id))
