@@ -22,7 +22,7 @@ export default function ProjectsShowcase({
 							key={project.id}
 							className='hover:bg-slate-100 dark:hover:bg-slate-800'
 						>
-							<CardHeader className='flex gap-3 items-center'>
+							<CardHeader className='flex gap-3 items-center bg-gray-200/30 dark:bg-gray-600/30'>
 								<span className='font-medium'>{project.projectName}</span>
 								{project.language && (
 									<Chip color='default' variant='faded'>
@@ -35,7 +35,7 @@ export default function ProjectsShowcase({
 								{project.projectDescription ?? 'No description'}
 							</CardBody>
 							<Divider />
-							<CardFooter className='flex gap-1'>
+							<CardFooter className='flex gap-1 bg-gray-200/30 dark:bg-gray-600/30'>
 								{project.githubUrl && (
 									<NextLink href={project.githubUrl} target='_BLANK'>
 										<Button
