@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
-export default function MessageButton({ user }: { user: User }) {
+export default function MessageButton({ id }: { id: number }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 
@@ -70,7 +70,7 @@ export default function MessageButton({ user }: { user: User }) {
 											type='text'
 											name='toID'
 											label='To ID'
-											value={`${user.id}`}
+											value={`${id}`}
 											className='hidden'
 										/>
 										<Textarea label='Body' name='body' isRequired />
