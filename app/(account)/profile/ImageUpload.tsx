@@ -3,6 +3,7 @@
 import { Button } from '@nextui-org/button';
 import { Image } from 'lucide-react';
 import { useRef, useState } from 'react';
+import NextImage from 'next/image';
 
 export default function ImageUpload() {
 	const [image, setImage] = useState<File | null>(null);
@@ -39,7 +40,7 @@ export default function ImageUpload() {
 				</>
 			) : (
 				<>
-					<img
+					<NextImage
 						className='object-cover w-32 h-32 mx-auto mb-6 rounded-full'
 						src={URL.createObjectURL(image)}
 						alt='Profile picture'
