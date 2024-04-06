@@ -13,26 +13,28 @@ import Point from '@arcgis/core/geometry/Point';
 import Basemap from '@arcgis/core/Basemap';
 import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
-import Legend from '@arcgis/core/widgets/Legend';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol.js';
 import Expand from '@arcgis/core/widgets/Expand.js';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils.js';
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils.js';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
-import { currency } from '@/lib/utils';
+import { currency, debounce } from '@/lib/utils';
 import { JobPopup } from './JobPopup';
 import { Job, Company } from '@/db/schema';
-import { Progress } from '@nextui-org/progress';
+import MapLegend from './Legend';
 
 export default function JobMap() {
 	const mapDiv = useRef(null);
 	const { theme } = useTheme();
 	const [map, setMap] = useState<Map | null>(null);
-	const [loading, setLoading] = useState(true);
 
 	const lightModeBasemap = Basemap.fromId('gray-vector');
 	const darkModeBasemap = Basemap.fromId('dark-gray-vector');
+
+	const markerIds = new Set();
 
 	async function jobPreview(target: any) {
 		const attributes = target.graphic.attributes;
@@ -69,7 +71,11 @@ export default function JobMap() {
 				map,
 				container: mapDiv.current,
 				center: [-74.00504, 40.27984],
-				zoom: 12,
+				zoom: 10,
+				constraints: {
+					minZoom: 4,
+					maxZoom: 12,
+				},
 			});
 
 			// Map marker symbol
@@ -207,9 +213,83 @@ export default function JobMap() {
 				source: [], // Adding an empty feature collection
 				renderer: renderer,
 				popupTemplate: popupTemplate,
+				featureReduction: {
+					type: 'cluster',
+					clusterRadius: '75px',
+					clusterMinSize: '24px',
+					clusterMaxSize: '60px',
+					// Defines the label within each cluster
+					labelingInfo: [
+						{
+							deconflictionStrategy: 'none',
+							labelExpressionInfo: {
+								expression: "Text($feature.cluster_count, '#,###')",
+							},
+							symbol: {
+								type: 'text',
+								color: 'white',
+								font: {
+									weight: 'bold',
+									family: 'Noto Sans',
+									size: '12px',
+								},
+							},
+							labelPlacement: 'center-center',
+						},
+					],
+					// Information to display when the user clicks a cluster
+					popupTemplate: {
+						title: 'Cluster Summary',
+						content: 'This cluster contains <b>{cluster_count}</b> jobs.',
+						fieldInfos: [
+							{
+								fieldName: 'cluster_count',
+								format: {
+									places: 0,
+									digitSeparator: true,
+								},
+							},
+						],
+					},
+					symbol: new SimpleMarkerSymbol({
+						style: 'circle',
+						color: '#69b7ff',
+						outline: {
+							color: 'rgba(0, 139, 174, 0.5)',
+							width: 6,
+						},
+					}),
+				},
 			});
 
 			map.add(featureLayer);
+
+			function loadMarkers() {
+				if (view.extent) {
+					const minXY = webMercatorUtils.xyToLngLat(
+						view.extent.xmin,
+						view.extent.ymin
+					);
+					const maxXY = webMercatorUtils.xyToLngLat(
+						view.extent.xmax,
+						view.extent.ymax
+					);
+					generateMapMarkers(
+						parseFloat(minXY[0].toFixed(2)),
+						parseFloat(maxXY[0].toFixed(2)),
+						parseFloat(minXY[1].toFixed(2)),
+						parseFloat(maxXY[1].toFixed(2))
+					);
+				}
+			}
+
+			const debouncedLoadMarkers = debounce(loadMarkers, 1000);
+
+			// Watch view's stationary property for becoming true
+			reactiveUtils.when(
+				() => view.stationary === true,
+				() => debouncedLoadMarkers()
+			);
 
 			// Map widgets
 			const locate = new Locate({
@@ -242,15 +322,15 @@ export default function JobMap() {
 			});
 			view.ui.add(search, 'top-right');
 
-			let legend = new Legend({
-				view: view,
-			});
-
-			view.ui.add(legend, 'bottom-right');
-
 			let jobsLayerView: FeatureLayerView;
 
 			const jobTypesElement = document.getElementById('job-type-filter');
+
+			const jobMapLegendElement = document.getElementById(
+				'job-map-legend'
+			) as HTMLElement;
+
+			view.ui.add(jobMapLegendElement, 'bottom-right');
 
 			// Click event handler for job type choices
 			if (jobTypesElement) {
@@ -293,9 +373,23 @@ export default function JobMap() {
 				}
 			});
 
-			const generateMapMarkers = async () => {
+			const generateMapMarkers = async (
+				xMin: number,
+				xMax: number,
+				yMin: number,
+				yMax: number
+			) => {
 				try {
-					const response = await fetch('/api/map');
+					const response = await fetch(
+						'/api/map?xmin=' +
+							xMin +
+							'&xmax=' +
+							xMax +
+							'&ymin=' +
+							yMin +
+							'&ymax=' +
+							yMax
+					);
 					const jobs = await response.json();
 
 					if (response.ok) {
@@ -322,7 +416,11 @@ export default function JobMap() {
 									},
 								});
 
-								featureLayer.applyEdits({ addFeatures: [pointGraphic] });
+								// Only add to map if job is not already on map
+								if (!markerIds.has(job.id)) {
+									featureLayer.applyEdits({ addFeatures: [pointGraphic] });
+									markerIds.add(job.id);
+								}
 							}
 						});
 					}
@@ -331,24 +429,7 @@ export default function JobMap() {
 				}
 			};
 
-			generateMapMarkers();
-
-			// When map is done loading, zoom to extent of all features
-			const handle = view.watch('updating', function (value) {
-				if (!value) {
-					featureLayer
-
-						.queryExtent()
-
-						.then(function (results) {
-							const extent = results.extent;
-							view.goTo(extent);
-							handle.remove();
-						});
-
-					setLoading(false);
-				}
-			});
+			loadMarkers();
 
 			setMap(map);
 		}
@@ -410,17 +491,12 @@ export default function JobMap() {
 					Freelance
 				</div>
 			</div>
-			{loading ? (
-				<div className='flex items-center justify-center mb-5'>
-					<Progress
-						size='sm'
-						isIndeterminate
-						aria-label='Loading map...'
-						className='max-w-md'
-						label='Loading map...'
-					/>
-				</div>
-			) : null}
+			<div
+				id='job-map-legend'
+				className='esri-component esri-legend esri-widget esri-widget--panel p-3'
+			>
+				<MapLegend />
+			</div>
 			<div className={`${styles.mapDiv}`} ref={mapDiv} id='root'></div>
 		</>
 	);
