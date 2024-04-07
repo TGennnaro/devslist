@@ -20,11 +20,13 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils.js';
 import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils.js';
 import styles from '@/styles/JobMap.module.css';
 import { useTheme } from 'next-themes';
-import { createRoot } from 'react-dom/client';
-import { currency, debounce } from '@/lib/utils';
-import { JobPopup } from './JobPopup';
-import { Job, Company } from '@/db/schema';
+import { debounce } from '@/lib/utils';
+import JobPopup from './JobPopup';
 import MapLegend from './Legend';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createRoot } from 'react-dom/client';
+
+const queryClient = new QueryClient();
 
 export default function JobMap() {
 	const mapDiv = useRef(null);
@@ -38,25 +40,14 @@ export default function JobMap() {
 
 	async function jobPreview(target: any) {
 		const attributes = target.graphic.attributes;
-		let puNode = document.createElement('div');
-		const root = createRoot(puNode);
+		let popupNode = document.createElement('div');
+		const root = createRoot(popupNode);
 		root.render(
-			<JobPopup
-				id={attributes.id}
-				position={attributes.jobTitle}
-				company={attributes.company}
-				location={attributes.location}
-				jobType={attributes.jobType}
-				pay={
-					attributes.showPayRate === 'true'
-						? currency(attributes.salary ?? attributes.hourlyRate ?? 0) +
-						  (attributes.salary ? ' per year' : ' an hour')
-						: 'Not specified'
-				}
-				companyLogo={attributes.companyLogo}
-			/>
+			<QueryClientProvider client={queryClient}>
+				<JobPopup id={attributes.id} />
+			</QueryClientProvider>
 		);
-		return puNode;
+		return popupNode;
 	}
 
 	useEffect(() => {
@@ -67,18 +58,19 @@ export default function JobMap() {
 				basemap: theme === 'light' ? lightModeBasemap : darkModeBasemap, // When loading initial map, user's current theme selection determines basemap
 			});
 
+			// Map view configuration
 			const view = new MapView({
 				map,
 				container: mapDiv.current,
 				center: [-74.00504, 40.27984],
-				zoom: 10,
+				zoom: 8,
 				constraints: {
 					minZoom: 4,
 					maxZoom: 12,
 				},
 			});
 
-			// Map marker symbol
+			// Map marker symbols
 			const defaultPictureMarkerSymbol = new PictureMarkerSymbol({
 				url: '/default_map_marker.png',
 				width: '25px',
@@ -111,23 +103,23 @@ export default function JobMap() {
 
 			// Renderer for markers on the FeatureLayer
 			const renderer = new UniqueValueRenderer({
-				field: 'jobType',
+				field: 'type',
 				defaultSymbol: defaultPictureMarkerSymbol,
 				uniqueValueInfos: [
 					{
-						value: 'Full-Time',
+						value: 1,
 						symbol: fullTimeJobPictureMarkerSymbol,
 					},
 					{
-						value: 'Part-Time',
+						value: 2,
 						symbol: partTimeJobPictureMarkerSymbol,
 					},
 					{
-						value: 'Internship',
+						value: 3,
 						symbol: internshipPictureMarkerSymbol,
 					},
 					{
-						value: 'Freelance',
+						value: 4,
 						symbol: freelancePictureMarkerSymbol,
 					},
 				],
@@ -135,18 +127,13 @@ export default function JobMap() {
 
 			// Attributes for popup that appears when map marker is clicked
 			const popupTemplate = new PopupTemplate({
-				title: '{jobTitle}',
-				content: [
-					{
-						type: 'custom',
-						creator: jobPreview,
-					},
-				],
+				title: '{title}',
+				content: jobPreview,
 			});
 
 			// Feature layer
 			const featureLayer = new FeatureLayer({
-				title: 'Jobs Around You',
+				title: 'Jobs',
 				fields: [
 					{
 						name: 'ObjectID',
@@ -159,49 +146,14 @@ export default function JobMap() {
 						type: 'integer',
 					},
 					{
-						name: 'jobTitle',
+						name: 'title',
 						alias: 'Job Title',
 						type: 'string',
 					},
 					{
-						name: 'company',
-						alias: 'Company',
-						type: 'string',
-					},
-					{
-						name: 'companyLogo',
-						alias: 'Company Logo',
-						type: 'string',
-					},
-					{
-						name: 'location',
-						alias: 'Location',
-						type: 'string',
-					},
-					{
-						name: 'jobType',
+						name: 'type',
 						alias: 'Job Type',
-						type: 'string',
-					},
-					{
-						name: 'showPayRate',
-						alias: 'Show Pay Rate',
-						type: 'string',
-					},
-					{
-						name: 'payType',
-						alias: 'Pay Type',
-						type: 'string',
-					},
-					{
-						name: 'hourlyRate',
-						alias: 'Hourly Rate',
-						type: 'string',
-					},
-					{
-						name: 'salary',
-						alias: 'Salary',
-						type: 'string',
+						type: 'integer',
 					},
 				],
 				outFields: ['*'],
@@ -214,6 +166,7 @@ export default function JobMap() {
 				renderer: renderer,
 				popupTemplate: popupTemplate,
 				featureReduction: {
+					// Aggregate nearby jobs into point clusters
 					type: 'cluster',
 					clusterRadius: '75px',
 					clusterMinSize: '24px',
@@ -264,6 +217,7 @@ export default function JobMap() {
 
 			map.add(featureLayer);
 
+			// Load jobs that fall within the view extent
 			function loadMarkers() {
 				if (view.extent) {
 					const minXY = webMercatorUtils.xyToLngLat(
@@ -286,6 +240,7 @@ export default function JobMap() {
 			const debouncedLoadMarkers = debounce(loadMarkers, 1000);
 
 			// Watch view's stationary property for becoming true
+			// When user stops moving view, load markers that fall within the new view extent
 			reactiveUtils.when(
 				() => view.stationary === true,
 				() => debouncedLoadMarkers()
@@ -311,8 +266,8 @@ export default function JobMap() {
 					{
 						//@ts-ignore
 						layer: featureLayer,
-						searchFields: ['jobTitle'],
-						displayField: 'jobTitle',
+						searchFields: ['title'],
+						displayField: 'title',
 						exactMatch: false,
 						outFields: ['*'],
 						name: 'Find a job',
@@ -343,7 +298,7 @@ export default function JobMap() {
 			function filterByJobType(event: any) {
 				const selectedJobType = event.target.getAttribute('data-job');
 				jobsLayerView.filter = new FeatureFilter({
-					where: "jobType = '" + selectedJobType + "'",
+					where: "type = '" + selectedJobType + "'",
 				});
 			}
 
@@ -393,26 +348,19 @@ export default function JobMap() {
 					const jobs = await response.json();
 
 					if (response.ok) {
-						jobs.map((job: Job & Company) => {
-							if (job.latitude && job.longitude) {
+						jobs.map((job: any) => {
+							if (job.x && job.y) {
 								const point = new Point({
-									longitude: job.longitude,
-									latitude: job.latitude,
+									longitude: job.x,
+									latitude: job.y,
 								});
 
 								const pointGraphic = new Graphic({
 									geometry: point,
 									attributes: {
 										id: job.id,
-										jobTitle: job.jobTitle,
-										company: job.name,
-										companyLogo: job.logo,
-										location: job.address,
-										jobType: job.jobType,
-										showPayRate: job.showPayRate,
-										payType: job.payType,
-										hourlyRate: job.hourlyRate,
-										salary: job.salary,
+										title: job.title,
+										type: job.type,
 									},
 								});
 
@@ -478,17 +426,20 @@ export default function JobMap() {
 				href={`https://js.arcgis.com/4.28/esri/themes/${theme}/main.css`}
 			/>
 			<div id='job-type-filter' className='esri-widget'>
-				<div className={`${styles.jobTypeItem}`} data-job='Full-Time'>
+				<div className={`${styles.jobTypeItem}`} data-job='1'>
 					Full-Time
 				</div>
-				<div className={`${styles.jobTypeItem}`} data-job='Part-Time'>
+				<div className={`${styles.jobTypeItem}`} data-job='2'>
 					Part-Time
 				</div>
-				<div className={`${styles.jobTypeItem}`} data-job='Internship'>
+				<div className={`${styles.jobTypeItem}`} data-job='3'>
 					Internship
 				</div>
-				<div className={`${styles.jobTypeItem}`} data-job='Freelance'>
+				<div className={`${styles.jobTypeItem}`} data-job='4'>
 					Freelance
+				</div>
+				<div className={`${styles.jobTypeItem}`} data-job='0'>
+					Other
 				</div>
 			</div>
 			<div
