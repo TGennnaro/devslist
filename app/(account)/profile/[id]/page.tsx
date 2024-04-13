@@ -101,7 +101,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 							<div>
 								<Card>
 									<CardBody>
-										<div className='flex flex-col items-center justify-center gap-2'>
+										<div className='flex flex-col items-center justify-center gap-4'>
 											<Avatar
 												isBordered
 												color='default'
@@ -109,7 +109,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 												showFallback
 												className='h-[125px] w-[125px] md:h-[200px] md:w-[200px]'
 											/>
-											<div className='font-semibold md:text-3xl sm:text-2xl capitalize'>
+											<div className='font-semibold capitalize md:text-3xl sm:text-2xl'>
 												{(userData.firstName ?? 'DevsList') +
 													' ' +
 													(userData.lastName ?? 'User')}
@@ -117,7 +117,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 											{userData.city && userData.state && userData.country ? (
 												<div className='font-semibold text-medium'>
 													<div className='flex items-center justify-center gap-1 text-center'>
-														<MapPin />
+														<MapPin size={16} />
 														{userData.city +
 															', ' +
 															userData.state +
@@ -313,54 +313,51 @@ export default async function Page({ params }: { params: { id: number } }) {
 												key={education.id}
 											>
 												<div className='flex flex-row items-center gap-3'>
-													<GraduationCap size={75} />
+													<GraduationCap size={75} className='text-gray-400' />
 													<div className='flex flex-col gap-1'>
-														<div>
-															<div className='font-bold'>
-																{education.schoolName}
-															</div>
-															{education.location && (
-																<div className='text-small'>
-																	<div className='flex items-center gap-1'>
-																		<MapPin /> {education.location}
-																	</div>
-																</div>
-															)}
+														<div className='font-bold'>
+															{education.schoolName}
+														</div>
+														{education.location && (
 															<div className='text-small'>
 																<div className='flex items-center gap-1'>
-																	<Scroll /> {education.degree}
+																	<MapPin size={16} /> {education.location}
 																</div>
 															</div>
-															{education.gpa && (
+														)}
+														<div className='text-small'>
+															<div className='flex items-center gap-1'>
+																<Scroll size={16} /> {education.degree}
+															</div>
+														</div>
+														{education.gpa && (
+															<div className='text-small'>
+																<div className='flex items-center gap-1'>
+																	<Calculator size={16} /> {education.gpa} GPA
+																</div>
+															</div>
+														)}
+														<div className='text-small'>
+															{education.startMonth && education.startYear && (
 																<div className='text-small'>
 																	<div className='flex items-center gap-1'>
-																		<Calculator /> {education.gpa} GPA
+																		<Calendar size={16} />{' '}
+																		{getMonthNameFromNumber(
+																			education.startMonth
+																		) +
+																			' ' +
+																			education.startYear}{' '}
+																		-{' '}
+																		{education.endMonth && education.endYear
+																			? getMonthNameFromNumber(
+																					education.endMonth
+																			  ) +
+																			  ' ' +
+																			  education.endYear
+																			: 'Present'}
 																	</div>
 																</div>
 															)}
-															<div className='text-small'>
-																{education.startMonth &&
-																	education.startYear && (
-																		<div className='text-small'>
-																			<div className='flex items-center gap-1'>
-																				<Calendar />{' '}
-																				{getMonthNameFromNumber(
-																					education.startMonth
-																				) +
-																					' ' +
-																					education.startYear}{' '}
-																				-{' '}
-																				{education.endMonth && education.endYear
-																					? getMonthNameFromNumber(
-																							education.endMonth
-																					  ) +
-																					  ' ' +
-																					  education.endYear
-																					: 'Present'}
-																			</div>
-																		</div>
-																	)}
-															</div>
 														</div>
 													</div>
 												</div>

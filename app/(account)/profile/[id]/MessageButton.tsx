@@ -1,24 +1,21 @@
 'use client';
+import { Input, Textarea } from '@/components/ui/input';
 import { User } from '@/db/schema';
 import { Button } from '@nextui-org/button';
 import {
 	Modal,
-	ModalContent,
-	ModalHeader,
 	ModalBody,
+	ModalContent,
 	ModalFooter,
-	useDisclosure,
+	ModalHeader,
 } from '@nextui-org/modal';
-import { Send } from 'lucide-react';
-import { Input, Textarea } from '@/components/ui/input';
+import { Mail, Send } from 'lucide-react';
+import { FormEvent, useState } from 'react';
 import { useMutation } from 'react-query';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
 
 export default function MessageButton({ user }: { user: User }) {
 	const [isOpen, setIsOpen] = useState(false);
-	const router = useRouter();
 
 	const mutation = useMutation({
 		mutationFn: async (e: FormEvent<HTMLFormElement>) => {
@@ -46,7 +43,7 @@ export default function MessageButton({ user }: { user: User }) {
 			<Button
 				color='default'
 				variant='solid'
-				startContent={<Send />}
+				startContent={<Mail size={16} />}
 				size='sm'
 				onPress={() => setIsOpen(true)}
 			>
@@ -83,7 +80,7 @@ export default function MessageButton({ user }: { user: User }) {
 									<Button
 										color='primary'
 										type='submit'
-										endContent={<Send />}
+										endContent={<Send size={16} />}
 										isDisabled={mutation.isLoading}
 										isLoading={mutation.isLoading}
 									>
