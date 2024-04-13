@@ -133,10 +133,10 @@ const authOptions: AuthOptions = {
 							const insertedUserDetails = await db
 								.select()
 								.from(Users)
-								.where(eq(Users.id, Number(insertedUser[0].insertId)));
+								.where(eq(Users.id, Number(insertedUser.insertId)));
 
 							return {
-								id: Number(insertedUser[0].insertId),
+								id: Number(insertedUser.insertId),
 								email: insertedUserDetails[0].email,
 								firstName: insertedUserDetails[0].firstName,
 								lastName: insertedUserDetails[0].lastName,

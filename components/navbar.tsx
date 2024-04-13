@@ -103,7 +103,6 @@ export const Navbar = () => {
 								size='sm'
 								content={unreadMessages}
 							>
-								{/*if there are notifications, add content={num notifications} attribute */}
 								<NextLink href='/inbox'>
 									<Mail size={25} />
 								</NextLink>

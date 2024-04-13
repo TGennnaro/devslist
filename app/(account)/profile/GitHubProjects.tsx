@@ -6,12 +6,12 @@ import { Button } from '@nextui-org/button';
 import { ExternalLink, Minus, Plus } from 'lucide-react';
 import { Github } from 'lucide-react';
 import { Zap } from 'lucide-react';
-import NextLink from 'next/link';
 import { Image } from '@nextui-org/image';
 import { Tooltip } from '@nextui-org/tooltip';
 import { GitHubRepo } from '@/types';
 import React from 'react';
-import { GitHubProject } from '@/db/schema';
+import { Link } from '@nextui-org/link';
+import NextLink from 'next/link';
 
 export default function MyProjects({
 	displayedGitHubProjects,
@@ -32,7 +32,7 @@ export default function MyProjects({
 						Project showcase
 					</label>
 				) : null}
-				<div className='flex flex-row gap-3 items-center flex-wrap mb-5'>
+				<div className='grid w-full gap-3 md:grid-cols-2 sm:grid-cols-1'>
 					{selectedProjects.map((project: GitHubRepo) => (
 						<Card
 							className='hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -83,7 +83,7 @@ export default function MyProjects({
 							<CardFooter>
 								<div className='flex flex-row flex-wrap gap-1'>
 									{project.html_url ? (
-										<NextLink href={project.html_url} target='_BLANK'>
+										<Link as={NextLink} href={project.html_url} target='_BLANK'>
 											<Button
 												color='default'
 												variant='ghost'
@@ -93,10 +93,10 @@ export default function MyProjects({
 											>
 												View repository
 											</Button>
-										</NextLink>
+										</Link>
 									) : null}
 									{project.homepage ? (
-										<NextLink href={project.homepage} target='_BLANK'>
+										<Link as={NextLink} href={project.homepage} target='_BLANK'>
 											<Button
 												color='secondary'
 												variant='ghost'
@@ -106,7 +106,7 @@ export default function MyProjects({
 											>
 												View live demo
 											</Button>
-										</NextLink>
+										</Link>
 									) : null}
 								</div>
 							</CardFooter>
@@ -116,7 +116,7 @@ export default function MyProjects({
 				<label className='block mb-2 text-sm font-medium'>
 					Your public GitHub projects:
 				</label>
-				<div className='flex flex-row gap-3 items-center flex-wrap'>
+				<div className='grid w-full gap-3 md:grid-cols-2 sm:grid-cols-1'>
 					{availableGitHubProjects.map((project: GitHubRepo) => (
 						<Card
 							className='hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -169,8 +169,8 @@ export default function MyProjects({
 							<Divider />
 							<CardFooter>
 								<div className='flex flex-row flex-wrap gap-1'>
-									{project.html_url ? (
-										<NextLink href={project.html_url} target='_BLANK'>
+									{project.html_url && (
+										<Link as={NextLink} href={project.html_url} target='_BLANK'>
 											<Button
 												color='default'
 												variant='ghost'
@@ -180,10 +180,10 @@ export default function MyProjects({
 											>
 												View repository
 											</Button>
-										</NextLink>
-									) : null}
-									{project.homepage ? (
-										<NextLink href={project.homepage} target='_BLANK'>
+										</Link>
+									)}
+									{project.homepage && (
+										<Link as={NextLink} href={project.homepage} target='_BLANK'>
 											<Button
 												color='secondary'
 												variant='ghost'
@@ -193,8 +193,8 @@ export default function MyProjects({
 											>
 												View live demo
 											</Button>
-										</NextLink>
-									) : null}
+										</Link>
+									)}
 								</div>
 							</CardFooter>
 						</Card>

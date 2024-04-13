@@ -77,7 +77,7 @@ export async function POST(req: NextRequest, res: Response) {
 		return NextResponse.json(
 			{
 				message: 'OK',
-				id: Number(experienceEntry[0].insertId),
+				id: Number(experienceEntry.insertId),
 				data: {
 					userId: user.id,
 					schoolName: schoolName,
@@ -174,7 +174,7 @@ export async function PATCH(req: Request) {
 		return NextResponse.json(
 			{
 				message: 'OK',
-				id: Number(experienceEntry[0].insertId),
+				id: Number(experienceEntry.insertId),
 				data: {
 					userId: user.id,
 					schoolName: schoolName,

@@ -17,7 +17,7 @@ import { useContext } from 'react';
 export default function Inbox({
 	messages,
 }: {
-	messages: { messages: Message; users: User | null }[];
+	messages: { messages: Message; users: Omit<User, 'password'> | null }[];
 }) {
 	const { unreadMessages, setUnreadMessages } = useContext(
 		UnreadMessagesContext
@@ -32,11 +32,14 @@ export default function Inbox({
 				<TableHeader>
 					<TableColumn>SUBJECT</TableColumn>
 					<TableColumn>SENDER</TableColumn>
-					<TableColumn>TIME</TableColumn>
+					<TableColumn>TIME SENT</TableColumn>
 				</TableHeader>
 				<TableBody>
 					{messages.map(
-						(message: { messages: Message; users: User | null }) => (
+						(message: {
+							messages: Message;
+							users: Omit<User, 'password'> | null;
+						}) => (
 							<TableRow key={message.messages.id}>
 								<TableCell>
 									<Link
@@ -66,7 +69,7 @@ export default function Inbox({
 									</Link>
 								</TableCell>
 								<TableCell>
-									{new Date(message.messages.timeSent).toLocaleDateString()}
+									{new Date(message.messages.timeSent).toLocaleString()}
 								</TableCell>
 							</TableRow>
 						)

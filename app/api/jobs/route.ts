@@ -111,7 +111,7 @@ export async function POST(req: Request, res: Response) {
 			});
 
 			return NextResponse.json(
-				{ message: 'OK', id: Number(job[0].insertId) },
+				{ message: 'OK', id: Number(job.insertId) },
 				{ status: 200 }
 			);
 		} catch (err) {

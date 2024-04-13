@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@nextui-org/button';
-import { File, Image } from 'lucide-react';
+import { File } from 'lucide-react';
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 export default function DocumentUpload({
@@ -45,7 +46,7 @@ export default function DocumentUpload({
 				</>
 			) : (
 				<>
-					<img
+					<Image
 						className='object-cover w-32 h-32 mx-auto mb-6 rounded-full'
 						src={URL.createObjectURL(document)}
 						alt='Profile picture'

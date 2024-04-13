@@ -18,6 +18,7 @@ import {
 import { Metadata } from 'next';
 import { toast } from 'sonner';
 import ApplyButton from './ApplyButton';
+import NextLink from 'next/link';
 
 export const metadata: Metadata = {
 	title: 'Job Posting',
@@ -53,7 +54,12 @@ export default async function Page({ params }: { params: { id: number } }) {
 
 		return (
 			<>
-				<Link href='/jobs' color='primary' className='py-2 mb-8 cursor-pointer'>
+				<Link
+					as={NextLink}
+					href='/jobs'
+					color='primary'
+					className='py-2 mb-8 cursor-pointer'
+				>
 					<ChevronLeft size={16} className='mr-2' />
 					Go back
 				</Link>
@@ -149,7 +155,9 @@ export default async function Page({ params }: { params: { id: number } }) {
 							<div>
 								<User
 									name={
-										jobData.users?.firstName + ' ' + jobData.users?.lastName
+										<Link as={NextLink} href={`/profile/${jobData.users?.id}`}>
+											{jobData.users?.firstName + ' ' + jobData.users?.lastName}
+										</Link>
 									}
 									description={jobData.company?.name}
 									avatarProps={{

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function InboxPage() {
 	const user = await getUser();
 	if (user) {
-		const allMessages = await db
+		const messages = await db
 			.select()
 			.from(Messages)
 			.where(eq(Messages.toId, user.id))
@@ -24,10 +24,10 @@ export default async function InboxPage() {
 		return (
 			<>
 				<h1 className={title()}>Inbox</h1>
-				<div className='mt-5'>
-					<Inbox messages={allMessages} />
-				</div>
+				<Inbox messages={messages} />
 			</>
 		);
 	}
+
+	return <div className='flex items-center justify-center'>Unauthorized</div>;
 }
